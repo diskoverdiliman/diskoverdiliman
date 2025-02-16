@@ -1,0 +1,64 @@
+.primary-bg {
+	background-color: var(--v-primary-base) !important;
+}
+
+.secondary-bg {
+	background-color: var(--v-secondary-base) !important;
+}
+
+.accent-bg {
+	background-color: var(--v-accent-base) !important;
+}
+
+.error-bg {
+	background-color: var(--v-error-base) !important;
+}
+
+.info-bg {
+	background-color: var(--v-info-base) !important;
+}
+
+.success-bg {
+	background-color: var(--v-info-base) !important;
+}
+
+.warning-bg {
+	background-color: var(--v-info-base) !important;
+}
+
+
+.v-overlay--active {
+	z-index: 1003 !important;
+}
+
+.v-dialog__content--active {
+	z-index: 1004 !important;
+}
+
+.full-pwidth {
+	width: 100%;
+}
+
+.full-vwidth {
+	max-width: 100% !important; /* Override Vuetify's default max-width */
+	width: 100% !important;
+	padding: 0 !important; /* Remove default padding if necessary */
+  }
+
+.text-white {
+color: white !important;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevent horizontal overflow */
+  width: 100%;
+  height: 100%;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Prevent any overflow within the app */
+}
