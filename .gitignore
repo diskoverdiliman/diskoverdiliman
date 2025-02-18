@@ -1,0 +1,54 @@
+# =========================
+# Django (Python Backend)
+# =========================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+db.sqlite3
+*.sqlite3
+env/
+venv/
+*.log
+instance/
+media/
+staticfiles/
+.DS_Store
+
+# If using VS Code
+.vscode/
+
+# If using PyCharm
+.idea/
+
+# =========================
+# Vue (Frontend)
+# =========================
+node_modules/
+dist/
+*.log
+*.lock
+public/hot
+public/storage
+.env
+.env.local
+.env.*.local
+.DS_Store
+
+# Vite/Build artifacts
+.vite/
+.cache/
+output/
+
+# =========================
+# Docker (if using Docker)
+# =========================
+*.dockerignore
+docker-compose.override.yml
+
+# =========================
+# Git & System Files
+# =========================
+*.swp
+*.swo
+Thumbs.db
