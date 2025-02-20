@@ -330,8 +330,6 @@ def handle_image_deletions(imageUrl):
 
     return filesDeleted
       
-    
-
 class AdminLocationImageViewSet(LocationViewSet):
     queryset = Location.objects.all()
     permission_classes = [IsAuthenticated]
