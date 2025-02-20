@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -24,9 +25,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-zw1jikz-wugwkv7^@bmy^&wg1--w-fj^jkwmkqp6qv5zb7@u9v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'diskover.up.edu.ph',
+    'localhost',
+    '127.0.0.1'
+    ]
 
 
 # Application definition
@@ -46,6 +51,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -63,7 +69,7 @@ CORS_ALLOW_CREDENTIALS = False
 
 # Specify allowed origins (for production)
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",  # Vue.js, React, or other frontend on port 8080
+    'http://localhost:8080'
 ]
 
 ROOT_URLCONF = 'diskover_plus_3.urls'
@@ -93,7 +99,7 @@ WSGI_APPLICATION = 'diskover_plus_3.wsgi.application'
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'diskover',
+       'NAME': 'diskoverupd',
        'USER': 'postgres',
        'PASSWORD': 'postgres',
        'HOST': 'localhost',
@@ -138,11 +144,11 @@ USE_TZ = True
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'dist'),
-    os.path.join(BASE_DIR, 'api/static'),
+    os.path.join(BASE_DIR, 'diskover_api/static'),
 )
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'public')
-STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

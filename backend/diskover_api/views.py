@@ -282,7 +282,7 @@ class AdminLocationViewSet(LocationViewSet):
 
 
 # folder to store the saved images to
-SAVED_IMAGES_PATH = "api/static/images/locations/"
+SAVED_IMAGES_PATH = "diskover_api/static/images/locations/"
 SERVED_IMAGES_PATH = "static/images/locations/"
 
 # input imageFiles list and writes them to static/images directory
