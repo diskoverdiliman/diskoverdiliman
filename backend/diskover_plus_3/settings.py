@@ -16,6 +16,7 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+PROJ_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-zw1jikz-wugwkv7^@bmy^&wg1--w-fj^jkwmkqp6qv5zb7@u9v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'diskover.up.edu.ph',
@@ -69,15 +70,19 @@ CORS_ALLOW_CREDENTIALS = False
 
 # Specify allowed origins (for production)
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8080'
+    'http://localhost:8080',
+    "http://127.0.0.1:8080",
+    "http://localhost:5173",  # Allow Vue app to communicate
+    "http://127.0.0.1:5173",
 ]
 
 ROOT_URLCONF = 'diskover_plus_3.urls'
 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'dist')],
+        'DIRS': [os.path.join(PROJ_DIR, 'frontend/diskover_vue3/dist')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -142,12 +147,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'dist'),
-    os.path.join(BASE_DIR, 'diskover_api/static'),
-)
+STATICFILES_DIRS = [
+    os.path.join(PROJ_DIR, 'frontend/diskover_vue3/dist/assets'),
+]
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(PROJ_DIR, 'static')
 STATIC_URL = '/static/'
 
 # Default primary key field type
