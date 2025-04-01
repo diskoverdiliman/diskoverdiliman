@@ -1,7 +1,7 @@
 <template>
   <v-container class="grey lighten-4">
     <v-layout class="py-4" column>
-      <v-flex xs12>
+      <v-col cols="12">
         <div class="title">Search an image to delete via its location</div>
         <div class="maroon-chips">
           <v-autocomplete
@@ -18,29 +18,31 @@
             :menu-props="{zIndex:'1001'}"
           />
         </div>
-      </v-flex>
+      </v-col>
       {{ selectedDeleteImageId }}
-      <v-flex xs12>
+      <v-col cols="12">
         <v-radio-group v-model="selectedDeleteImageId">
           <div v-for="image in locationSearchImages" :key="image.id">
             <v-radio :value="image.id" color="primary">
               <div slot="label">
                 <div>{{ image.img_url }}</div>
-                <v-img :src="getFullImageUrl(image.img_url)" height="150px" contain/>
+                <v-img :src="getFullImageUrl(image.img_url)" height="150px" contain />
               </div>
             </v-radio>
           </div>
         </v-radio-group>
-      </v-flex>
+      </v-col>
       <v-btn color="error" @click="handleDeleteClick()" :disabled="isSubmitting">Delete Image</v-btn>
       <v-btn @click="handleCancelClick()">Cancel</v-btn>
     </v-layout>
     <CenterModal :isVisible="isDeleteConfirmVisible" @close="isDeleteConfirmVisible=false">
       <v-layout column align-content-space-around class="red lighten-4 text-xs-center">
-        <v-flex class="headline py-3">Are you sure you want to delete {{selectedDeleteImageName}}?</v-flex>
-        <v-flex class="title pt-2">
-          <v-img :src="getFullImageUrl(selectedDeleteImageName)" height="200px" contain/>
-        </v-flex>
+        <v-col cols="12" class="headline py-3">
+          Are you sure you want to delete {{ selectedDeleteImageName }}?
+        </v-col>
+        <v-col cols="12" class="title pt-2">
+          <v-img :src="getFullImageUrl(selectedDeleteImageName)" height="200px" contain />
+        </v-col>
         <v-layout justify-center>
           <v-btn color="blue" dark @click="handleDeleteConfirm">Yes</v-btn>
           <v-btn color="red" dark @click="isDeleteConfirmVisible=false">No</v-btn>
@@ -52,9 +54,13 @@
 
 <script>
 import AdminVerifierMixin from "@/mixins/AdminVerifierMixin"
+import CenterModal from "@/components/ui/CenterModal.vue"; // Adjust the path as needed
 
 export default {
   mixins: [AdminVerifierMixin],
+  components: {
+    CenterModal, // Register CenterModal
+  },
   mounted() {
     this.handleRouteChange();
   },

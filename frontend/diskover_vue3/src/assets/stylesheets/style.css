@@ -49,6 +49,10 @@
 color: white !important;
 }
 
+.text-black {
+color: black !important;
+}
+
 html, body {
   margin: 0;
   padding: 0;

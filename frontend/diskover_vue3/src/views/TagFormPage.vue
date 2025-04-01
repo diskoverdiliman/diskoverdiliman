@@ -1,29 +1,29 @@
 <template>
   <v-container grid-list-lg class="grey lighten-4">
     <v-card>
-        <v-card-title class="primary">
-            <h1 v-if="mode == 'create'" class="text-white">Add Tag</h1>
-            <h1 v-else class="text-white">Edit Tag</h1>
-        </v-card-title>
-        <v-container>
-            <v-layout column>
-            <v-flex xs12>
-                <label>Name</label>
-                <v-text-field
-                placeholder="Name of the tag"
-                color="black"
-                v-model="name"
-                :readonly="isReadOnly"
-                :error="isReadOnly"
-                />
-            </v-flex>
+      <v-card-title class="primary">
+        <h1 v-if="mode == 'create'" class="text-white">Add Tag</h1>
+        <h1 v-else class="text-white">Edit Tag</h1>
+      </v-card-title>
+      <v-container>
+        <v-layout column>
+          <v-col cols="12">
+            <label>Name</label>
+            <v-text-field
+              placeholder="Name of the tag"
+              color="black"
+              v-model="name"
+              :readonly="isReadOnly"
+              :error="isReadOnly"
+            />
+          </v-col>
         </v-layout>
         <v-card-actions>
-            <v-btn class="primary text-white" v-on:click="onSubmitClick" :disabled="isSubmitting">Submit</v-btn>
-            <v-btn v-if="mode != 'create'" class="primary text-white" v-on:click="onDeleteClick" :disabled="isSubmitting">Delete</v-btn>
-            <v-btn class="green text-white" @click="onCancelClick">Cancel</v-btn>
+          <v-btn color="blue" class="primary text-white" v-on:click="onSubmitClick" :disabled="isSubmitting">Submit</v-btn>
+          <v-btn color="red" v-if="mode != 'create'" class="primary text-white" v-on:click="onDeleteClick" :disabled="isSubmitting">Delete</v-btn>
+          <v-btn class="green text-black" @click="onCancelClick">Cancel</v-btn>
         </v-card-actions>
-        </v-container>
+      </v-container>
     </v-card>
   </v-container>
 </template>
@@ -35,7 +35,8 @@ export default{
     data(){
         return{
             name: null,
-            isSubmitting: false
+            isSubmitting: false,
+            isReadOnly: false, // Define isReadOnly here
         }
     },
     computed:{

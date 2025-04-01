@@ -1,25 +1,24 @@
 <template>
-  <!-- Used to handle Web page requests that do not exist -->
   <v-container class="grey lighten-4">
     <v-layout class="py-4" column>
-      <v-flex xs12 class="display-1">
+      <v-col cols="12" class="display-1">
         <div class="mb-4">
           Update images binded to
           <span class="display-2 primary--text">{{ locationName }}</span>
         </div>
-      </v-flex>
-      <v-flex xs12>
+      </v-col>
+      <v-col cols="12">
         <div class="title">Images currently binded to location</div>
         <div v-for="image in bindedImages" :key="image.id">
           <v-checkbox v-model="selectedBindedImages" :value="image.id" color="primary">
             <div slot="label">
               <div>{{ image.img_url }}</div>
-              <v-img :src="getFullImageUrl(image.img_url)" height="150px" contain/>
+              <v-img :src="getFullImageUrl(image.img_url)" height="150px" contain />
             </div>
           </v-checkbox>
         </div>
-      </v-flex>
-      <v-flex xs12>
+      </v-col>
+      <v-col cols="12">
         <div class="title">Add images binded to other locations</div>
         <div class="maroon-chips">
           <v-autocomplete
@@ -33,24 +32,24 @@
             clearable
             label="Location Search"
             placeholder="Search images from a location"
-            :menu-props="{zIndex:'1001'}"
+            :menu-props="{ zIndex: '1001' }"
           />
         </div>
-      </v-flex>
-      <v-flex xs12>
+      </v-col>
+      <v-col cols="12">
         <div v-for="image in locationSearchImages" :key="image.id">
           <v-checkbox v-model="selectedSearchImages" :value="image.id" color="primary">
             <div slot="label">
               <div>{{ image.img_url }}</div>
-              <v-img :src="getFullImageUrl(image.img_url)" height="150px" contain/>
+              <v-img :src="getFullImageUrl(image.img_url)" height="150px" contain />
             </div>
           </v-checkbox>
         </div>
-      </v-flex>
-      <v-flex xs12>
+      </v-col>
+      <v-col cols="12">
         <div class="title">Upload images</div>
-        <input type="file" ref="imageFiles" multiple @input="handleImageUploads">
-      </v-flex>
+        <input type="file" ref="imageFiles" multiple @input="handleImageUploads" />
+      </v-col>
       <v-btn color="success" @click="handleUpdateClick()" :disabled="isSubmitting">Update location images</v-btn>
       <v-btn @click="handleCancelClick()">Cancel</v-btn>
     </v-layout>

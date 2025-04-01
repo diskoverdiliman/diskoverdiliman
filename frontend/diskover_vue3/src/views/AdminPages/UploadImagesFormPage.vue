@@ -1,19 +1,19 @@
 <template>
   <v-container class="grey lighten-4">
     <v-layout class="py-3" column>
-      <v-flex>
+      <v-col>
         <div class="headline mb-3">Current unbinded images</div>
         <v-layout column align-start>
-          <v-flex v-for="image in unbindedImages" :key="image.id">
+          <v-col v-for="image in unbindedImages" :key="image.id">
             <div class="title">{{ image.img_url }}</div>
-            <v-img :src="getFullImageUrl(image.img_url)" height="150px" contain/>
-          </v-flex>
+            <v-img :src="getFullImageUrl(image.img_url)" height="150px" contain />
+          </v-col>
         </v-layout>
-      </v-flex>
-      <v-flex xs12 class="mt-5">
+      </v-col>
+      <v-col cols="12" class="mt-5">
         <div class="title">Upload unbinded images</div>
-        <input type="file" ref="imageFiles" multiple @input="handleImageUploads">
-      </v-flex>
+        <input type="file" ref="imageFiles" multiple @input="handleImageUploads" />
+      </v-col>
       <v-btn color="success" @click="handleUploadClick()" :disabled="isSubmitting">Upload unbinded images</v-btn>
       <v-btn @click="handleCancelClick()">Cancel</v-btn>
     </v-layout>
