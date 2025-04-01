@@ -5,19 +5,14 @@ const defaultStartCoords = [14.6549, 121.0647]; // Example coordinates for UP Di
 
 export const useMapStore = defineStore('map', {
   state: () => ({
-    isGpsPermissionToMark: localStorage.getItem('gps') === "true",
-    originCoords: defaultStartCoords,
+    isGpsPermissionToMark: false,
+    originCoords: [0, 0],
     sideDrawer: false,
     isSideDrawerVisible: false,
   }),
   actions: {
-    setGpsPermissionToMark(gps) {
-      this.isGpsPermissionToMark = gps;
-      if (gps) {
-        localStorage.setItem('gps', gps);
-      } else {
-        localStorage.removeItem('gps');
-      }
+    setGpsPermissionToMark(value) {
+      this.isGpsPermissionToMark = value;
     },
     setOriginCoords(coords) {
       this.originCoords = coords;

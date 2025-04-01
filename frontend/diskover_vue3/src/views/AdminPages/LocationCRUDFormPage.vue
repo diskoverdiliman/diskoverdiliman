@@ -1,7 +1,7 @@
 <template>
-  <v-container grid-list-lg class="grey lighten-4">
-    <v-layout column>
-      <v-flex xs12>
+  <v-container class="grey lighten-4">
+    <v-row>
+      <v-col cols="12">
         <label>Name</label>
         <v-text-field
           placeholder="Name"
@@ -10,20 +10,20 @@
           :readonly="isReadOnly"
           :error="isReadOnly"
         />
-      </v-flex>
-      <v-flex xs12>
+      </v-col>
+      <v-col cols="12">
         <label>Category</label>
         <v-select
           :items="categoryItems"
           placeholder="Category"
           color="black"
-          :menu-props="{zIndex:'1001'}"
+          :menu-props="{ zIndex: '1001' }"
           v-model="categoryId"
           :readonly="isReadOnly"
           :error="isReadOnly"
         />
-      </v-flex>
-      <v-flex xs12>
+      </v-col>
+      <v-col cols="12">
         <div class="maroon-chips">
           <label>Tags</label>
           <v-select
@@ -32,15 +32,15 @@
             color="black"
             chips
             deletable-chips
-            :menu-props="{zIndex:'1001'}"
+            :menu-props="{ zIndex: '1001' }"
             multiple
             v-model="tagIds"
             :readonly="isReadOnly"
             :error="isReadOnly"
           />
         </div>
-      </v-flex>
-      <v-flex xs12>
+      </v-col>
+      <v-col cols="12">
         <label>Description</label>
         <v-textarea
           v-model="description"
@@ -50,27 +50,32 @@
           :readonly="isReadOnly"
           :error="isReadOnly"
         />
-      </v-flex>
+      </v-col>
       <FormMapView
         height="300px"
         @click="handleMapClick"
         :defaultFormCoords="defaultCoords"
         :readonly="isReadOnly"
       />
-      <v-flex xs12>
-        <v-layout justify-space-between align-end class="pl-2">
+      <v-col cols="12">
+        <v-row justify="space-between" align="end" class="pl-2">
           <label>LatLng (Click on the map to set):</label>
           <v-btn @click="resetMapView">Reset Map</v-btn>
-        </v-layout>
-        <v-text-field label="Coordinates" readonly :error="isReadOnly" :value="coords"/>
-      </v-flex>
-      <v-flex xs12>
+        </v-row>
+        <v-text-field
+          label="Coordinates"
+          readonly
+          :error="isReadOnly"
+          :value="coords"
+        />
+      </v-col>
+      <v-col cols="12">
         <div class="maroon-chips">
           <v-autocomplete
             v-model="subareaIds"
             :items="subareaItems"
             :search-input.sync="subareaSearch"
-            @input="subareaSearch=null"
+            @input="subareaSearch = null"
             multiple
             cache-items
             hide-selected
@@ -81,45 +86,78 @@
             label="Subareas"
             placeholder="Search a subarea"
             color="blue"
-            :menu-props="{zIndex:'1001'}"
+            :menu-props="{ zIndex: '1001' }"
             :readonly="isReadOnly"
             :error="isReadOnly"
           />
         </div>
-      </v-flex>
-      <v-flex x12>
+      </v-col>
+      <v-col cols="12">
         <div class="maroon-chips">
           <v-autocomplete
             v-model="mainBuildingId"
             :items="mainBuildingItems"
             :search-input.sync="mainBuildingSearch"
-            @input="mainBuildingSearch=null"
+            @input="mainBuildingSearch = null"
             cache-items
             hide-selected
             auto-select-first
             clearable
-            label="Main Buidling"
+            label="Main Building"
             placeholder="Search a main building"
             color="blue"
-            :menu-props="{zIndex:'1001'}"
+            :menu-props="{ zIndex: '1001' }"
             :readonly="isReadOnly"
             :error="isReadOnly"
           />
         </div>
-      </v-flex>
-      <v-btn v-if="mode=='create'" color="success" @click="handleCreateClick()" :disabled="isSubmitting">Create Location</v-btn>
-      <v-btn v-else-if="mode=='update'" color="success" @click="handleUpdateClick()" :disabled="isSubmitting">Update Location</v-btn>
-      <v-btn v-else color="error" @click="handleDeleteClick()" :disabled="isSubmitting">Delete Location</v-btn>
-      <v-btn @click="handleCancelClick()">Cancel</v-btn>
-    </v-layout>
+      </v-col>
+      <v-col cols="12">
+        <v-btn
+          v-if="mode == 'create'"
+          color="success"
+          @click="handleCreateClick()"
+          :disabled="isSubmitting"
+        >
+          Create Location
+        </v-btn>
+        <v-btn
+          v-else-if="mode == 'update'"
+          color="success"
+          @click="handleUpdateClick()"
+          :disabled="isSubmitting"
+        >
+          Update Location
+        </v-btn>
+        <v-btn
+          v-else
+          color="error"
+          @click="handleDeleteClick()"
+          :disabled="isSubmitting"
+        >
+          Delete Location
+        </v-btn>
+        <v-btn @click="handleCancelClick()">Cancel</v-btn>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script>
-import AdminVerifierMixin from "@/mixins/AdminVerifierMixin"
+import { inject } from "vue";
+import AdminVerifierMixin from "@/mixins/AdminVerifierMixin";
+import { useMainStore } from "@/stores/index";
+import FormMapView from "@/components/map/FormMapView.vue";
 
 export default {
   mixins: [AdminVerifierMixin],
+  components: {
+    FormMapView,
+  },
+  setup() {
+    const eventBus = inject("eventBus"); // Inject the event bus
+    return { eventBus };
+  },
   mounted() {
     this.handleRouteChange();
     this.coords = this.defaultCoords;
@@ -138,34 +176,36 @@ export default {
       mainBuildingId: 0,
       mainBuildingSearch: "",
       mainBuildingItems: [],
-      isSubmitting: false
+      isSubmitting: false,
     };
   },
   computed: {
     categoryItems() {
-      return this.$store.state.categories.map(cat => ({
+      const mainStore = useMainStore(); // Access the main store
+      return mainStore.categories.map((cat) => ({
         text: cat.name,
-        value: cat.id
+        value: cat.id,
       }));
     },
     tagItems() {
-      return this.$store.state.tags.map(tag => ({
+      const mainStore = useMainStore(); // Access the main store
+      return mainStore.tags.map((tag) => ({
         text: tag.name,
-        value: tag.id
+        value: tag.id,
       }));
     },
     isReadOnly() {
-      return this.mode == "delete" ? true : false;
+      return this.mode == "delete";
     },
     id() {
       return this.$route.params.id;
     },
     mode() {
       return this.$route.params.mode;
-    }
+    },
   },
   watch: {
-    $route(newRoute, oldRoute) {
+    $route() {
       this.handleRouteChange();
     },
     subareaSearch(newSearch) {
@@ -173,11 +213,11 @@ export default {
     },
     mainBuildingSearch(newSearch) {
       this.apiGetMainBuildingItems(newSearch);
-    }
+    },
   },
   methods: {
     resetMapView() {
-      this.$eventBus.$emit("reset-map-view", 15);
+      this.eventBus.emit("reset-map-view", 15); // Emit the event
     },
     handleMapClick(newCoords) {
       this.coords = newCoords;
@@ -192,12 +232,8 @@ export default {
     getUpdateData(id) {
       this.$http
         .get(`/admin/locations/${id}`)
-        .then(response => {
-          console.log(
-            "successful retrieved location update/delete data from API: ",
-            response.data
-          );
-          let {
+        .then((response) => {
+          const {
             name,
             category,
             tags,
@@ -205,7 +241,7 @@ export default {
             lat,
             lng,
             subareas,
-            main_building
+            main_building,
           } = response.data;
           this.name = name;
           this.categoryId = category;
@@ -215,88 +251,60 @@ export default {
           this.coords = [lat, lng];
           this.subareaIds = subareas;
           this.mainBuildingId = main_building;
-          console.log(main_building);
         })
-        .catch(error => {
-          console.log(
-            "error retrieving location update/delete data from API: ",
-            error
-          );
+        .catch((error) => {
+          console.error("Error retrieving location data:", error);
         });
     },
     apiGetSubareaItems(searchValue) {
       this.$http
         .get(`/admin/locations`, {
-          params: {
-            search: searchValue
-            // category_ids: [2, 3, 4, 5, 6, 7, 8]
-          },
-          paramsSerializer: params => {
-            return this.$qs.stringify(params, { indices: false });
-          }
+          params: { search: searchValue },
         })
-        .then(response => {
-          this.subareaItems = response.data.map(sub => {
-            return {
-              text: sub.name,
-              value: sub.id
-            };
-          });
+        .then((response) => {
+          this.subareaItems = response.data.map((sub) => ({
+            text: sub.name,
+            value: sub.id,
+          }));
         })
-        // alert an error if unsuccessful GET
-        .catch(error => {
-          alert("error receiving queried results from API: ");
-          console.log(error);
-        })
-        .finally(() => (this.isLoading = false));
+        .catch((error) => {
+          console.error("Error fetching subarea items:", error);
+        });
     },
     apiGetMainBuildingItems(searchValue) {
       this.$http
         .get(`/admin/locations`, {
-          params: {
-            search: searchValue
-            // category_ids: [1]
-          },
-          paramsSerializer: params => {
-            return this.$qs.stringify(params, { indices: false });
-          }
+          params: { search: searchValue },
         })
-        .then(response => {
-          this.mainBuildingItems = response.data.map(building => {
-            return {
-              text: building.name,
-              value: building.id
-            };
-          });
+        .then((response) => {
+          this.mainBuildingItems = response.data.map((building) => ({
+            text: building.name,
+            value: building.id,
+          }));
         })
-        // alert an error if unsuccessful GET
-        .catch(error => {
-          alert("error receiving queried results from API: ");
-          console.log(error);
-        })
-        .finally(() => (this.isLoading = false));
+        .catch((error) => {
+          console.error("Error fetching main building items:", error);
+        });
     },
-
     handleCancelClick() {
       this.$router.go(-1);
     },
     handleDeleteClick() {
-      this.isSubmitting = true
+      this.isSubmitting = true;
       this.$http
         .delete(`/admin/locations/${this.id}/`)
-        .then(response => {
-          console.log("successfully deleted location from API", response);
+        .then(() => {
           this.$router.push(`/map/search`);
         })
-        .catch(function(error) {
-          alert("error deleting location to API", error);
+        .catch((error) => {
+          console.error("Error deleting location:", error);
         })
         .finally(() => {
-          this.isSubmitting = false
-        });;
+          this.isSubmitting = false;
+        });
     },
     handleCreateClick() {
-      this.isSubmitting = true
+      this.isSubmitting = true;
       this.$http
         .post(`/admin/locations/`, {
           name: this.name,
@@ -306,20 +314,20 @@ export default {
           lat: this.coords[0],
           lng: this.coords[1],
           subareas: this.subareaIds,
-          main_building: this.mainBuildingId
+          main_building: this.mainBuildingId,
         })
-        .then(response => {
-          console.log("successfully posted new location to API", response);
+        .then((response) => {
           this.$router.push(`/map/details/${response.data.id}`);
         })
-        .catch(function(error) {
-          alert("error posting new location to API", error);
+        .catch((error) => {
+          console.error("Error creating location:", error);
         })
         .finally(() => {
-          this.isSubmitting = false
+          this.isSubmitting = false;
         });
     },
     handleUpdateClick() {
+      this.isSubmitting = true;
       this.$http
         .patch(`/admin/locations/${this.id}/`, {
           name: this.name,
@@ -329,20 +337,19 @@ export default {
           lat: this.coords[0],
           lng: this.coords[1],
           subareas: this.subareaIds,
-          main_building: this.mainBuildingId
+          main_building: this.mainBuildingId,
         })
-        .then(response => {
-          console.log("successfully patched updated location to API", response);
+        .then(() => {
           this.$router.push(`/map/details/${this.id}`);
         })
-        .catch(function(error) {
-          alert("error patching updated location to API", error);
+        .catch((error) => {
+          console.error("Error updating location:", error);
         })
         .finally(() => {
-          this.isSubmitting = false
-        });;
-    }
-  }
+          this.isSubmitting = false;
+        });
+    },
+  },
 };
 </script>
 

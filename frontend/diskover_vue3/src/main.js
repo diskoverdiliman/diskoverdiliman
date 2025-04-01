@@ -9,7 +9,7 @@ import * as directives from 'vuetify/directives';
 import router from '@/router/index.js';
 import { createPinia } from 'pinia';
 import { setupVuePrototypes } from '@/vuePrototypes.js';
-import eventBus from '@/eventBus'; // Import the event bus
+import { eventBus } from '@/eventBus'; // Use named import
 import axios from './plugins/axios';
 import axiosPlugin from './plugins/axios';
 

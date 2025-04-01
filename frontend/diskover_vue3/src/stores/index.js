@@ -8,16 +8,16 @@ import axios from 'axios';
 
 export const useMainStore = defineStore('main', {
   state: () => ({
-    categories: [],
-    tags: [],
+    categories: [], // Array to store category data
+    tags: [],       // Array to store tag data
     isSideDrawerVisible: true,
   }),
   actions: {
-    setCategories(newCategories) {
-      this.categories = newCategories;
+    setCategories(categories) {
+      this.categories = categories;
     },
-    setTags(newTags) {
-      this.tags = newTags;
+    setTags(tags) {
+      this.tags = tags;
     },
     setSideDrawer(isVisible) {
       this.isSideDrawerVisible = isVisible;

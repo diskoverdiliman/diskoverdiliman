@@ -4,20 +4,23 @@
       <v-card-text>
         <div v-if="!isLoggedIn" class="d-flex flex-column align-center">
           <h1 class="mb-4 font-weight-light">Log in to your superuser account</h1>
-          <v-text-field
-            v-model="username"
-            label="Username"
-            :error-messages="invalidLogInAttempt ? 'username does not match with password' : null"
-            class="mb-4 w-100"
-          />
-          <v-text-field
-            v-model="password"
-            type="password"
-            label="Password"
-            :error-messages="invalidLogInAttempt ? 'password does not match with username' : null"
-            class="mb-4 w-100"
-          />
-          <v-btn color="primary" @click="attemptLogIn" class="text-white">Log In</v-btn>
+          <!-- Wrap the login fields and button in a form -->
+          <form @submit.prevent="attemptLogIn" class="w-100">
+            <v-text-field
+              v-model="username"
+              label="Username"
+              :error-messages="invalidLogInAttempt ? 'username does not match with password' : null"
+              class="mb-4 w-100"
+            />
+            <v-text-field
+              v-model="password"
+              type="password"
+              label="Password"
+              :error-messages="invalidLogInAttempt ? 'password does not match with username' : null"
+              class="mb-4 w-100"
+            />
+            <v-btn type="submit" color="primary" class="text-white w-100">Log In</v-btn>
+          </form>
         </div>
         <div v-else class="d-flex flex-column align-center">
           <div class="mb-4">
@@ -81,10 +84,6 @@ const loggedInUser = computed(() => authStore.user);
 .text-white {
   color: white !important;
 }
-
-/* .v-btn {
-  background-color: blue !important;
-} */
 
 .v-btn:hover {
   filter: brightness(1.2);

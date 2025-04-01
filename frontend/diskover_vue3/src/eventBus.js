@@ -1,5 +1,16 @@
-import mitt from 'mitt';
+import { reactive } from "vue";
 
-const eventBus = mitt();
-
-export default eventBus;
+export const eventBus = reactive({
+  events: {},
+  on(event, callback) {
+    if (!this.events[event]) {
+      this.events[event] = [];
+    }
+    this.events[event].push(callback);
+  },
+  emit(event, ...args) {
+    if (this.events[event]) {
+      this.events[event].forEach((callback) => callback(...args));
+    }
+  },
+});
