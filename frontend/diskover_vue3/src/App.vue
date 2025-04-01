@@ -18,6 +18,7 @@ import { useMainStore } from '@/stores/index';
 import NavBar from '@/components/ui/NavBar.vue';
 import Background from '@/components/ui/Background.vue';
 import GpsMapHidden from '@/components/map/GpsMapHidden.vue';
+import axios from 'axios';
 
 const authStore = useAuthStore();
 const mainStore = useMainStore();
@@ -28,8 +29,8 @@ onMounted(() => {
     .then(() => {
       if (authStore.isLoggedIn) {
         return Promise.all([
-          mainStore.$http.get("/categorys"),
-          mainStore.$http.get("/tags")
+          axios.get("/categorys"), // Use Axios directly
+          axios.get("/tags"),      // Use Axios directly
         ]);
       }
     })

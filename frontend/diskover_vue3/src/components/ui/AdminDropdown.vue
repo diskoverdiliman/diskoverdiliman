@@ -147,7 +147,8 @@ const loggedInUser = computed(() => authStore.user);
 const menuVisible = ref(false);
 
 const logout = () => {
-  authStore.logout();
+  authStore.logOut(); // Call the logOut action from the auth store
+  window.location.href = '/login'; // Redirect to the login page (optional)
 };
 </script>
 

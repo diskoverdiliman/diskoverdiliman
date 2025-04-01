@@ -66,6 +66,7 @@ const authStore = useAuthStore();
 const mapStore = useMapStore(); // Use the map store
 const eventBus = inject('eventBus'); // Inject the eventBus
 
+const isLoggedIn = computed(() => authStore.isLoggedIn);
 const loggedInUser = computed(() => authStore.user);
 
 const showFullMap = () => {

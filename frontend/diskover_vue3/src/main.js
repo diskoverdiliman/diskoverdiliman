@@ -11,6 +11,7 @@ import { createPinia } from 'pinia';
 import { setupVuePrototypes } from '@/vuePrototypes.js';
 import eventBus from '@/eventBus'; // Import the event bus
 import axios from './plugins/axios';
+import axiosPlugin from './plugins/axios';
 
 const vuetify = createVuetify({
   components,

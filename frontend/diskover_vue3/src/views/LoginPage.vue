@@ -20,11 +20,11 @@
           <v-btn color="primary" @click="attemptLogIn" class="text-white">Log In</v-btn>
         </div>
         <div v-else class="d-flex flex-column align-center">
-          <div class="text-white mb-4">
+          <div class="mb-4">
             Currently logged in as 
             <span class="primary--text font-weight-bold">{{ loggedInUser }}</span>
           </div>
-          <div class="text-white mb-4">Logout?</div>
+          <div class="mb-4">Logout?</div>
           <div class="d-flex">
             <v-btn color="blue" @click="logOut" class="text-white mr-2">Yes</v-btn>
             <v-btn color="red" @click="backPage" class="text-white">No</v-btn>
@@ -44,8 +44,14 @@ const authStore = useAuthStore();
 const username = ref('');
 const password = ref('');
 
-const attemptLogIn = () => {
-  authStore.logIn({ username: username.value, password: password.value });
+const attemptLogIn = async () => {
+  try {
+    await authStore.logIn({ username: username.value, password: password.value });
+    // Redirect to the home page after successful login
+    window.location.href = '/';
+  } catch (error) {
+    console.error('Login failed:', error);
+  }
 };
 
 const logOut = () => {

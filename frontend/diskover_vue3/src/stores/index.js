@@ -4,6 +4,7 @@ import { useAuthStore } from './auth';
 import { useDetailsStore } from './details';
 import { useSearchStore } from './search';
 import { useMapStore } from './map';
+import axios from 'axios';
 
 export const useMainStore = defineStore('main', {
   state: () => ({
@@ -28,3 +29,10 @@ export const useMainStore = defineStore('main', {
     hasCategoriesLoaded: (state) => state.categories && state.categories.length !== 0
   }
 });
+
+// Ensure Axios is globally available
+export default {
+  install: (app) => {
+    app.config.globalProperties.$http = axios;
+  },
+};
