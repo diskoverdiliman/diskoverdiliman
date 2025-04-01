@@ -10,6 +10,7 @@ import router from '@/router/index.js';
 import { createPinia } from 'pinia';
 import { setupVuePrototypes } from '@/vuePrototypes.js';
 import eventBus from '@/eventBus'; // Import the event bus
+import axios from './plugins/axios';
 
 const vuetify = createVuetify({
   components,
@@ -34,6 +35,7 @@ app.provide('eventBus', eventBus); // Provide the event bus
 app.use(pinia);
 app.use(router);
 app.use(vuetify);
+app.use(axios);
 
 // Setup global properties and event bus
 setupVuePrototypes(app);

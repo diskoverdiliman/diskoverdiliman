@@ -41,7 +41,8 @@ export const useAuthStore = defineStore('auth', {
       });
     },
     logIn({ username, password }) {
-      axios.post(`/api-token-auth/`, {
+      console.log("Axios Base URL:", axios.defaults.baseURL);
+      axios.post(`/token/`, {
         username: username,
         password: password
       }).then(response => {

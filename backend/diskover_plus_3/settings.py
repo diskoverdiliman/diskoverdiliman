@@ -50,6 +50,10 @@ INSTALLED_APPS = [
     'corsheaders',
 ]
 
+if DEBUG:
+    import mimetypes
+    mimetypes.add_type("text/css", ".css", True)
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -70,9 +74,9 @@ CORS_ALLOW_CREDENTIALS = False
 
 # Specify allowed origins (for production)
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8080',
+    "http://localhost:8080",
     "http://127.0.0.1:8080",
-    "http://localhost:5173",  # Allow Vue app to communicate
+    "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
 
@@ -82,7 +86,7 @@ ROOT_URLCONF = 'diskover_plus_3.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(PROJ_DIR, 'frontend/diskover_vue3/dist')],
+        'DIRS': [os.path.join(PROJ_DIR, 'static')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -148,7 +152,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATICFILES_DIRS = [
-    os.path.join(PROJ_DIR, 'frontend/diskover_vue3/dist/assets'),
+    os.path.join(PROJ_DIR, 'frontend/diskover_vue3/dist'),
 ]
 
 STATIC_ROOT = os.path.join(PROJ_DIR, 'static')
