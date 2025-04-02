@@ -48,7 +48,6 @@ class Location(models.Model):
             cursor.execute(
                 "ALTER SEQUENCE location_id_seq RESTART WITH %s", [reset_value])
 
-
 class Image(models.Model):
     img_url = models.CharField(max_length=260, blank=False)
     location = models.ManyToManyField(Location, related_name='images')

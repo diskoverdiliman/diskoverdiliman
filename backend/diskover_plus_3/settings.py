@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+from datetime import timedelta
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -48,6 +49,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'corsheaders',
+    'rest_framework_simplejwt.token_blacklist',
+    'rest_framework_simplejwt',
 ]
 
 if DEBUG:
@@ -162,3 +165,22 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# JWT settings
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # Access token expires after 15 minutes
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),     # Refresh token expires after 1 day
+    'ROTATE_REFRESH_TOKENS': True,                  # Issue a new refresh token on refresh
+    'BLACKLIST_AFTER_ROTATION': True,               # Blacklist old refresh tokens
+    'AUTH_HEADER_TYPES': ('Bearer',),               # Use "Bearer" in Authorization header
+}
+
+# REST framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
