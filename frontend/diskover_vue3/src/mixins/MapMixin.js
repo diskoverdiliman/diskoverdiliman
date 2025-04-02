@@ -1,4 +1,3 @@
-
 import L from 'leaflet';
 import originIconUrl from '@/assets/markers/originIcon.png';
 import shadowIconUrl from '@/assets/markers/shadow.png';
@@ -48,9 +47,14 @@ export default {
     // places control buttons in default positions and adds a feature where coordinates are logged to console
     // when clicking anywhere on map
     initMap() {
+      console.log("Initializing map...");
+      console.log("Default coordinates:", this.defaultCoords);
+
       this.map = L.map(this.mapId, {
         zoomControl: false,
       }).setView(this.defaultCoords, 15);
+
+      console.log("Map instance created:", this.map);
 
       // add tilelayer with valid accessToken that must be acquired from https://account.mapbox.com/access-tokens/
       L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
@@ -63,6 +67,8 @@ export default {
         id: 'mapbox.streets',
         accessToken: 'pk.eyJ1IjoiZGlza292ZXJwbHVzcGx1cyIsImEiOiJjanRucm1kaHQwMGZqNGFtcjNkbWwyODl3In0.AQ4D4e0LYZRUNHj6t4NPhw'
       }).addTo(this.map);
+
+      console.log("Tile layer added to map.");
 
       // log coordinates to console on click
       this.map.on("click", e => {
