@@ -13,4 +13,9 @@ export const eventBus = reactive({
       this.events[event].forEach((callback) => callback(...args));
     }
   },
+  off(event, callback) {
+    if (this.events[event]) {
+      this.events[event] = this.events[event].filter((cb) => cb !== callback);
+    }
+  },
 });

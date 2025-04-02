@@ -83,6 +83,14 @@ export default {
     } else {
       console.error("EventBus is not available");
     }
+
+    // Load GPS location from localStorage
+    const savedGpsLocation = JSON.parse(localStorage.getItem("gpsLocation"));
+    if (savedGpsLocation) {
+      const mapStore = useMapStore(); // Access the Pinia store
+      mapStore.setOriginCoords(savedGpsLocation); // Restore the GPS location
+      console.log("GPS location restored from localStorage:", savedGpsLocation);
+    }
   },
   methods: {
     setBottomModal(value) {
@@ -126,13 +134,20 @@ export default {
       this.hasPermissionToMark = true;
       const mapStore = useMapStore(); // Access the Pinia store
       mapStore.setOriginCoords(this.pendingCoords); // Call the action
-      console.log("Permission to mark granted");
+
+      // Save the GPS location to localStorage
+      localStorage.setItem("gpsLocation", JSON.stringify(this.pendingCoords));
+      console.log("Permission to mark granted, GPS location saved:", this.pendingCoords);
     },
     forfeitPermissionToMark() {
       this.setBottomModal(false);
       this.hasPermissionToMark = false;
       const mapStore = useMapStore(); // Access the Pinia store
       mapStore.setOriginCoords(this.$defaultStartCoords); // Call the action
+
+      // Save the default GPS location to localStorage
+      localStorage.setItem("gpsLocation", JSON.stringify(this.$defaultStartCoords));
+      console.log("Permission to mark forfeited, GPS location reset to default:", this.$defaultStartCoords);
     },
   },
 };
