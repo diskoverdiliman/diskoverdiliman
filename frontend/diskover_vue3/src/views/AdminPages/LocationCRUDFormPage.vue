@@ -1,122 +1,129 @@
 <template>
-  <v-container grid-list-lg class="grey lighten-4">
-    <v-row>
-      <v-col cols="12">
-        <label>Name</label>
-        <v-text-field
-          placeholder="Name"
-          color="black"
-          v-model="name"
-          :readonly="isReadOnly"
-          :error="isReadOnly"
-        />
-      </v-col>
-      <v-col cols="12">
-        <label>Category</label>
-        <v-select
-          :items="categoryItems"
-          placeholder="Category"
-          color="black"
-          :menu-props="{zIndex:'1001'}"
-          v-model="categoryId"
-          :readonly="isReadOnly"
-          :error="isReadOnly"
-        />
-      </v-col>
-      <v-col cols="12">
-        <div class="maroon-chips">
-          <label>Tags</label>
-          <v-select
-            :items="tagItems"
-            placeholder="Tags"
-            color="black"
-            chips
-            deletable-chips
-            :menu-props="{zIndex:'1001'}"
-            multiple
-            v-model="tagIds"
-            :readonly="isReadOnly"
-            :error="isReadOnly"
-          />
+  <v-container class="grey lighten-4 fill-height d-flex align-center justify-center">
+    <v-row justify="center">
+      <v-col cols="12" md="10" lg="8"> <!-- Adjusted width -->
+        <!-- Form Container with White Background -->
+        <div class="form-container">
+          <v-row>
+            <v-col cols="12">
+              <label>Name</label>
+              <v-text-field
+                placeholder="Name"
+                color="black"
+                v-model="name"
+                :readonly="isReadOnly"
+                :error="isReadOnly"
+              />
+            </v-col>
+            <v-col cols="12">
+              <label>Category</label>
+              <v-select
+                :items="categoryItems"
+                placeholder="Category"
+                color="black"
+                :menu-props="{zIndex:'1001'}"
+                v-model="categoryId"
+                :readonly="isReadOnly"
+                :error="isReadOnly"
+              />
+            </v-col>
+            <v-col cols="12">
+              <div class="maroon-chips">
+                <label>Tags</label>
+                <v-select
+                  :items="tagItems"
+                  placeholder="Tags"
+                  color="black"
+                  chips
+                  deletable-chips
+                  :menu-props="{zIndex:'1001'}"
+                  multiple
+                  v-model="tagIds"
+                  :readonly="isReadOnly"
+                  :error="isReadOnly"
+                />
+              </div>
+            </v-col>
+            <v-col cols="12">
+              <label>Description</label>
+              <v-textarea
+                v-model="description"
+                color="black"
+                auto-grow
+                placeholder="Description"
+                :readonly="isReadOnly"
+                :error="isReadOnly"
+              />
+            </v-col>
+            <v-col cols="12">
+              <FormMapView
+                height="300px"
+                @click="handleMapClick"
+                :defaultFormCoords="defaultCoords"
+                :readonly="isReadOnly"
+              />
+              <v-btn @click="resetMapView" class="mt-2">Reset Map</v-btn>
+            </v-col>
+            <v-col cols="12">
+              <label>LatLng (Click on the map to set):</label>
+              <v-text-field
+                label="Coordinates"
+                v-model="coordsDisplay"
+              />
+            </v-col>
+            <v-col cols="12">
+              <div class="maroon-chips">
+                <v-autocomplete
+                  v-model="subareaIds"
+                  :items="subareaItems"
+                  :search-input.sync="subareaSearch"
+                  @input="subareaSearch=null"
+                  multiple
+                  cache-items
+                  hide-selected
+                  auto-select-first
+                  chips
+                  clearable
+                  deletable-chips
+                  label="Subareas"
+                  placeholder="Search a subarea"
+                  color="blue"
+                  :menu-props="{zIndex:'1001'}"
+                  :readonly="isReadOnly"
+                  :error="isReadOnly"
+                />
+              </div>
+            </v-col>
+            <v-col cols="12">
+              <div class="maroon-chips">
+                <v-autocomplete
+                  v-model="mainBuildingId"
+                  :items="mainBuildingItems"
+                  :search-input.sync="mainBuildingSearch"
+                  @input="mainBuildingSearch=null"
+                  cache-items
+                  hide-selected
+                  auto-select-first
+                  clearable
+                  label="Main Building"
+                  placeholder="Search a main building"
+                  color="blue"
+                  :menu-props="{zIndex:'1001'}"
+                  :readonly="isReadOnly"
+                  :error="isReadOnly"
+                />
+              </div>
+            </v-col>
+            <v-col cols="12">
+              <v-row justify="end" class="mt-4">
+                <v-btn v-if="mode=='create'" color="success" class="mr-2" @click="handleCreateClick()" :disabled="isSubmitting">Create Location</v-btn>
+                <v-btn v-else-if="mode=='update'" color="success" class="mr-2" @click="handleUpdateClick()" :disabled="isSubmitting">Update Location</v-btn>
+                <v-btn v-else color="error" class="mr-2" @click="handleDeleteClick()" :disabled="isSubmitting">Delete Location</v-btn>
+                <v-btn @click="handleCancelClick()">Cancel</v-btn>
+              </v-row>
+            </v-col>
+          </v-row>
         </div>
-      </v-col>
-      <v-col cols="12">
-        <label>Description</label>
-        <v-textarea
-          v-model="description"
-          color="black"
-          auto-grow
-          placeholder="Description"
-          :readonly="isReadOnly"
-          :error="isReadOnly"
-        />
-      </v-col>
-      <v-col cols="12">
-        <FormMapView
-          height="300px"
-          @click="handleMapClick"
-          :defaultFormCoords="defaultCoords"
-          :readonly="isReadOnly"
-        />
-      </v-col>
-      <v-col cols="12">
-        <v-row justify="space-between" align="end" class="pl-2">
-          <label>LatLng (Click on the map to set):</label>
-          <v-btn @click="resetMapView">Reset Map</v-btn>
-        </v-row>
-        <v-text-field
-          label="Coordinates"
-          v-model="coordsDisplay"
-        />
-      </v-col>
-      <v-col cols="12">
-        <div class="maroon-chips">
-          <v-autocomplete
-            v-model="subareaIds"
-            :items="subareaItems"
-            :search-input.sync="subareaSearch"
-            @input="subareaSearch=null"
-            multiple
-            cache-items
-            hide-selected
-            auto-select-first
-            chips
-            clearable
-            deletable-chips
-            label="Subareas"
-            placeholder="Search a subarea"
-            color="blue"
-            :menu-props="{zIndex:'1001'}"
-            :readonly="isReadOnly"
-            :error="isReadOnly"
-          />
-        </div>
-      </v-col>
-      <v-col cols="12">
-        <div class="maroon-chips">
-          <v-autocomplete
-            v-model="mainBuildingId"
-            :items="mainBuildingItems"
-            :search-input.sync="mainBuildingSearch"
-            @input="mainBuildingSearch=null"
-            cache-items
-            hide-selected
-            auto-select-first
-            clearable
-            label="Main Building"
-            placeholder="Search a main building"
-            color="blue"
-            :menu-props="{zIndex:'1001'}"
-            :readonly="isReadOnly"
-            :error="isReadOnly"
-          />
-        </div>
-      </v-col>
-      <v-col cols="12">
-        <v-btn v-if="mode=='create'" color="success" @click="handleCreateClick()" :disabled="isSubmitting">Create Location</v-btn>
-        <v-btn v-else-if="mode=='update'" color="success" @click="handleUpdateClick()" :disabled="isSubmitting">Update Location</v-btn>
-        <v-btn v-else color="error" @click="handleDeleteClick()" :disabled="isSubmitting">Delete Location</v-btn>
-        <v-btn @click="handleCancelClick()">Cancel</v-btn>
       </v-col>
     </v-row>
   </v-container>
@@ -259,7 +266,6 @@ export default {
         .get(`/admin/locations`, {
           params: {
             search: searchValue
-            // category_ids: [2, 3, 4, 5, 6, 7, 8]
           },
           paramsSerializer: params => {
             return this.$qs.stringify(params, { indices: false });
@@ -285,7 +291,6 @@ export default {
         .get(`/admin/locations`, {
           params: {
             search: searchValue
-            // category_ids: [1]
           },
           paramsSerializer: params => {
             return this.$qs.stringify(params, { indices: false });
@@ -377,6 +382,14 @@ export default {
 </script>
 
 <style scoped>
+.form-container {
+  background-color: white; /* White background for the form */
+  padding: 20px; /* Add padding inside the form */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
+  width: 100%; /* Ensure it takes the full width of the column */
+}
+
 label {
   font-weight: bold !important;
   font-size: 16px !important;
