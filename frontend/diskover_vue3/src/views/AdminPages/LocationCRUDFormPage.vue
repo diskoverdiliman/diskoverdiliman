@@ -64,7 +64,10 @@
           <label>LatLng (Click on the map to set):</label>
           <v-btn @click="resetMapView">Reset Map</v-btn>
         </v-row>
-        <v-text-field label="Coordinates" readonly :error="isReadOnly" :value="coords" />
+        <v-text-field
+          label="Coordinates"
+          v-model="coordsDisplay"
+        />
       </v-col>
       <v-col cols="12">
         <div class="maroon-chips">
@@ -174,6 +177,17 @@ export default {
     mode() {
       return this.$route.params.mode;
     },
+    coordsDisplay: {
+      get() {
+        return Array.isArray(this.coords) ? this.coords.join(', ') : '';
+      },
+      set(value) {
+        const [lat, lng] = value.split(',').map((coord) => parseFloat(coord.trim()));
+        if (!isNaN(lat) && !isNaN(lng)) {
+          this.coords = [lat, lng];
+        }
+      },
+    },
   },
   watch: {
     $route(newRoute, oldRoute) {
@@ -191,7 +205,12 @@ export default {
       this.$eventBus.emit("reset-map-view", 15);
     },
     handleMapClick(newCoords) {
-      this.coords = newCoords;
+      console.log("Received coordinates:", newCoords); // Debugging
+      if (Array.isArray(newCoords)) {
+        this.coords = newCoords;
+      } else {
+        console.error("Invalid coordinates received:", newCoords); // Debugging
+      }
     },
     handleRouteChange() {
       this.apiGetSubareaItems("");
