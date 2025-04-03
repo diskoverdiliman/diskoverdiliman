@@ -1,53 +1,59 @@
 <template>
-  <v-container class="grey lighten-4">
-    <v-layout class="py-4" column>
-      <v-col cols="12">
-        <div class="title">Search an image to delete via its location</div>
-        <div class="maroon-chips">
-          <v-autocomplete
-            v-model="locationSearchId"
-            :items="locationSearchItemsWithUnbinded"
-            :search-input.sync="locationSearchQuery"
-            @input="apiGetLocationSearchImages"
-            cache-items
-            hide-selected
-            auto-select-first
-            clearable
-            label="Location Search"
-            placeholder="Search images from a location"
-            :menu-props="{zIndex:'1001'}"
-          />
+  <v-container class="grey lighten-4 fill-height d-flex align-center justify-center">
+    <v-row justify="center">
+      <v-col cols="12" md="10" lg="8"> <!-- Adjusted width -->
+        <!-- Form Container with White Background -->
+        <div class="form-container">
+          <div class="title">Search an image to delete via its location</div>
+          <div class="maroon-chips">
+            <v-autocomplete
+              v-model="locationSearchId"
+              :items="locationSearchItemsWithUnbinded"
+              :search-input.sync="locationSearchQuery"
+              @input="apiGetLocationSearchImages"
+              cache-items
+              hide-selected
+              auto-select-first
+              clearable
+              label="Location Search"
+              placeholder="Search images from a location"
+              :menu-props="{zIndex:'1001'}"
+              item-title="text"
+              item-value="value"
+            />
+          </div>
+          <v-radio-group v-model="selectedDeleteImageId" class="mt-4">
+            <div v-for="image in locationSearchImages" :key="image.id">
+              <v-radio :value="image.id" color="primary">
+                <div slot="label">
+                  <div>{{ image.img_url }}</div>
+                  <v-img :src="getFullImageUrl(image.img_url)" height="150px" contain />
+                </div>
+              </v-radio>
+            </div>
+          </v-radio-group>
+          <v-row justify="end" class="mt-4">
+            <v-btn color="error" class="mr-2" @click="handleDeleteClick()" :disabled="isSubmitting">
+              Delete Image
+            </v-btn>
+            <v-btn @click="handleCancelClick()">Cancel</v-btn>
+          </v-row>
         </div>
       </v-col>
-      {{ selectedDeleteImageId }}
-      <v-col cols="12">
-        <v-radio-group v-model="selectedDeleteImageId">
-          <div v-for="image in locationSearchImages" :key="image.id">
-            <v-radio :value="image.id" color="primary">
-              <div slot="label">
-                <div>{{ image.img_url }}</div>
-                <v-img :src="getFullImageUrl(image.img_url)" height="150px" contain />
-              </div>
-            </v-radio>
-          </div>
-        </v-radio-group>
-      </v-col>
-      <v-btn color="error" @click="handleDeleteClick()" :disabled="isSubmitting">Delete Image</v-btn>
-      <v-btn @click="handleCancelClick()">Cancel</v-btn>
-    </v-layout>
+    </v-row>
     <CenterModal :isVisible="isDeleteConfirmVisible" @close="isDeleteConfirmVisible=false">
-      <v-layout column align-content-space-around class="red lighten-4 text-xs-center">
+      <v-row class="red lighten-4 text-xs-center">
         <v-col cols="12" class="headline py-3">
           Are you sure you want to delete {{ selectedDeleteImageName }}?
         </v-col>
         <v-col cols="12" class="title pt-2">
           <v-img :src="getFullImageUrl(selectedDeleteImageName)" height="200px" contain />
         </v-col>
-        <v-layout justify-center>
+        <v-row justify="center">
           <v-btn color="blue" dark @click="handleDeleteConfirm">Yes</v-btn>
           <v-btn color="red" dark @click="isDeleteConfirmVisible=false">No</v-btn>
-        </v-layout>
-      </v-layout>
+        </v-row>
+      </v-row>
     </CenterModal>
   </v-container>
 </template>
@@ -77,11 +83,13 @@ export default {
   },
   computed: {
     locationSearchItemsWithUnbinded() {
-      return [
+      const items = [
         ...this.locationSearchItems,
         { text: "Unbinded", value: 0 },
-        { text: "None", value: -1 }
+        { text: "None", value: -1 },
       ];
+      console.log("locationSearchItemsWithUnbinded:", items); // Debugging
+      return items;
     },
     selectedDeleteImageName() {
       let image = this.locationSearchImages.find(
@@ -175,4 +183,11 @@ export default {
 </script>
 
 <style scoped>
+.form-container {
+  background-color: white; /* White background for the form */
+  padding: 20px; /* Add padding inside the form */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
+  width: 100%; /* Ensure it takes the full width of the column */
+}
 </style>
