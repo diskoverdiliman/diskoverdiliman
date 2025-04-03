@@ -1,10 +1,13 @@
 <template>
   <v-container>
-    <v-btn class="primary text-black" @click="onClickNewTag">
+    <!-- Add New Tag Button -->
+    <v-btn class="text-white mb-2" @click="onClickNewTag" style="background-color: #7b1113;">
       ADD NEW TAG
     </v-btn>
+
+    <!-- Tags Card -->
     <v-card>
-      <v-card-title class="primary text-black">
+      <v-card-title class="text-white" style="background-color: #7b1113;">
         <h1>Tags</h1>
       </v-card-title>
       <v-layout>
@@ -17,49 +20,64 @@
 </template>
 
 <script>
-import AdminVerifierMixin from "@/mixins/AdminVerifierMixin"
-import TagTable from "@/components/admin/TagTable.vue"; 
+import AdminVerifierMixin from "@/mixins/AdminVerifierMixin";
+import TagTable from "@/components/admin/TagTable.vue";
 
-export default{
-    mixins: [AdminVerifierMixin],
-    components: {
-        TagTable, // Register TagTable
+export default {
+  mixins: [AdminVerifierMixin],
+  components: {
+    TagTable, // Register TagTable
+  },
+  data() {
+    return {
+      tags: null,
+    };
+  },
+  mounted() {
+    this.getTags();
+  },
+  methods: {
+    getTags() {
+      this.$http
+        .get("/tags/")
+        .then((response) => {
+          this.tags = response.data;
+          console.log("Tags successfully retrieved");
+        })
+        .catch((error) => {
+          console.error("Failed to GET tags:", error);
+        });
     },
-    data(){
-        return{
-            tags: null
-        }
+    onDeleteItem(id) {
+      this.$http
+        .delete(`tags/${id}`)
+        .then((response) => {
+          console.log("Successfully deleted item", response);
+          this.getTags(); // Refresh the tags after deletion
+        })
+        .catch((error) => {
+          console.error("Failed to delete item:", error);
+        });
     },
-    mounted(){
-        this.getTags()
+    onClickNewTag() {
+      this.$router.push(`/tagform/create`);
     },
-    methods: {
-        getTags() {
-            this.$http.get('/tags/')
-            .then(response => {
-                this.tags = response.data;
-                console.log("Tags successfully retrieved");
-            })
-            .catch(error => { // Use .catch instead of .else
-                console.error("Failed to GET tags:", error);
-            });
-        },
-        onDeleteItem(id) {
-            this.$http.delete(`tags/${id}`)
-            .then(response => {
-                console.log("Successfully deleted item", response);
-                this.getTags(); // Refresh the tags after deletion
-            })
-            .catch(error => { // Use .catch instead of .else
-                console.error("Failed to delete item:", error);
-            });
-        },
-        onClickNewTag() {
-            this.$router.push(`/tagform/create`);
-        },
-        onEditItem(id) {
-            this.$router.push(`/tagform/update/${id}`);
-        },
-    }
-}
+    onEditItem(id) {
+      this.$router.push(`/tagform/update/${id}`);
+    },
+  },
+};
 </script>
+
+<style scoped>
+/* Optional: Add reusable CSS classes */
+.button-maroon {
+  background-color: #7b1113 !important;
+  color: white !important;
+}
+
+.title-maroon {
+  background-color: #7b1113 !important;
+  color: white !important;
+}
+</style>

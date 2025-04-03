@@ -1,10 +1,13 @@
 <template>
   <v-container>
-    <v-btn class="primary text-black" @click="onClickNewCategory">
+    <!-- Add New Category Button -->
+    <v-btn class="text-white mb-2" @click="onClickNewCategory" style="background-color: #7b1113;">
       ADD NEW CATEGORY
     </v-btn>
+
+    <!-- Categories Card -->
     <v-card>
-      <v-card-title class="primary text-black">
+      <v-card-title class="text-white" style="background-color: #7b1113;">
         <h1>Categories</h1>
       </v-card-title>
       <v-layout>
@@ -17,7 +20,7 @@
 </template>
 
 <script>
-import AdminVerifierMixin from "@/mixins/AdminVerifierMixin"
+import AdminVerifierMixin from "@/mixins/AdminVerifierMixin";
 import CategoryTable from "@/components/admin/CategoryTable.vue"; // Adjust the path as needed
 
 export default {
@@ -66,3 +69,16 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* Optional: Add reusable CSS classes */
+.button-maroon {
+  background-color: #7b1113 !important;
+  color: black !important;
+}
+
+.title-maroon {
+  background-color: #7b1113 !important;
+  color: black !important;
+}
+</style>
