@@ -57,7 +57,8 @@ export const useAuthStore = defineStore('auth', {
       }).then(response => {
         this.setToken(response.data.access); // Save the access token
         this.setRefreshToken(response.data.refresh); // Save the refresh token
-        this.setUser(username); // Update the user state
+        this.setUser({ name: username }); // Update the user state with the username
+        console.log("User set in authStore:", this.user); // Debugging
         this.invalidLogInAttempt = false;
         console.log("Successfully authenticated token: You are now logged in\n", response);
       }).catch(error => {
