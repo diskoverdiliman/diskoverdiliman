@@ -19,7 +19,15 @@
               :error-messages="invalidLogInAttempt ? 'password does not match with username' : null"
               class="mb-4 w-100"
             />
-            <v-btn type="submit" color="primary" class="text-white w-100">Log In</v-btn>
+            <v-btn
+              type="submit"
+              color="primary"
+              class="text-white w-100"
+              :loading="isProcessing" 
+              :disabled="isProcessing" 
+            >
+              Log In
+            </v-btn>
           </form>
         </div>
         <div v-else class="d-flex flex-column align-center">
@@ -40,20 +48,28 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router'; // Import Vue Router
 import { useAuthStore } from '@/stores/auth';
 
 const authStore = useAuthStore();
+const router = useRouter(); // Initialize Vue Router
 
 const username = ref('');
 const password = ref('');
+const isProcessing = ref(false); // Add a flag to indicate processing state
 
 const attemptLogIn = async () => {
+  isProcessing.value = true; // Set processing state to true
   try {
     await authStore.logIn({ username: username.value, password: password.value });
-    // Redirect to the home page after successful login
-    window.location.href = '/';
+    // Redirect to the home page if not already there
+    if (router.currentRoute.value.path !== '/') {
+      router.push('/'); // Navigate to the home page without refreshing
+    }
   } catch (error) {
     console.error('Login failed:', error);
+  } finally {
+    isProcessing.value = false; // Reset processing state
   }
 };
 
