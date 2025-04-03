@@ -50,12 +50,12 @@ export default {
       if(this.activeInst == index){
         this.activeInst = -1;
         // trigger eventBus to clear all circles in the Big Map
-        this.$eventBus.$emit("clear-circles");        
+        this.$eventBus.emit("clear-circles");        
       } else {
         this.activeInst = index;
-        this.$eventBus.$emit("clear-circles");  
+        this.$eventBus.emit("clear-circles");  
         // trigger eventBus to add a circle at the routeCoordinate[index] of the Big Map 
-        this.$eventBus.$emit("add-circle", index);
+        this.$eventBus.emit("add-circle", index);
       }
       
     }

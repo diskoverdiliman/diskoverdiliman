@@ -1,65 +1,99 @@
 <template>
-  <!-- Used to handle Web page requests that do not exist -->
-  <v-container class="grey lighten-4">
-    <v-layout class="py-4" column>
-      <v-flex xs12 class="display-1">
-        <div class="mb-4">
-          Update images binded to
-          <span class="display-2 primary--text">{{ locationName }}</span>
+  <v-container class="grey lighten-4 fill-height d-flex align-center justify-center">
+    <v-row justify="center">
+      <v-col cols="12" md="10" lg="8">
+        <!-- Form Container -->
+        <div class="form-container">
+          <v-row>
+            <v-col cols="12" class="display-1">
+              <div class="mb-4">
+                Update images binded to
+                <span class="display-2 primary--text">{{ locationName }}</span>
+              </div>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="12">
+              <div class="title">Images currently binded to location</div>
+              <div v-for="image in bindedImages" :key="image.id">
+                <v-checkbox v-model="selectedBindedImages" :value="image.id" color="primary">
+                  <div slot="label">
+                    <div>{{ image.img_url }}</div>
+                    <v-img :src="getFullImageUrl(image.img_url)" height="150px" contain />
+                  </div>
+                </v-checkbox>
+              </div>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="12">
+              <div class="title">Add images binded to other locations</div>
+              <v-autocomplete
+                v-model="locationSearchId"
+                :items="locationSearchItemsWithUnbinded"
+                :search-input.sync="locationSearchQuery"
+                @input="apiGetLocationSearchImages"
+                cache-items
+                hide-selected
+                auto-select-first
+                clearable
+                label="Location Search"
+                placeholder="Search images from a location"
+                :menu-props="{ zIndex: '1001' }"
+              />
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="12">
+              <div v-for="image in locationSearchImages" :key="image.id">
+                <v-checkbox v-model="selectedSearchImages" :value="image.id" color="primary">
+                  <div slot="label">
+                    <div>{{ image.img_url }}</div>
+                    <v-img :src="getFullImageUrl(image.img_url)" height="150px" contain />
+                  </div>
+                </v-checkbox>
+              </div>
+            </v-col>
+          </v-row>
+
+          <!-- Upload Section -->
+          <v-row class="mt-4">
+            <v-col cols="12">
+              <div class="title">Upload images</div>
+              <v-btn color="primary" @click="triggerFileInput" block>Choose Files</v-btn>
+              <input
+                type="file"
+                ref="imageFiles"
+                multiple
+                @input="handleImageUploads"
+                style="display: none;"
+              />
+              <div class="mt-2">{{ uploadedImageFiles.length }} file(s) selected</div>
+            </v-col>
+          </v-row>
+
+          <!-- Action Buttons -->
+          <v-row class="mt-4">
+            <v-col cols="12">
+              <v-btn color="success" @click="handleUpdateClick()" :disabled="isSubmitting" block>
+                Update location images
+              </v-btn>
+            </v-col>
+            <v-col cols="12">
+              <v-btn @click="handleCancelClick()" block>Cancel</v-btn>
+            </v-col>
+          </v-row>
         </div>
-      </v-flex>
-      <v-flex xs12>
-        <div class="title">Images currently binded to location</div>
-        <div v-for="image in bindedImages" :key="image.id">
-          <v-checkbox v-model="selectedBindedImages" :value="image.id" color="primary">
-            <div slot="label">
-              <div>{{ image.img_url }}</div>
-              <v-img :src="getFullImageUrl(image.img_url)" height="150px" contain/>
-            </div>
-          </v-checkbox>
-        </div>
-      </v-flex>
-      <v-flex xs12>
-        <div class="title">Add images binded to other locations</div>
-        <div class="maroon-chips">
-          <v-autocomplete
-            v-model="locationSearchId"
-            :items="locationSearchItemsWithUnbinded"
-            :search-input.sync="locationSearchQuery"
-            @input="apiGetLocationSearchImages"
-            cache-items
-            hide-selected
-            auto-select-first
-            clearable
-            label="Location Search"
-            placeholder="Search images from a location"
-            :menu-props="{zIndex:'1001'}"
-          />
-        </div>
-      </v-flex>
-      <v-flex xs12>
-        <div v-for="image in locationSearchImages" :key="image.id">
-          <v-checkbox v-model="selectedSearchImages" :value="image.id" color="primary">
-            <div slot="label">
-              <div>{{ image.img_url }}</div>
-              <v-img :src="getFullImageUrl(image.img_url)" height="150px" contain/>
-            </div>
-          </v-checkbox>
-        </div>
-      </v-flex>
-      <v-flex xs12>
-        <div class="title">Upload images</div>
-        <input type="file" ref="imageFiles" multiple @input="handleImageUploads">
-      </v-flex>
-      <v-btn color="success" @click="handleUpdateClick()" :disabled="isSubmitting">Update location images</v-btn>
-      <v-btn @click="handleCancelClick()">Cancel</v-btn>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
-
 <script>
-import AdminVerifierMixin from "@/mixins/AdminVerifierMixin"
+import AdminVerifierMixin from "@/mixins/AdminVerifierMixin";
 
 export default {
   mixins: [AdminVerifierMixin],
@@ -77,7 +111,7 @@ export default {
       locationSearchImages: [],
       selectedSearchImages: [],
       uploadedImageFiles: [],
-      isSubmitting: false
+      isSubmitting: false,
     };
   },
   computed: {
@@ -88,17 +122,17 @@ export default {
       return [
         ...this.locationSearchItems,
         { text: "Unbinded", value: 0 },
-        { text: "None", value: -1 }
+        { text: "None", value: -1 },
       ];
     },
     updatedImageIds() {
       return [...this.selectedBindedImages, ...this.selectedSearchImages];
-    }
+    },
   },
   watch: {
     $route() {
       this.handleRouteChange();
-    }
+    },
   },
   methods: {
     handleRouteChange() {
@@ -108,43 +142,33 @@ export default {
     apiGetLocationToUpdateImages(id) {
       this.$http
         .get(`/admin/locations/images/${id}`)
-        .then(response => {
-          console.log(
-            "successful retrieved images data from API: ",
-            response.data
-          );
+        .then((response) => {
+          console.log("successful retrieved images data from API: ", response.data);
           this.locationName = response.data.name;
           this.bindedImages = response.data.images;
-          this.selectedBindedImages = response.data.images.map(
-            image => image.id
-          );
+          this.selectedBindedImages = response.data.images.map((image) => image.id);
         })
-        .catch(error => {
-          console.log(
-            "error retrieving location update/delete data from API: ",
-            error
-          );
+        .catch((error) => {
+          console.log("error retrieving location update/delete data from API: ", error);
         });
     },
     apiGetLocationSearchItems(searchValue) {
       this.$http
         .get(`/admin/locations/`, {
           params: {
-            search: searchValue
+            search: searchValue,
           },
-          paramsSerializer: params => {
+          paramsSerializer: (params) => {
             return this.$qs.stringify(params, { indices: false });
-          }
+          },
         })
-        .then(response => {
-          this.locationSearchItems = response.data.map(loc => {
-            return {
-              text: loc.name,
-              value: loc.id
-            };
-          });
+        .then((response) => {
+          this.locationSearchItems = response.data.map((loc) => ({
+            text: loc.name,
+            value: loc.id,
+          }));
         })
-        .catch(error => {
+        .catch((error) => {
           alert("error receiving queried results from API: ");
           console.log(error);
         });
@@ -157,22 +181,16 @@ export default {
       }
       this.$http
         .get(`/admin/images/`, {
-          params: {
-            location_id: this.locationSearchId
-          },
-          paramsSerializer: params => {
+          params: { location_id: this.locationSearchId },
+          paramsSerializer: (params) => {
             return this.$qs.stringify(params, { indices: false });
-          }
+          },
         })
-        .then(response => {
-          console.log(
-            "successful retrieved location search images data from API: ",
-            response.data
-          );
+        .then((response) => {
+          console.log("successful retrieved location search images data from API: ", response.data);
           this.locationSearchImages = response.data;
         })
-        // alert an error if unsuccessful GET
-        .catch(error => {
+        .catch((error) => {
           alert("error receiving queried results from API: ");
           console.log(error);
         });
@@ -182,14 +200,14 @@ export default {
     },
     handleImageUploads() {
       const imageFiles = this.$refs.imageFiles.files;
-      console.log("BOOM", imageFiles);
+      console.log("Selected files:", imageFiles);
       this.uploadedImageFiles = [];
       for (let i = 0; i < imageFiles.length; i++) {
         this.uploadedImageFiles.push(imageFiles[i]);
       }
     },
     handleUpdateClick() {
-      this.isSubmitting = true
+      this.isSubmitting = true;
       let formData = new FormData();
       for (let imageId of this.updatedImageIds) {
         formData.append("image_ids", imageId);
@@ -201,27 +219,41 @@ export default {
       this.$http
         .patch(`/admin/locations/images/${this.locationId}/`, formData, {
           headers: {
-            "Content-Type": "multipart/form-data"
-          }
+            "Content-Type": "multipart/form-data",
+          },
         })
-        .then(response => {
+        .then((response) => {
           console.log("successfully patched updated location to API", response);
-          this.$router.push({name: 'details', params: {id: this.locationId}});
+          this.$router.push({ name: "details", params: { id: this.locationId } });
         })
-        .catch(function(error) {
+        .catch((error) => {
           alert("error patching updated location to API", error);
         })
         .finally(() => {
-          this.isSubmitting = false
-        });      
+          this.isSubmitting = false;
+        });
     },
     handleCancelClick() {
       console.log("cancel");
       this.$router.go(-1);
-    }
-  }
+    },
+    triggerFileInput() {
+      this.$refs.imageFiles.click();
+    },
+  },
 };
 </script>
 
 <style scoped>
+.form-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.mt-2 {
+  margin-top: 8px;
+}
 </style>

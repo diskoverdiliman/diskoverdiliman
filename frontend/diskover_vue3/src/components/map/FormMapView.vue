@@ -1,79 +1,161 @@
 <template>
-  <!-- clickable map for inputting latitude longitude data in a form -->
-  <div id="map" :style="{height: height}">
-    <!-- progress bar for when map takes a while to render -->
-    <v-progress-circular :indeterminate="true"></v-progress-circular>
+  <div :id="mapId" class="map-container" :style="{ height: height }">
+    <v-progress-circular v-if="!map" :indeterminate="true"></v-progress-circular>
   </div>
 </template>
 
 <script>
-import MapMixin from "@/mixins/MapMixin";
+import L from "leaflet";
+import "leaflet-routing-machine";
+import "leaflet-easybutton";
+import defaultIcon from "@/assets/markers/defaultIcon.png"
 
 export default {
-  // implement MapMixin for easy map initialization at #map
-  mixins: [MapMixin],
   props: {
-    // the default Coordinates shown by the map potion of the form
+    mapId: {
+      type: String,
+      default: "form-map",
+    },
     defaultFormCoords: {
       type: Array,
       default() {
-        return this.$defaultStartCoords;
-      }
+        return [14.655004131234529, 121.06428197779681];
+      },
     },
-    // checks if form should only be read not written on
     readonly: {
       type: Boolean,
-      default: false
-    }
-  },
-  watch: {
-    // reset map view wheenever the defaultForm Coordiantes have been reset
-    defaultFormCoords() {
-      this.resetMapView();
+      default: false,
     },
-    readonly() {
-      // handle readOnly change
-      this.handleReadOnly();
-    }
+    height: {
+      type: String,
+      default: "300px",
+    },
   },
-  // called when map is ready for rendinering
+  data() {
+    return {
+      map: null,
+      marker: null, // Store the marker instance
+      originIcon: L.icon({
+        iconUrl: defaultIcon, // Replace with the path to your icon
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41],
+      }),
+    };
+  },
   mounted() {
-    // reset the map and handle read Only changes
-    this.resetMapView();
+    this.initializeMap();
+
+    this.$nextTick(() => {
+      if (this.map) {
+        console.log("Map initialized:", this.map);
+        this.map.invalidateSize();
+      }
+    });
+
     this.handleReadOnly();
-    // bind resetMapView function to trigger upon every reset-map-view event
-    this.$eventBus.$on("reset-map-view", this.resetMapView);
+
+    // Bind resetMapView function to trigger upon every reset-map-view event
+    this.$eventBus.on("reset-map-view", this.resetMapView);
+  },
+  beforeUnmount() {
+    if (this.map) {
+      this.map.eachLayer((layer) => {
+        this.map.removeLayer(layer); // Remove all layers
+      });
+      this.map.off(); // Remove all event listeners
+      this.map.remove(); // Remove the map instance
+      this.map = null; // Clear the map reference
+    }
   },
   methods: {
-    handleReadOnly() {      
+    initializeMap() {
+      if (this.map) {
+        this.map.remove();
+      }
+
+      // Initialize the map with custom zoom options
+      this.map = L.map(this.mapId, {
+        zoomAnimation: true,
+        zoomDelta: 0.5, // Smoother zooming
+        wheelPxPerZoomLevel: 120, // Slower zooming
+      }).setView(this.defaultFormCoords, 15);
+
+      // Add the tile layer
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(this.map);
+
+      // Add the origin marker
+      this.marker = this.addMarker(this.defaultFormCoords, {
+        draggable: !this.readonly,
+        icon: this.originIcon,
+      });
+
+      // Handle map click events
+      if (!this.readonly) {
+        this.map.on("click", this.setMarkerToClick.bind(this));
+      }
+
+      this.$nextTick(() => {
+        if (this.map) {
+          this.map.invalidateSize();
+        }
+      });
+    },
+    handleReadOnly() {
       if (this.readonly) {
-        // readonly means click listeners should be off
+        // Remove click listeners if the map is readonly
         this.map.off("click", this.setMarkerToClick);
       } else {
-        // non-readonly means click listeres should be on to change the map
-        this.map.on("click", this.setMarkerToClick);
+        // Add click listeners if the map is editable
+        this.map.on("click", this.setMarkerToClick.bind(this));
       }
     },
-    // runs whenever map is clicked at point e.latlng; moves marker to that position
     setMarkerToClick(e) {
-      this.removeAllMarkers();
-      let { lat, lng } = e.latlng;
-      this.addMarker(e.latlng, {draggable: false});
-      this.$emit("click", [lat, lng]);
+      console.log("Map click event:", e); // Debugging
+      if (e.latlng) {
+        const { lat, lng } = e.latlng;
+        if (this.marker) {
+          this.marker.setLatLng(e.latlng); // Move the existing marker
+        } else {
+          this.marker = this.addMarker(e.latlng, { draggable: true, icon: this.originIcon });
+        }
+        console.log("Emitting coordinates:", [lat, lng]); // Debugging
+        this.$emit("click", [lat, lng]); // Emit the coordinates to the parent component
+      } else {
+        console.error("Invalid map click event:", e); // Debugging
+      }
     },
-    //Override reset mapview from mixin to a different zoom but back to UP Oble as always
     resetMapView() {
       this.map.setView(this.defaultFormCoords, 15);
-      this.removeAllMarkers();
-      this.addMarker(this.defaultFormCoords);
-    }
+      if (this.marker) {
+        this.marker.setLatLng(this.defaultFormCoords); // Reset the marker position
+      }
+    },
+    addMarker(coords, options = {}) {
+      if (this.map) {
+        const marker = L.marker(coords, options).addTo(this.map);
+        marker.on("dragend", (e) => {
+          const { lat, lng } = e.target.getLatLng();
+          console.log("Marker dragged to:", [lat, lng]); // Debugging
+          this.$emit("click", [lat, lng]); // Emit the new coordinates to the parent component
+        });
+        return marker;
+      }
+      console.warn("Map is not initialized. Cannot add marker.");
+      return null;
+    },
   },
-  destroyed() {
-    // remove reset-map-view event listers when form map is destroyed
-    this.$eventBus.$off("reset-map-view", this.resetMapView);
-  }
 };
 </script>
 
 <style scoped>
+.map-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
 </style>

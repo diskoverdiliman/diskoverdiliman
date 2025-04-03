@@ -48,7 +48,6 @@ class Location(models.Model):
             cursor.execute(
                 "ALTER SEQUENCE location_id_seq RESTART WITH %s", [reset_value])
 
-
 class Image(models.Model):
     img_url = models.CharField(max_length=260, blank=False)
     location = models.ManyToManyField(Location, related_name='images')
@@ -61,10 +60,10 @@ class Image(models.Model):
 
     @classmethod
     def reset_id_sequence(cls):
-        reset_value = cls.objects.order_by('pk').last().id + 1
+        last_image = cls.objects.order_by('pk').last()
+        reset_value = last_image.id + 1 if last_image else 1  # Handle empty table
         with connection.cursor() as cursor:
-            cursor.execute(
-                "ALTER SEQUENCE image_id_seq RESTART WITH %s", [reset_value])
+            cursor.execute(f"ALTER SEQUENCE {cls._meta.db_table}_id_seq RESTART WITH {reset_value}")
 
 
 class Subarea(models.Model):
@@ -88,4 +87,4 @@ class Tag(models.Model):
         db_table = 'tag'
 
     def __str__(self):
-        return self.name   
+        return self.name

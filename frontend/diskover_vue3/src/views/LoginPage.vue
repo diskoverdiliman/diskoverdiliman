@@ -4,27 +4,38 @@
       <v-card-text>
         <div v-if="!isLoggedIn" class="d-flex flex-column align-center">
           <h1 class="mb-4 font-weight-light">Log in to your superuser account</h1>
-          <v-text-field
-            v-model="username"
-            label="Username"
-            :error-messages="invalidLogInAttempt ? 'username does not match with password' : null"
-            class="mb-4 w-100"
-          />
-          <v-text-field
-            v-model="password"
-            type="password"
-            label="Password"
-            :error-messages="invalidLogInAttempt ? 'password does not match with username' : null"
-            class="mb-4 w-100"
-          />
-          <v-btn color="primary" @click="attemptLogIn" class="text-white">Log In</v-btn>
+          <!-- Wrap the login fields and button in a form -->
+          <form @submit.prevent="attemptLogIn" class="w-100">
+            <v-text-field
+              v-model="username"
+              label="Username"
+              :error-messages="invalidLogInAttempt ? 'username does not match with password' : null"
+              class="mb-4 w-100"
+            />
+            <v-text-field
+              v-model="password"
+              type="password"
+              label="Password"
+              :error-messages="invalidLogInAttempt ? 'password does not match with username' : null"
+              class="mb-4 w-100"
+            />
+            <v-btn
+              type="submit"
+              color="primary"
+              class="text-white w-100"
+              :loading="isProcessing" 
+              :disabled="isProcessing" 
+            >
+              Log In
+            </v-btn>
+          </form>
         </div>
         <div v-else class="d-flex flex-column align-center">
-          <div class="text-white mb-4">
+          <div class="mb-4">
             Currently logged in as 
             <span class="primary--text font-weight-bold">{{ loggedInUser }}</span>
           </div>
-          <div class="text-white mb-4">Logout?</div>
+          <div class="mb-4">Logout?</div>
           <div class="d-flex">
             <v-btn color="blue" @click="logOut" class="text-white mr-2">Yes</v-btn>
             <v-btn color="red" @click="backPage" class="text-white">No</v-btn>
@@ -37,15 +48,29 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router'; // Import Vue Router
 import { useAuthStore } from '@/stores/auth';
 
 const authStore = useAuthStore();
+const router = useRouter(); // Initialize Vue Router
 
 const username = ref('');
 const password = ref('');
+const isProcessing = ref(false); // Add a flag to indicate processing state
 
-const attemptLogIn = () => {
-  authStore.logIn({ username: username.value, password: password.value });
+const attemptLogIn = async () => {
+  isProcessing.value = true; // Set processing state to true
+  try {
+    await authStore.logIn({ username: username.value, password: password.value });
+    // Redirect to the home page if not already there
+    if (router.currentRoute.value.path !== '/') {
+      router.push('/'); // Navigate to the home page without refreshing
+    }
+  } catch (error) {
+    console.error('Login failed:', error);
+  } finally {
+    isProcessing.value = false; // Reset processing state
+  }
 };
 
 const logOut = () => {
@@ -75,10 +100,6 @@ const loggedInUser = computed(() => authStore.user);
 .text-white {
   color: white !important;
 }
-
-/* .v-btn {
-  background-color: blue !important;
-} */
 
 .v-btn:hover {
   filter: brightness(1.2);

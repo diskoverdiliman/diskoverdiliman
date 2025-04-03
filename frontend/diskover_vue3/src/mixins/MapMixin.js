@@ -28,7 +28,7 @@ export default {
       // store the markers on map
       markerGroup: {},
       // store the default UP Oble coordinates
-      defaultCoords: [51.505, -0.09],
+      defaultCoords: this.$defaultStartCoords,
       // store the reset control button on map
       resetButton: {},
       // store the icon used to mark the origin "start" location
@@ -47,9 +47,14 @@ export default {
     // places control buttons in default positions and adds a feature where coordinates are logged to console
     // when clicking anywhere on map
     initMap() {
+      console.log("Initializing map...");
+      console.log("Default coordinates:", this.defaultCoords);
+
       this.map = L.map(this.mapId, {
         zoomControl: false,
       }).setView(this.defaultCoords, 15);
+
+      console.log("Map instance created:", this.map);
 
       // add tilelayer with valid accessToken that must be acquired from https://account.mapbox.com/access-tokens/
       L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
@@ -62,6 +67,8 @@ export default {
         id: 'mapbox.streets',
         accessToken: 'pk.eyJ1IjoiZGlza292ZXJwbHVzcGx1cyIsImEiOiJjanRucm1kaHQwMGZqNGFtcjNkbWwyODl3In0.AQ4D4e0LYZRUNHj6t4NPhw'
       }).addTo(this.map);
+
+      console.log("Tile layer added to map.");
 
       // log coordinates to console on click
       this.map.on("click", e => {

@@ -17,6 +17,7 @@ export function setupVuePrototypes(app) {
 
   // backend api path that this.$http will send requests to
   app.config.globalProperties.$backendApiPath = import.meta.env.VITE_APP_API_URL;
+  
   // static api path that will prepend image urls to gain access to image in server
   app.config.globalProperties.$backendStaticPath = import.meta.env.VITE_APP_STATIC_URL;
 

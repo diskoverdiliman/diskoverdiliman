@@ -18,6 +18,7 @@ import { useMainStore } from '@/stores/index';
 import NavBar from '@/components/ui/NavBar.vue';
 import Background from '@/components/ui/Background.vue';
 import GpsMapHidden from '@/components/map/GpsMapHidden.vue';
+import axios from 'axios';
 
 const authStore = useAuthStore();
 const mainStore = useMainStore();
@@ -27,17 +28,21 @@ onMounted(() => {
   authStore.verifyToken()
     .then(() => {
       if (authStore.isLoggedIn) {
-        return Promise.all([
-          mainStore.$http.get("/categorys"),
-          mainStore.$http.get("/tags")
-        ]);
-      }
-    })
-    .then(responses => {
-      if (responses && responses.length === 2) {
-        const [categoriesResponse, tagsResponse] = responses;
-        mainStore.setCategories(categoriesResponse.data);
-        mainStore.setTags(tagsResponse.data);
+        axios.get('/categories') // Fetch categories
+          .then(response => {
+            mainStore.setCategories(response.data);
+          })
+          .catch(error => {
+            console.error('Error fetching categories:', error);
+          });
+
+        axios.get('/tags') // Fetch tags
+          .then(response => {
+            mainStore.setTags(response.data);
+          })
+          .catch(error => {
+            console.error('Error fetching tags:', error);
+          });
       }
     })
     .catch(error => {

@@ -4,19 +4,20 @@ import { useAuthStore } from './auth';
 import { useDetailsStore } from './details';
 import { useSearchStore } from './search';
 import { useMapStore } from './map';
+import axios from 'axios';
 
 export const useMainStore = defineStore('main', {
   state: () => ({
-    categories: [],
-    tags: [],
+    categories: [], // Array to store category data
+    tags: [],       // Array to store tag data
     isSideDrawerVisible: true,
   }),
   actions: {
-    setCategories(newCategories) {
-      this.categories = newCategories;
+    setCategories(categories) {
+      this.categories = categories;
     },
-    setTags(newTags) {
-      this.tags = newTags;
+    setTags(tags) {
+      this.tags = tags;
     },
     setSideDrawer(isVisible) {
       this.isSideDrawerVisible = isVisible;
@@ -28,3 +29,10 @@ export const useMainStore = defineStore('main', {
     hasCategoriesLoaded: (state) => state.categories && state.categories.length !== 0
   }
 });
+
+// Ensure Axios is globally available
+export default {
+  install: (app) => {
+    app.config.globalProperties.$http = axios;
+  },
+};

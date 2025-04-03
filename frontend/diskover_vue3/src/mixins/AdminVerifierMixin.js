@@ -1,15 +1,16 @@
-const console = window.console
+import { useAuthStore } from '@/stores/auth';
 
 export default {
   created() {
-    // this.$store.commit("auth/initAuthHeader")
-    this.$store.dispatch('auth/verifyToken')
+    const authStore = useAuthStore(); // Access the auth store
+
+    authStore.verifyToken()
       .then(() => {
-        console.log("YOU HAVE PROVEN YOURSELF ADMIN. WELL DONE!!")
+        console.log("YOU HAVE PROVEN YOURSELF ADMIN. WELL DONE!!");
       })
       .catch(() => {
-        console.log("YOU ARE NO ADMIN IN MY BOOKS!")
-        this.$router.replace({name: "unauthenticated"})
-      })    
+        console.log("YOU ARE NO ADMIN IN MY BOOKS!");
+        this.$router.replace({ name: "unauthenticated" }); // Redirect to unauthenticated page
+      });
   }
-}
+};

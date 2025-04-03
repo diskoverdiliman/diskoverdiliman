@@ -22,5 +22,14 @@ export default defineConfig({
   },
   define: {
     'process.env': process.env
-  }
+  },
+  server: {
+    proxy: {
+      '/leaflet-css': {
+        target: 'https://unpkg.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/leaflet-css/, ''),
+      },
+    },
+  },
 })

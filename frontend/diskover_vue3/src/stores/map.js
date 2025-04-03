@@ -1,30 +1,23 @@
-import { defineStore } from 'pinia';
+import { defineStore } from "pinia";
 
-// Define default start coordinates
-const defaultStartCoords = [14.6549, 121.0647]; // Example coordinates for UP Diliman
-
-export const useMapStore = defineStore('map', {
+export const useMapStore = defineStore("map", {
   state: () => ({
-    isGpsPermissionToMark: localStorage.getItem('gps') === "true",
-    originCoords: defaultStartCoords,
+    originCoords: JSON.parse(localStorage.getItem("gpsLocation")) || [14.655004131234529, 121.06428197779681], // Default UP Oblation coordinates
+    isGpsPermissionToMark: false,
     sideDrawer: false,
     isSideDrawerVisible: false,
   }),
   actions: {
-    setGpsPermissionToMark(gps) {
-      this.isGpsPermissionToMark = gps;
-      if (gps) {
-        localStorage.setItem('gps', gps);
-      } else {
-        localStorage.removeItem('gps');
-      }
-    },
     setOriginCoords(coords) {
       this.originCoords = coords;
+      localStorage.setItem("gpsLocation", JSON.stringify(coords)); // Persist the GPS location
+    },
+    setGpsPermissionToMark(permission) {
+      this.isGpsPermissionToMark = permission;
     },
     setSideDrawer(value) {
       this.sideDrawer = value;
       this.isSideDrawerVisible = value;
     },
-  }
+  },
 });
