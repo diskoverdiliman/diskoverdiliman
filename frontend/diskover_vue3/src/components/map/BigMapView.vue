@@ -51,7 +51,7 @@ export default {
       gpsButton: null,
       routing: null,
       endIcon: null,
-      serviceUrl: "https://diskover.up.edu.ph/osrm/route/v1",
+      serviceUrl: "http://localhost:5001/route/v1",
       originIcon: L.icon({
         iconUrl: 'null', // Replace with the path to your icon
         iconSize: [25, 41],

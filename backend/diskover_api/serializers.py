@@ -26,7 +26,7 @@ class CategorySerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Category
-        fields = ('id', 'name', 'image', 'url', 'marker', 'routeMarker', 'routeColor')
+        fields = ('id', 'name', 'image', 'url', 'marker', 'route_marker', 'route_color')  # Use 'route_marker'
 
 
 # Serializer for Tag model

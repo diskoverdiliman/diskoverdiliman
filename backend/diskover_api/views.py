@@ -7,18 +7,107 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from rest_framework.serializers import ValidationError
 from django.http.request import QueryDict
 import os
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import AllowAny
+from django.db.models import Q
+from .models import Location
+from .serializers import LocationListSerializer
 
 # Viewset for Category
 class CategoryViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for managing categories (CRUD operations).
+    """
     queryset = Category.objects.all().order_by('id')
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+    def create(self, request, *args, **kwargs):
+        """
+        Handle POST requests to create a new category.
+        """
+        try:
+            data = request.data
+            serializer = self.get_serializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=201)
+        except ValidationError as e:
+            return Response({"error": str(e)}, status=400)
+
+    def update(self, request, *args, **kwargs):
+        """
+        Handle PUT requests to update an existing category.
+        """
+        try:
+            partial = kwargs.pop('partial', False)
+            instance = self.get_object()
+            serializer = self.get_serializer(instance, data=request.data, partial=partial)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=200)
+        except ValidationError as e:
+            return Response({"error": str(e)}, status=400)
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        Handle DELETE requests to delete a category.
+        """
+        try:
+            instance = self.get_object()
+            instance.delete()
+            return Response({"message": "Category deleted successfully."}, status=204)
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)
+
 
 class TagViewSet(viewsets.ModelViewSet):
-    queryset = Tag.objects.all()
+    """
+    ViewSet for managing tags (CRUD operations).
+    """
+    queryset = Tag.objects.all().order_by('id')
     serializer_class = TagSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def create(self, request, *args, **kwargs):
+        """
+        Handle POST requests to create a new tag.
+        """
+        try:
+            data = request.data
+            serializer = self.get_serializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=201)
+        except ValidationError as e:
+            return Response({"error": str(e)}, status=400)
+
+    def update(self, request, *args, **kwargs):
+        """
+        Handle PUT requests to update an existing tag.
+        """
+        try:
+            partial = kwargs.pop('partial', False)
+            instance = self.get_object()
+            serializer = self.get_serializer(instance, data=request.data, partial=partial)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=200)
+        except ValidationError as e:
+            return Response({"error": str(e)}, status=400)
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        Handle DELETE requests to delete a tag.
+        """
+        try:
+            instance = self.get_object()
+            instance.delete()
+            return Response({"message": "Tag deleted successfully."}, status=204)
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)
 
 class LocationPagination(PageNumberPagination):
     page_size = 10
@@ -472,3 +561,28 @@ class AdminImageViewSet(viewsets.ModelViewSet):
         return Response({
             'images': 'PATCH requests not allowed'
         })
+
+
+class SearchView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        # Extract the search query parameter
+        search = request.query_params.get("search", "")
+
+        # Filter locations based on the search query (name only)
+        queryset = Location.objects.all()
+
+        if search:
+            queryset = queryset.filter(name__icontains=search)
+
+        # Paginate the results
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
+
+        # Serialize the results
+        serializer = LocationListSerializer(paginated_queryset, many=True)
+
+        # Return paginated response
+        return paginator.get_paginated_response(serializer.data)

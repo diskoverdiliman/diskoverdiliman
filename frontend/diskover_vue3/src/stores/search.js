@@ -16,7 +16,7 @@ export const useSearchStore = defineStore('search', {
   actions: {
     async fetchResults(query) {
       try {
-        const response = await axios.get('/api/search', { params: query });
+        const response = await axios.get('/search', { params: query });
         this.setResults(response.data.results);
         this.setMaxPages(response.data.total_pages);
         this.setTotalResultCount(response.data.count);

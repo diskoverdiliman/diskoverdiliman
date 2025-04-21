@@ -55,11 +55,10 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/auth';
+import axios from 'axios'; // Import the Axios instance
 
 const route = useRoute();
 const router = useRouter();
-const authStore = useAuthStore();
 
 const name = ref('');
 const url = ref('');
@@ -76,38 +75,47 @@ onMounted(() => {
   }
 });
 
-const getUpdateData = (id) => {
-  fetch(`/categorys/${id}`)
-    .then((res) => res.json())
-    .then((data) => {
-      name.value = data.name;
-      url.value = data.url;
-      color.value = data.routeColor;
-    })
-    .catch((error) => console.error(`Failed to get category ${id}:`, error));
+const getUpdateData = async (id) => {
+  try {
+    const response = await axios.get(`/admin/categories/${id}/`);
+    const data = response.data;
+    name.value = data.name;
+    url.value = data.url;
+    color.value = data.route_color; // Use the correct field name from the backend
+  } catch (error) {
+    console.error(`Failed to get category ${id}:`, error);
+  }
 };
 
-const onSubmitClick = () => {
+const onSubmitClick = async () => {
   isSubmitting.value = true;
-  const endpoint = mode.value === 'create' ? '/categorys/' : `/categorys/${id.value}/`;
-  const method = mode.value === 'create' ? 'POST' : 'PATCH';
+  const endpoint = mode.value === 'create' ? '/admin/categories/' : `/admin/categories/${id.value}/`;
+  const method = mode.value === 'create' ? 'post' : 'patch';
 
-  fetch(endpoint, {
-    method,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: name.value, url: url.value, routeColor: color.value }),
-  })
-    .then(() => router.push('/admin/browse/categories'))
-    .catch((error) => console.error(error))
-    .finally(() => (isSubmitting.value = false));
+  try {
+    await axios({
+      method,
+      url: endpoint,
+      data: { name: name.value, url: url.value, route_color: color.value },
+    });
+    router.push('/admin/browse/categories'); // Redirect after success
+  } catch (error) {
+    console.error('Failed to submit category:', error);
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 
-const onDeleteClick = () => {
+const onDeleteClick = async () => {
   isSubmitting.value = true;
-  fetch(`/categorys/${id.value}/`, { method: 'DELETE' })
-    .then(() => router.push('/categoryform/create/'))
-    .catch((error) => console.error(error))
-    .finally(() => (isSubmitting.value = false));
+  try {
+    await axios.delete(`/admin/categories/${id.value}/`);
+    router.push('/admin/browse/categories'); // Redirect after deletion
+  } catch (error) {
+    console.error('Failed to delete category:', error);
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 
 const onCancelClick = () => router.push('/admin/browse/categories');

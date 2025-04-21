@@ -12,11 +12,11 @@ class Category(models.Model):
     image = models.CharField(max_length=260, blank=True, null=True)
     url = models.CharField(max_length=50, blank=True, null=True)
     marker = models.CharField(max_length=260, blank=True, null=True)
-    route_marker = models.CharField(max_length=260, blank=True, null=True)
+    route_marker = models.CharField(max_length=260, blank=True, null=True, db_column='routeMarker')  # Explicitly map to the database column
     route_color = models.CharField(max_length=7, blank=True, null=True)
 
     class Meta:
-        db_table = 'category'
+        db_table = 'category'  # Ensure the table name matches the database
 
     def __str__(self):
         return self.name

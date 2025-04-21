@@ -41,17 +41,18 @@ export default {
 
       console.log("Search submitted:", searchText.value);
 
-      mapStore.setSideDrawer(true);
-      searchStore.setSearchFilter(searchText.value);
-      searchStore.setPageNumber(1);
+      mapStore.setSideDrawer(true); // Open the side drawer for results
+      searchStore.setSearchFilter(searchText.value); // Update the search filter in the store
+      searchStore.setPageNumber(1); // Reset to the first page
 
-      // Ensure we navigate with an updated query
-      setTimeout(() => {
-        router.push({
-          path: "/map/search",
-          query: { ...apiQuery.value }
-        });
-      }, 100); // Delay to ensure state updates
+      // Navigate to the search results page with the updated query
+      router.push({
+        path: "/map/search",
+        query: {
+          ...apiQuery.value, // Include any existing query parameters
+          search: searchText.value // Add the search parameter explicitly
+        }
+      });
     };
 
     // Debugging: Log changes to apiQuery
