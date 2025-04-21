@@ -1,139 +1,133 @@
 <template>
-  <v-container grid-list-lg class="grey lighten-4">
-    <v-card>
-      <v-card-title class="primary">
-        <h1 v-if="mode == 'create'" class="text-white">Add Tag</h1>
-        <h1 v-else class="text-white">Edit Tag</h1>
+  <v-container class="fill-height d-flex align-center justify-center">
+    <v-card class="pa-5 form-bg" max-width="600">
+      <v-card-title class="primary text-h5 font-weight-light">
+        {{ mode === 'create' ? 'Create Tag' : 'Edit Tag' }}
       </v-card-title>
-      <v-container>
-        <v-layout column>
+      
+      <v-card-text>
+        <v-row>
           <v-col cols="12">
-            <label>Name</label>
             <v-text-field
-              placeholder="Name of the tag"
-              color="black"
               v-model="name"
+              label="Tag Name"
+              placeholder="Enter tag name"
               :readonly="isReadOnly"
               :error="isReadOnly"
             />
           </v-col>
-        </v-layout>
-        <v-card-actions>
-          <v-btn color="blue" class="primary text-white" v-on:click="onSubmitClick" :disabled="isSubmitting">Submit</v-btn>
-          <v-btn color="red" v-if="mode != 'create'" class="primary text-white" v-on:click="onDeleteClick" :disabled="isSubmitting">Delete</v-btn>
-          <v-btn class="green text-black" @click="onCancelClick">Cancel</v-btn>
-        </v-card-actions>
-      </v-container>
+        </v-row>
+      </v-card-text>
+
+      <v-card-actions class="justify-center">
+        <v-btn color="primary" dark @click="onSubmitClick" :disabled="isSubmitting">
+          Submit
+        </v-btn>
+        <v-btn v-if="mode !== 'create'" color="red" dark @click="onDeleteClick" :disabled="isSubmitting">
+          Delete
+        </v-btn>
+        <v-btn color="grey" dark @click="onCancelClick">
+          Cancel
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </v-container>
 </template>
 
-<script>
-import AdminVerifierMixin from "@/mixins/AdminVerifierMixin"
-export default{
-    mixins: [AdminVerifierMixin],
-    data(){
-        return{
-            name: null,
-            isSubmitting: false,
-            isReadOnly: false, // Define isReadOnly here
-        }
-    },
-    computed:{
-        id() {
-            return this.$route.params.id;
-        },
-        mode() {
-            return this.$route.params.mode;
-        }
-    },
-    mounted(){
-        this.handleRouteChange()
-    },
-    methods:{
-        handleRouteChange() {
-            if (this.mode == "update" || this.mode == "delete") {
-                console.log("mode: ", this.mode);
-                this.getUpdateData(this.id);
-            }
-        },
-        getUpdateData(id){
-            this.$http.get(`/tags/${id}`)
-            .then(response => {
-                let {name} = response.data;
-                this.name = name;
-            })
-            .catch(error => {
-                console.log(`Failed to get tag ${id}`);
-                console.log(error);
-            })
-        },
-        onSubmitClick(){
-            if(this.mode == 'create'){
-                this.handlePost()
-            }else if(this.mode == "update"){
-                this.handlePush()
-            }
-        },
-        onDeleteClick(){
-            this.isSubmitting = true
-            this.$http.delete(`/tags/${this.id}/`)
-            .then(response => {
-                console.log('Successfully deleted tag')
-                console.log(response)
-                this.name = null;
-                this.$router.push(`/tagform/create/`);
-            })
-            .catch(error => {
-                alert("Failed to delete tag")
-                console.log(error)
-            })
-            .finally(() => {
-                this.isSubmitting = false
-            })
-        },
-        onCancelClick(){
-            this.$router.push(`/admin/browse/tags`)
-        },
-        handlePush(){
-            this.isSubmitting = true
-            console.log(`You are editing tag ${this.id}`)
-            this.$http.patch(`/tags/${this.id}/`,{
-                name: this.name
-            })
-            .then(response => {
-                console.log(response)
-            })
-            .catch(error => {
-                console.log(error)
-            })
-            .finally(() => {
-                this.isSubmitting = false
-            })
-        },
-        handlePost(){
-            this.isSubmitting = true
-            this.$http.post('/tags/',{
-                name: this.name
-            })
-            .then(response => {
-                console.log(response);
-                this.$router.push(`/admin/browse/tags`);
-            })
-            .catch(error => {
-                alert(error)
-            })
-            .finally(() => {
-                this.isSubmitting = false
-            })
-        }
-    }
-}
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import axios from 'axios'; // Import Axios
+
+const route = useRoute();
+const router = useRouter();
+
+const name = ref('');
+const isSubmitting = ref(false);
+
+const id = computed(() => route.params.id);
+const mode = computed(() => route.params.mode);
+const isReadOnly = computed(() => mode.value === 'delete');
+
+onMounted(() => {
+  if (mode.value === 'update' || mode.value === 'delete') {
+    getUpdateData(id.value);
+  }
+});
+
+const getUpdateData = async (id) => {
+  try {
+    const response = await axios.get(`/admin/tags/${id}/`);
+    const data = response.data;
+    name.value = data.name;
+  } catch (error) {
+    console.error(`Failed to get tag ${id}:`, error);
+  }
+};
+
+const onSubmitClick = async () => {
+  isSubmitting.value = true;
+  const endpoint = mode.value === 'create' ? '/admin/tags/' : `/admin/tags/${id.value}/`;
+  const method = mode.value === 'create' ? 'post' : 'patch';
+
+  try {
+    await axios({
+      method,
+      url: endpoint,
+      data: { name: name.value },
+    });
+    router.push('/admin/browse/tags'); // Redirect after success
+  } catch (error) {
+    console.error('Failed to submit tag:', error);
+  } finally {
+    isSubmitting.value = false;
+  }
+};
+
+const onDeleteClick = async () => {
+  isSubmitting.value = true;
+  try {
+    await axios.delete(`/admin/tags/${id.value}/`);
+    router.push('/admin/browse/tags'); // Redirect after deletion
+  } catch (error) {
+    console.error('Failed to delete tag:', error);
+  } finally {
+    isSubmitting.value = false;
+  }
+};
+
+const onCancelClick = () => router.push('/admin/browse/tags');
 </script>
 
 <style scoped>
-    label {
-    font-weight: bold !important;
-    font-size: 16px !important;
-    }
+@import "@/assets/stylesheets/style.css";
+
+.form-bg {
+  background-color: white !important;
+}
+
+.fill-height {
+  height: calc(100vh - 64px);
+}
+
+.v-btn {
+  display: flex !important;
+  visibility: visible !important;
+}
+
+.v-btn[color="primary"] {
+  background-color: #1976d2 !important; /* Vuetify's primary color */
+}
+
+.v-btn[color="red"] {
+  background-color: #d32f2f !important;
+}
+
+.v-btn[color="grey"] {
+  background-color: #757575 !important;
+}
+
+.v-btn:hover {
+  filter: brightness(1.2);
+}
 </style>

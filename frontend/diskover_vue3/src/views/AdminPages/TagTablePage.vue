@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import axios from "axios"; // Import Axios
 import AdminVerifierMixin from "@/mixins/AdminVerifierMixin";
 import TagTable from "@/components/admin/TagTable.vue";
 
@@ -37,27 +38,23 @@ export default {
     this.getTags();
   },
   methods: {
-    getTags() {
-      this.$http
-        .get("/tags/")
-        .then((response) => {
-          this.tags = response.data;
-          console.log("Tags successfully retrieved");
-        })
-        .catch((error) => {
-          console.error("Failed to GET tags:", error);
-        });
+    async getTags() {
+      try {
+        const response = await axios.get("/admin/tags/"); // Use Axios to fetch tags
+        this.tags = response.data;
+        console.log("Tags successfully retrieved");
+      } catch (error) {
+        console.error("Failed to GET tags", error);
+      }
     },
-    onDeleteItem(id) {
-      this.$http
-        .delete(`tags/${id}`)
-        .then((response) => {
-          console.log("Successfully deleted item", response);
-          this.getTags(); // Refresh the tags after deletion
-        })
-        .catch((error) => {
-          console.error("Failed to delete item:", error);
-        });
+    async onDeleteItem(id) {
+      try {
+        const response = await axios.delete(`/admin/tags/${id}/`); // Use Axios to delete a tag
+        console.log("Successfully deleted item", response);
+        this.getTags(); // Refresh the tags list
+      } catch (error) {
+        console.error("Failed to delete item", error);
+      }
     },
     onClickNewTag() {
       this.$router.push(`/tagform/create`);
