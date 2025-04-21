@@ -126,3 +126,8 @@ docker-compose.override.yml
 *.bak
 *.orig
 *.rej
+
+# =========================
+# OSRM
+# =========================
+/osrm/

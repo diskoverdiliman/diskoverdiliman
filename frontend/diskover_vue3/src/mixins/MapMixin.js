@@ -56,27 +56,23 @@ export default {
 
       console.log("Map instance created:", this.map);
 
-      // add tilelayer with valid accessToken that must be acquired from https://account.mapbox.com/access-tokens/
-      L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-          '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-          'Imagery &copy; <a href="https://www.mapbox.com/">Mapbox</a>, ' +
-          'Routing license &copy; <a href="https://opendatacommons.org/licenses/odbl/">ODbL</a>, ' +
-          'Routing source &copy; <a href="http://project-osrm.org/">OSRM</a>',
-        zoom: 16,
-        id: 'mapbox.streets',
-        accessToken: 'pk.eyJ1IjoiZGlza292ZXJwbHVzcGx1cyIsImEiOiJjanRucm1kaHQwMGZqNGFtcjNkbWwyODl3In0.AQ4D4e0LYZRUNHj6t4NPhw'
+      // Replace Mapbox tile layer with OpenStreetMap tile layer
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
       }).addTo(this.map);
 
       console.log("Tile layer added to map.");
 
-      // log coordinates to console on click
+      // Log coordinates to console on click
       this.map.on("click", e => {
         console.log("You clicked on ", e.latlng);
       });
+
       this.zoomControl = L.control.zoom({
         position: "bottomright"
       }).addTo(this.map);
+
       this.markerGroup = L.layerGroup().addTo(this.map);
       this.circleGroup = L.layerGroup().addTo(this.map);
     },

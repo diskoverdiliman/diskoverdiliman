@@ -53,7 +53,7 @@ export default {
       endIcon: null,
       serviceUrl: "https://diskover.up.edu.ph/osrm/route/v1",
       originIcon: L.icon({
-        iconUrl: 'path/to/origin-icon.png', // Replace with the path to your icon
+        iconUrl: 'null', // Replace with the path to your icon
         iconSize: [25, 41],
         iconAnchor: [12, 41],
         popupAnchor: [1, -34],
