@@ -25,28 +25,33 @@ const mainStore = useMainStore();
 const route = useRoute();
 
 onMounted(() => {
+  // Verify token for logged-in users
   authStore.verifyToken()
     .then(() => {
-      if (authStore.isLoggedIn) {
-        axios.get('/categories') // Fetch categories
-          .then(response => {
-            mainStore.setCategories(response.data);
-          })
-          .catch(error => {
-            console.error('Error fetching categories:', error);
-          });
+      console.log("Token verified.");
+    })
+    .catch(() => {
+      console.warn("No token found, proceeding as guest.");
+    });
 
-        axios.get('/tags') // Fetch tags
-          .then(response => {
-            mainStore.setTags(response.data);
-          })
-          .catch(error => {
-            console.error('Error fetching tags:', error);
-          });
-      }
+  // Fetch categories (always fetch regardless of login status)
+  axios.get('/categories')
+    .then(response => {
+      mainStore.setCategories(response.data);
+      console.log("Categories fetched:", response.data);
     })
     .catch(error => {
-      console.error("Unexpected error:", error);
+      console.error('Error fetching categories:', error);
+    });
+
+  // Fetch tags (always fetch regardless of login status)
+  axios.get('/tags')
+    .then(response => {
+      mainStore.setTags(response.data);
+      console.log("Tags fetched:", response.data);
+    })
+    .catch(error => {
+      console.error('Error fetching tags:', error);
     });
 });
 
