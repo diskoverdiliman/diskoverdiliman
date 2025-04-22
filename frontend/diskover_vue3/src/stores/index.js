@@ -1,9 +1,5 @@
 // src/stores/index.js
 import { defineStore } from 'pinia';
-import { useAuthStore } from './auth';
-import { useDetailsStore } from './details';
-import { useSearchStore } from './search';
-import { useMapStore } from './map';
 import axios from 'axios';
 
 export const useMainStore = defineStore('main', {

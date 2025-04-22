@@ -586,3 +586,21 @@ class SearchView(APIView):
 
         # Return paginated response
         return paginator.get_paginated_response(serializer.data)
+
+# Non-admin ViewSet for Tags
+class PublicTagViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Public ViewSet for retrieving tag details.
+    """
+    queryset = Tag.objects.all().order_by('id')
+    serializer_class = TagSerializer
+    permission_classes = [AllowAny]  # Allow anyone to access this endpoint
+
+# Non-admin ViewSet for Categories
+class PublicCategoryViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Public ViewSet for retrieving category details.
+    """
+    queryset = Category.objects.all().order_by('id')
+    serializer_class = CategorySerializer
+    permission_classes = [AllowAny]  # Allow anyone to access this endpoint

@@ -130,6 +130,7 @@
 </template>
 
 <script>
+import axios from "axios"; // Import Axios
 import AdminVerifierMixin from "@/mixins/AdminVerifierMixin";
 import { useMainStore } from "@/stores/index.js";
 import FormMapView from "@/components/map/FormMapView.vue"; // Import the FormMapView component
@@ -186,10 +187,10 @@ export default {
     },
     coordsDisplay: {
       get() {
-        return Array.isArray(this.coords) ? this.coords.join(', ') : '';
+        return Array.isArray(this.coords) ? this.coords.join(", ") : "";
       },
       set(value) {
-        const [lat, lng] = value.split(',').map((coord) => parseFloat(coord.trim()));
+        const [lat, lng] = value.split(",").map((coord) => parseFloat(coord.trim()));
         if (!isNaN(lat) && !isNaN(lng)) {
           this.coords = [lat, lng];
         }
@@ -226,114 +227,75 @@ export default {
         this.getUpdateData(this.id);
       }
     },
-    getUpdateData(id) {
-      this.$http
-        .get(`/admin/locations/${id}`)
-        .then((response) => {
-          console.log(
-            "successful retrieved location update/delete data from API: ",
-            response.data
-          );
-          let {
-            name,
-            category,
-            tags,
-            description,
-            lat,
-            lng,
-            subareas,
-            main_building,
-          } = response.data;
-          this.name = name;
-          this.categoryId = category;
-          this.tagIds = tags;
-          this.description = description;
-          this.defaultCoords = [lat, lng];
-          this.coords = [lat, lng];
-          this.subareaIds = subareas;
-          this.mainBuildingId = main_building;
-          console.log(main_building);
-        })
-        .catch((error) => {
-          console.log(
-            "error retrieving location update/delete data from API: ",
-            error
-          );
-        });
+    async getUpdateData(id) {
+      try {
+        const response = await axios.get(`/admin/locations/${id}`);
+        console.log("Successfully retrieved location update/delete data from API:", response.data);
+        const {
+          name,
+          category,
+          tags,
+          description,
+          lat,
+          lng,
+          subareas,
+          main_building,
+        } = response.data;
+        this.name = name;
+        this.categoryId = category;
+        this.tagIds = tags;
+        this.description = description;
+        this.defaultCoords = [lat, lng];
+        this.coords = [lat, lng];
+        this.subareaIds = subareas;
+        this.mainBuildingId = main_building;
+      } catch (error) {
+        console.error("Error retrieving location update/delete data from API:", error);
+      }
     },
-    apiGetSubareaItems(searchValue) {
-      this.$http
-        .get(`/admin/locations`, {
-          params: {
-            search: searchValue
-          },
-          paramsSerializer: params => {
-            return this.$qs.stringify(params, { indices: false });
-          }
-        })
-        .then(response => {
-          this.subareaItems = response.data.map(sub => {
-            return {
-              text: sub.name,
-              value: sub.id
-            };
-          });
-        })
-        // alert an error if unsuccessful GET
-        .catch(error => {
-          alert("error receiving queried results from API: ");
-          console.log(error);
-        })
-        .finally(() => (this.isLoading = false));
+    async apiGetSubareaItems(searchValue) {
+      try {
+        const params = searchValue ? { search: searchValue } : {};
+        const response = await axios.get(`/admin/locations`, { params });
+        this.subareaItems = response.data.map((sub) => ({
+          text: sub.name,
+          value: sub.id,
+        }));
+      } catch (error) {
+        console.error("Error retrieving subarea items from API:", error);
+      }
     },
-    apiGetMainBuildingItems(searchValue) {
-      this.$http
-        .get(`/admin/locations`, {
-          params: {
-            search: searchValue
-          },
-          paramsSerializer: params => {
-            return this.$qs.stringify(params, { indices: false });
-          }
-        })
-        .then(response => {
-          this.mainBuildingItems = response.data.map(building => {
-            return {
-              text: building.name,
-              value: building.id
-            };
-          });
-        })
-        // alert an error if unsuccessful GET
-        .catch(error => {
-          alert("error receiving queried results from API: ");
-          console.log(error);
-        })
-        .finally(() => (this.isLoading = false));
+    async apiGetMainBuildingItems(searchValue) {
+      try {
+        const params = searchValue ? { search: searchValue } : {};
+        const response = await axios.get(`/admin/locations`, { params });
+        this.mainBuildingItems = response.data.map((building) => ({
+          text: building.name,
+          value: building.id,
+        }));
+      } catch (error) {
+        console.error("Error retrieving main building items from API:", error);
+      }
     },
-
     handleCancelClick() {
       this.$router.go(-1);
     },
-    handleDeleteClick() {
-      this.isSubmitting = true
-      this.$http
-        .delete(`/admin/locations/${this.id}/`)
-        .then(response => {
-          console.log("successfully deleted location from API", response);
-          this.$router.push(`/map/search`);
-        })
-        .catch(function(error) {
-          alert("error deleting location to API", error);
-        })
-        .finally(() => {
-          this.isSubmitting = false
-        });;
+    async handleDeleteClick() {
+      this.isSubmitting = true;
+      try {
+        const response = await axios.delete(`/admin/locations/${this.id}/`);
+        console.log("Successfully deleted location from API:", response);
+        this.$router.push(`/map/search`);
+      } catch (error) {
+        console.error("Error deleting location from API:", error);
+      } finally {
+        this.isSubmitting = false;
+      }
     },
-    handleCreateClick() {
-      this.isSubmitting = true
-      this.$http
-        .post(`/admin/locations/`, {
+    async handleCreateClick() {
+      this.isSubmitting = true;
+      try {
+        const response = await axios.post(`/admin/locations/`, {
           name: this.name,
           category: this.categoryId,
           tags: this.tagIds,
@@ -341,22 +303,20 @@ export default {
           lat: this.coords[0],
           lng: this.coords[1],
           subareas: this.subareaIds,
-          main_building: this.mainBuildingId
-        })
-        .then(response => {
-          console.log("successfully posted new location to API", response);
-          this.$router.push(`/map/details/${response.data.id}`);
-        })
-        .catch(function(error) {
-          alert("error posting new location to API", error);
-        })
-        .finally(() => {
-          this.isSubmitting = false
+          main_building: this.mainBuildingId,
         });
+        console.log("Successfully posted new location to API:", response);
+        this.$router.push(`/map/details/${response.data.id}`);
+      } catch (error) {
+        console.error("Error posting new location to API:", error);
+      } finally {
+        this.isSubmitting = false;
+      }
     },
-    handleUpdateClick() {
-      this.$http
-        .patch(`/admin/locations/${this.id}/`, {
+    async handleUpdateClick() {
+      this.isSubmitting = true;
+      try {
+        const response = await axios.patch(`/admin/locations/${this.id}/`, {
           name: this.name,
           category: this.categoryId,
           tags: this.tagIds,
@@ -364,20 +324,17 @@ export default {
           lat: this.coords[0],
           lng: this.coords[1],
           subareas: this.subareaIds,
-          main_building: this.mainBuildingId
-        })
-        .then(response => {
-          console.log("successfully patched updated location to API", response);
-          this.$router.push(`/map/details/${this.id}`);
-        })
-        .catch(function(error) {
-          alert("error patching updated location to API", error);
-        })
-        .finally(() => {
-          this.isSubmitting = false
-        });;
-    }
-  }
+          main_building: this.mainBuildingId,
+        });
+        console.log("Successfully patched updated location to API:", response);
+        this.$router.push(`/map/details/${this.id}`);
+      } catch (error) {
+        console.error("Error patching updated location to API:", error);
+      } finally {
+        this.isSubmitting = false;
+      }
+    },
+  },
 };
 </script>
 
