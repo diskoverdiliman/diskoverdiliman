@@ -193,16 +193,112 @@ class AdminLocationViewSet(LocationViewSet):
         else:
             return LocationAdminCrudSerializer
 
-    def filter_queryset(self, queryset):
-        queryset = super().filter_queryset(queryset)
-        cat_ids = self.request.query_params.getlist("category_ids")
-        if cat_ids:
-            filtered_queryset = Location.objects.none()
-            for id in cat_ids:
-                filtered_queryset |= queryset.filter(category__id=id)
-            return filtered_queryset
-        else:
-            return queryset
+    def validate_subareas(self, subarea_ids):
+        """
+        Validate that all subarea IDs correspond to existing Location objects.
+        """
+        invalid_ids = []
+        for subarea_id in subarea_ids:
+            if not Location.objects.filter(pk=subarea_id).exists():
+                invalid_ids.append(subarea_id)
+        if invalid_ids:
+            raise ValidationError({"subareas": f"Invalid pk(s) {invalid_ids} - object(s) do not exist."})
+
+    def create(self, request):
+        requestDict = request.data
+        if isinstance(requestDict, QueryDict):
+            requestDict = self.parse_querydict(requestDict)
+
+        # Validate subareas
+        if 'subareas' in requestDict and requestDict['subareas']:
+            self.validate_subareas(requestDict['subareas'])
+
+        try:
+            self.validate(requestDict)
+        except ValidationError as e:
+            return Response(e.detail)
+
+        # Reset sequence id and use serializer to create with basic fields
+        Location.reset_id_sequence()
+        responseDict = super().create(request).data
+        createdLocation = Location.objects.get(pk=responseDict['id'])
+
+        # Add tags if there are any
+        if 'tags' in requestDict and requestDict['tags']:
+            createdLocation.tags.add(*requestDict['tags'])
+            responseDict['tags'] = requestDict['tags']
+
+        # Add building or subareas if there are any
+        if 'main_building' in requestDict and requestDict['main_building']:
+            Subarea.objects.update_or_create(sub=createdLocation, defaults={
+                'building': Location.objects.get(pk=requestDict['main_building'])
+            })
+            responseDict['main_building'] = requestDict['main_building']
+        elif 'subareas' in requestDict and requestDict['subareas']:
+            subareaLocations = Location.objects.in_bulk(
+                requestDict['subareas']).values()
+            for subarea in subareaLocations:
+                Subarea.objects.update_or_create(sub=subarea, defaults={
+                    'building': createdLocation
+                })
+            responseDict['subareas'] = requestDict['subareas']
+
+        return Response(responseDict)
+
+    def partial_update(self, request, pk=None):
+        requestDict = request.data
+        if isinstance(requestDict, QueryDict):
+            requestDict = self.parse_querydict(requestDict)
+
+        # Validate subareas
+        if 'subareas' in requestDict and requestDict['subareas']:
+            self.validate_subareas(requestDict['subareas'])
+
+        try:
+            self.validate(requestDict)
+        except ValidationError as e:
+            return Response(e.detail)
+
+        responseDict = super().partial_update(request, pk).data
+        updatedLocation = Location.objects.get(pk=pk)
+
+        # Handle inputs
+        if 'tags' in requestDict and requestDict['tags']:
+            updatedLocation.tags.clear()
+            updatedLocation.tags.add(*requestDict['tags'])
+            responseDict['tags'] = requestDict['tags']
+
+        if 'main_building' in requestDict and requestDict['main_building']:
+            Subarea.objects.filter(building=updatedLocation).delete()
+            responseDict['subareas'] = None
+            Subarea.objects.update_or_create(sub=updatedLocation, defaults={
+                'building': Location.objects.get(pk=requestDict['main_building'])
+            })
+            responseDict['main_building'] = requestDict['main_building']
+        elif 'subareas' in requestDict and requestDict['subareas']:
+            Subarea.objects.filter(building=updatedLocation).delete()
+            Subarea.objects.filter(sub=updatedLocation).delete()
+            responseDict['main_building'] = None
+            subareaLocations = Location.objects.in_bulk(
+                requestDict['subareas']).values()
+            for subarea in subareaLocations:
+                Subarea.objects.update_or_create(sub=subarea, defaults={
+                    'building': updatedLocation
+                })
+            responseDict['subareas'] = requestDict['subareas']
+
+        # Handle null inputs
+        if 'tags' in requestDict and not requestDict['tags']:
+            updatedLocation.tags.clear()
+            responseDict['tags'] = None
+        if 'main_building' in requestDict and not requestDict['main_building']:
+            Subarea.objects.filter(sub=updatedLocation).delete()
+            responseDict['main_building'] = None
+        if 'subareas' in requestDict and not requestDict['subareas']:
+            Subarea.objects.filter(building=updatedLocation).delete()
+            responseDict['subareas'] = None
+
+        return Response(responseDict)
 
     # returns the dictionary version of input querydict, useful for handling multipart form data
     def parse_querydict(self, queryDict):
@@ -249,109 +345,6 @@ class AdminLocationViewSet(LocationViewSet):
 
         if not isValid:
             raise ValidationError(errorDict)
-
-    # OVERRIDE CREATE HOOK FOR HANDLING POST REQUESTS
-    def create(self, request):
-        requestDict = request.data
-        if isinstance(requestDict, QueryDict):
-            requestDict = self.parse_querydict(requestDict)
-
-        try:
-            self.validate(requestDict)
-        except ValidationError as e:
-            return Response(e.detail)
-
-        # Reset sequence id and use serializer to create with basic fields
-        Location.reset_id_sequence()
-        responseDict = super().create(request).data
-        createdLocation = Location.objects.get(pk=responseDict['id'])
-
-        # add tags if there are any
-        if 'tags' in requestDict and requestDict['tags']:
-            createdLocation.tags.add(*requestDict['tags'])
-            responseDict['tags'] = requestDict['tags']
-
-        # add building or subareas if there are any
-        if 'main_building' in requestDict and requestDict['main_building']:
-            Subarea.objects.update_or_create(sub=createdLocation, defaults={
-                'building': Location.objects.get(pk=requestDict['main_building'])
-            })
-            responseDict['main_building'] = requestDict['main_building']
-        elif 'subareas' in requestDict and requestDict['subareas']:
-            subareaLocations = Location.objects.in_bulk(
-                requestDict['subareas']).values()
-            for subarea in subareaLocations:
-                Subarea.objects.update_or_create(sub=subarea, defaults={
-                    'building': createdLocation
-                })
-            responseDict['subareas'] = requestDict['subareas']
-
-        return Response(responseDict)
-
-    # OVERRIDE PARTIAL_UPDATE HOOK FOR HANDLING PATCH REQUESTS
-    def partial_update(self, request, pk=None):
-        requestDict = request.data
-        # if multipart/form data, parse it into native Python dict
-        if isinstance(requestDict, QueryDict):
-            requestDict = self.parse_querydict(requestDict)
-
-        try:
-            self.validate(requestDict)
-        except ValidationError as e:
-            return Response(e.detail)
-
-        responseDict = super().partial_update(request, pk).data
-        updatedLocation = Location.objects.get(pk=pk)
-
-        # handle inputs none null inputs
-        # update tags if there are any
-        if 'tags' in requestDict and requestDict['tags']:
-            # delete its original tags first
-            updatedLocation.tags.clear()
-            # remake all tags from scratch
-            updatedLocation.tags.add(*requestDict['tags'])
-            responseDict['tags'] = requestDict['tags']
-        # remake building or subareas if there are any
-        if 'main_building' in requestDict and requestDict['main_building']:
-            # it wants to become a subarea of a building so delete all its subareas (subareas cant have subareas)
-            Subarea.objects.filter(building=updatedLocation).delete()
-            responseDict['subareas'] = None
-            # rebind it to a a new building
-            Subarea.objects.update_or_create(sub=updatedLocation, defaults={
-                'building': Location.objects.get(pk=requestDict['main_building'])
-            })
-            responseDict['main_building'] = requestDict['main_building']
-        elif 'subareas' in requestDict and requestDict['subareas']:
-            # delete its original subareas first
-            Subarea.objects.filter(building=updatedLocation).delete()
-            # it wants to become a building so delete its main_building (buildings cant have buildings)
-            Subarea.objects.filter(sub=updatedLocation).delete()
-            responseDict['main_building'] = None
-            # rebind it to all its new subareas from scratch
-            subareaLocations = Location.objects.in_bulk(
-                requestDict['subareas']).values()
-            print("subareaLocations => {}".format(subareaLocations))
-            for subarea in subareaLocations:
-                Subarea.objects.update_or_create(sub=subarea, defaults={
-                    'building': updatedLocation
-                })
-            responseDict['subareas'] = requestDict['subareas']
-
-        # handle null inputs
-        if 'tags' in requestDict and not requestDict['tags']:
-            # delete its original tag
-            updatedLocation.tags.clear()
-            responseDict['tags'] = None
-        if 'main_building' in requestDict and not requestDict['main_building']:
-            # delete its original main_building
-            Subarea.objects.filter(sub=updatedLocation).delete()
-            responseDict['main_building'] = None
-        if 'subareas' in requestDict and not requestDict['subareas']:
-            # delete its original subareas
-            Subarea.objects.filter(building=updatedLocation).delete()
-            responseDict['subareas'] = None
-
-        return Response(responseDict)
 
     # OVERRIDE DESTROY HOOK FOR HANDLING DELETE REQUESTS
     def destroy(self, request, pk=None):

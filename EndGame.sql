@@ -1,3 +1,4592 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 11.1
+-- Dumped by pg_dump version 11.1
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: administrator_before; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.administrator_before (
+    firstname character varying(30) NOT NULL,
+    lastname character varying(20) NOT NULL,
+    username character varying(15) NOT NULL,
+    password character varying(200) NOT NULL,
+    status boolean NOT NULL
+);
+
+
+ALTER TABLE public.administrator_before OWNER TO postgres;
+
+--
+-- Name: auth_group; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_group (
+    id integer NOT NULL,
+    name character varying(80) NOT NULL
+);
+
+
+ALTER TABLE public.auth_group OWNER TO postgres;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.auth_group_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_id_seq OWNER TO postgres;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.auth_group_id_seq OWNED BY public.auth_group.id;
+
+
+--
+-- Name: auth_group_permissions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_group_permissions (
+    id integer NOT NULL,
+    group_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_group_permissions OWNER TO postgres;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.auth_group_permissions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_permissions_id_seq OWNER TO postgres;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.auth_group_permissions_id_seq OWNED BY public.auth_group_permissions.id;
+
+
+--
+-- Name: auth_permission; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_permission (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    content_type_id integer NOT NULL,
+    codename character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.auth_permission OWNER TO postgres;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.auth_permission_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_permission_id_seq OWNER TO postgres;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.auth_permission_id_seq OWNED BY public.auth_permission.id;
+
+
+--
+-- Name: auth_user; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_user (
+    id integer NOT NULL,
+    password character varying(128) NOT NULL,
+    last_login timestamp with time zone,
+    is_superuser boolean NOT NULL,
+    username character varying(150) NOT NULL,
+    first_name character varying(30) NOT NULL,
+    last_name character varying(150) NOT NULL,
+    email character varying(254) NOT NULL,
+    is_staff boolean NOT NULL,
+    is_active boolean NOT NULL,
+    date_joined timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.auth_user OWNER TO postgres;
+
+--
+-- Name: auth_user_groups; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_user_groups (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_groups OWNER TO postgres;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.auth_user_groups_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_groups_id_seq OWNER TO postgres;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.auth_user_groups_id_seq OWNED BY public.auth_user_groups.id;
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.auth_user_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_id_seq OWNER TO postgres;
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.auth_user_id_seq OWNED BY public.auth_user.id;
+
+
+--
+-- Name: auth_user_user_permissions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_user_user_permissions (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_user_permissions OWNER TO postgres;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.auth_user_user_permissions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_user_permissions_id_seq OWNER TO postgres;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.auth_user_user_permissions_id_seq OWNED BY public.auth_user_user_permissions.id;
+
+
+--
+-- Name: category; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.category (
+    name character varying(50) NOT NULL,
+    image character varying(260),
+    url character varying(50),
+    marker character varying(260),
+    "route_marker" character varying(260),
+    "route_color" character varying(7),
+    id integer NOT NULL
+);
+
+
+ALTER TABLE public.category OWNER TO postgres;
+
+--
+-- Name: category_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.category_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.category_id_seq OWNER TO postgres;
+
+--
+-- Name: category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.category_id_seq OWNED BY public.category.id;
+
+
+--
+-- Name: django_admin_log; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.django_admin_log (
+    id integer NOT NULL,
+    action_time timestamp with time zone NOT NULL,
+    object_id text,
+    object_repr character varying(200) NOT NULL,
+    action_flag smallint NOT NULL,
+    change_message text NOT NULL,
+    content_type_id integer,
+    user_id integer NOT NULL,
+    CONSTRAINT django_admin_log_action_flag_check CHECK ((action_flag >= 0))
+);
+
+
+ALTER TABLE public.django_admin_log OWNER TO postgres;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.django_admin_log_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_admin_log_id_seq OWNER TO postgres;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.django_admin_log_id_seq OWNED BY public.django_admin_log.id;
+
+
+--
+-- Name: django_content_type; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.django_content_type (
+    id integer NOT NULL,
+    app_label character varying(100) NOT NULL,
+    model character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.django_content_type OWNER TO postgres;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.django_content_type_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_content_type_id_seq OWNER TO postgres;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.django_content_type_id_seq OWNED BY public.django_content_type.id;
+
+
+--
+-- Name: django_migrations; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.django_migrations (
+    id integer NOT NULL,
+    app character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
+    applied timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_migrations OWNER TO postgres;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.django_migrations_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_migrations_id_seq OWNER TO postgres;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.django_migrations_id_seq OWNED BY public.django_migrations.id;
+
+
+--
+-- Name: django_session; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.django_session (
+    session_key character varying(40) NOT NULL,
+    session_data text NOT NULL,
+    expire_date timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_session OWNER TO postgres;
+
+--
+-- Name: image; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.image (
+    img_url character varying(260) NOT NULL,
+    id integer NOT NULL
+);
+
+
+ALTER TABLE public.image OWNER TO postgres;
+
+--
+-- Name: image_before; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.image_before (
+    location character varying(100),
+    img_url character varying(260)
+);
+
+
+ALTER TABLE public.image_before OWNER TO postgres;
+
+--
+-- Name: image_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.image_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.image_id_seq OWNER TO postgres;
+
+--
+-- Name: image_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.image_id_seq OWNED BY public.image.id;
+
+
+--
+-- Name: image_location; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.image_location (
+    id integer NOT NULL,
+    image_id integer,
+    location_id integer
+);
+
+
+ALTER TABLE public.image_location OWNER TO postgres;
+
+--
+-- Name: image_location_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.image_location_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.image_location_id_seq OWNER TO postgres;
+
+--
+-- Name: image_location_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.image_location_id_seq OWNED BY public.image_location.id;
+
+
+--
+-- Name: inside_before; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.inside_before (
+    room character varying(100) NOT NULL,
+    building character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.inside_before OWNER TO postgres;
+
+--
+-- Name: location; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.location (
+    name character varying(100) NOT NULL,
+    description text,
+    lat double precision NOT NULL,
+    lng double precision NOT NULL,
+    url character varying(100),
+    id integer NOT NULL,
+    category_id integer,
+    more_info text
+);
+
+
+ALTER TABLE public.location OWNER TO postgres;
+
+--
+-- Name: location_before; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.location_before (
+    name character varying(100),
+    category character varying(50),
+    description text,
+    more_info text,
+    lat double precision,
+    lng double precision,
+    url character varying(100),
+    id integer
+);
+
+
+ALTER TABLE public.location_before OWNER TO postgres;
+
+--
+-- Name: location_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.location_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.location_id_seq OWNER TO postgres;
+
+--
+-- Name: location_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.location_id_seq OWNED BY public.location.id;
+
+
+--
+-- Name: subarea; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.subarea (
+    sub_id integer NOT NULL,
+    building_id integer
+);
+
+
+ALTER TABLE public.subarea OWNER TO postgres;
+
+--
+-- Name: tag; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tag (
+    id integer NOT NULL,
+    name character varying(30) NOT NULL
+);
+
+
+ALTER TABLE public.tag OWNER TO postgres;
+
+--
+-- Name: tag_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.tag_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tag_id_seq OWNER TO postgres;
+
+--
+-- Name: tag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.tag_id_seq OWNED BY public.tag.id;
+
+
+--
+-- Name: tag_location; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tag_location (
+    id integer NOT NULL,
+    tag_id integer NOT NULL,
+    location_id integer NOT NULL
+);
+
+
+ALTER TABLE public.tag_location OWNER TO postgres;
+
+--
+-- Name: tag_location_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.tag_location_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tag_location_id_seq OWNER TO postgres;
+
+--
+-- Name: tag_location_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.tag_location_id_seq OWNED BY public.tag_location.id;
+
+
+--
+-- Name: auth_group id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_group ALTER COLUMN id SET DEFAULT nextval('public.auth_group_id_seq'::regclass);
+
+
+--
+-- Name: auth_group_permissions id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_group_permissions_id_seq'::regclass);
+
+
+--
+-- Name: auth_permission id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_permission ALTER COLUMN id SET DEFAULT nextval('public.auth_permission_id_seq'::regclass);
+
+
+--
+-- Name: auth_user id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user ALTER COLUMN id SET DEFAULT nextval('public.auth_user_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_groups id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_groups ALTER COLUMN id SET DEFAULT nextval('public.auth_user_groups_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_user_permissions id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_user_user_permissions_id_seq'::regclass);
+
+
+--
+-- Name: category id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.category ALTER COLUMN id SET DEFAULT nextval('public.category_id_seq'::regclass);
+
+
+--
+-- Name: django_admin_log id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_admin_log ALTER COLUMN id SET DEFAULT nextval('public.django_admin_log_id_seq'::regclass);
+
+
+--
+-- Name: django_content_type id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_content_type ALTER COLUMN id SET DEFAULT nextval('public.django_content_type_id_seq'::regclass);
+
+
+--
+-- Name: django_migrations id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_migrations ALTER COLUMN id SET DEFAULT nextval('public.django_migrations_id_seq'::regclass);
+
+
+--
+-- Name: image id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.image ALTER COLUMN id SET DEFAULT nextval('public.image_id_seq'::regclass);
+
+
+--
+-- Name: image_location id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.image_location ALTER COLUMN id SET DEFAULT nextval('public.image_location_id_seq'::regclass);
+
+
+--
+-- Name: location id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.location ALTER COLUMN id SET DEFAULT nextval('public.location_id_seq'::regclass);
+
+
+--
+-- Name: tag id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tag ALTER COLUMN id SET DEFAULT nextval('public.tag_id_seq'::regclass);
+
+
+--
+-- Name: tag_location id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tag_location ALTER COLUMN id SET DEFAULT nextval('public.tag_location_id_seq'::regclass);
+
+
+--
+-- Data for Name: administrator_before; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.administrator_before (firstname, lastname, username, password, status) FROM stdin;
+CS 191	Team D4C	d4cteam	pbkdf2:sha256:50000$aZ31bAr1$9f9d482d4e9e609544211b0083eadb874237032531a4290f2243044025a1e752	t
+CS 192	Team Deep	teamdeep	pbkdf2:sha256:50000$1v4UzpcA$41428f984e723724c4d8c39c3395548363f271555d49a7637829f66cb7a911f1	f
+In	Active	inactive	pbkdf2:sha256:50000$ZQrOCNt4$b4043c3e50b0c03f63ec799ca5c417fcfe9c6002111458235e294ac3f7076973	f
+Guest	Account	guest76	pbkdf2:sha256:50000$NDTm9GDH$1305efa45c40d1f42b793aecfb4b73cfdaca506b767da7229d8383f4bc1406d2	f
+\.
+
+
+--
+-- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_group (id, name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_group_permissions (id, group_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
+1	Can add administrator	1	add_administrator
+2	Can change administrator	1	change_administrator
+3	Can delete administrator	1	delete_administrator
+4	Can view administrator	1	view_administrator
+5	Can add category	2	add_category
+6	Can change category	2	change_category
+7	Can delete category	2	delete_category
+8	Can view category	2	view_category
+9	Can add image	3	add_image
+10	Can change image	3	change_image
+11	Can delete image	3	delete_image
+12	Can view image	3	view_image
+13	Can add inside	4	add_inside
+14	Can change inside	4	change_inside
+15	Can delete inside	4	delete_inside
+16	Can view inside	4	view_inside
+17	Can add location	5	add_location
+18	Can change location	5	change_location
+19	Can delete location	5	delete_location
+20	Can view location	5	view_location
+21	Can add log entry	6	add_logentry
+22	Can change log entry	6	change_logentry
+23	Can delete log entry	6	delete_logentry
+24	Can view log entry	6	view_logentry
+25	Can add permission	7	add_permission
+26	Can change permission	7	change_permission
+27	Can delete permission	7	delete_permission
+28	Can view permission	7	view_permission
+29	Can add group	8	add_group
+30	Can change group	8	change_group
+31	Can delete group	8	delete_group
+32	Can view group	8	view_group
+33	Can add user	9	add_user
+34	Can change user	9	change_user
+35	Can delete user	9	delete_user
+36	Can view user	9	view_user
+37	Can add content type	10	add_contenttype
+38	Can change content type	10	change_contenttype
+39	Can delete content type	10	delete_contenttype
+40	Can view content type	10	view_contenttype
+41	Can add session	11	add_session
+42	Can change session	11	change_session
+43	Can delete session	11	delete_session
+44	Can view session	11	view_session
+45	Can add administrator	12	add_administrator
+46	Can change administrator	12	change_administrator
+47	Can delete administrator	12	delete_administrator
+48	Can view administrator	12	view_administrator
+49	Can add category	13	add_category
+50	Can change category	13	change_category
+51	Can delete category	13	delete_category
+52	Can view category	13	view_category
+53	Can add image	14	add_image
+54	Can change image	14	change_image
+55	Can delete image	14	delete_image
+56	Can view image	14	view_image
+57	Can add inside	15	add_inside
+58	Can change inside	15	change_inside
+59	Can delete inside	15	delete_inside
+60	Can view inside	15	view_inside
+61	Can add location	16	add_location
+62	Can change location	16	change_location
+63	Can delete location	16	delete_location
+64	Can view location	16	view_location
+65	Can add subarea	17	add_subarea
+66	Can change subarea	17	change_subarea
+67	Can delete subarea	17	delete_subarea
+68	Can view subarea	17	view_subarea
+69	Can add tag	18	add_tag
+70	Can change tag	18	change_tag
+71	Can delete tag	18	delete_tag
+72	Can view tag	18	view_tag
+\.
+
+
+--
+-- Data for Name: auth_user; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
+1	pbkdf2_sha256$120000$lYrwrKZutCcq$r1mjm4HP8+3OVNa3MqWZtX+nQUSeDTO3NgUnmMoOzow=	2019-02-28 11:01:15.996513+08	t	cs192-diskover			diskoverupd2018@gmail.com	t	t	2019-02-28 09:53:37.704892+08
+2	pbkdf2_sha256$120000$XG6DpBale1GI$dsEx9xOk1pMUtIBC4GGdJiubLe/xRAu90cnGbRuLJ0c=	2019-04-02 21:20:53.328977+08	t	d4cteam			diskoverplusplus@gmail.com	t	t	2019-03-22 10:23:37.992844+08
+\.
+
+
+--
+-- Data for Name: auth_user_groups; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_user_groups (id, user_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_user_user_permissions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: category; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.category (name, image, url, marker, "route_marker", "route_color", id) FROM stdin;
+Rooms	room.jpg	rooms	schoolIcon.png	schoolRouteIcon.png	#1E90FF	2
+Parking Areas	parking.jpg	parking-lots	parkingIcon.png	parkingRouteIcon.png	#800080	4
+Comfort Rooms	toilet.jpg	comfort-rooms	toiletIcon.png	toiletIcon.png	#FF7F50	5
+Jeepney Stops	jeepstop.jpg	jeepney-stops	jeepstopIcon.png	jeepstopRouteIcon.png	#B22222	6
+Entrances/Exits	\N	\N	\N	\N	\N	7
+Landmarks	\N	\N	\N	\N	\N	8
+Food Services	food.jpg	food-service	foodIcon.png	foodRouteIcon.png	#B22222	3
+Buildings	college.jpg	college-buildings	schoolIcon.png	schoolRouteIcon.png	#1E90FF	1
+Offices/Facilities	\N	\N	\N	\N	\N	9
+\.
+
+
+--
+-- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+1	2019-03-31 15:08:44.021704+08	9	Category object (9)	1	[{"added": {}}]	13	2
+\.
+
+
+--
+-- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.django_content_type (id, app_label, model) FROM stdin;
+1	DiskoverApp	administrator
+2	DiskoverApp	category
+3	DiskoverApp	image
+4	DiskoverApp	inside
+5	DiskoverApp	location
+6	admin	logentry
+7	auth	permission
+8	auth	group
+9	auth	user
+10	contenttypes	contenttype
+11	sessions	session
+12	api	administrator
+13	api	category
+14	api	image
+15	api	inside
+16	api	location
+17	api	subarea
+18	api	tag
+\.
+
+
+--
+-- Data for Name: django_migrations; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.django_migrations (id, app, name, applied) FROM stdin;
+1	DiskoverApp	0001_initial	2019-02-06 18:43:47.390291+08
+2	DiskoverApp	0002_auto_20190128_0859	2019-02-06 18:43:47.496271+08
+3	DiskoverApp	0003_auto_20190128_0905	2019-02-06 18:43:47.502256+08
+4	contenttypes	0001_initial	2019-02-06 18:43:47.762508+08
+5	auth	0001_initial	2019-02-06 18:43:48.966594+08
+6	admin	0001_initial	2019-02-06 18:43:49.228629+08
+7	admin	0002_logentry_remove_auto_add	2019-02-06 18:43:49.238067+08
+8	admin	0003_logentry_add_action_flag_choices	2019-02-06 18:43:49.250035+08
+9	contenttypes	0002_remove_content_type_name	2019-02-06 18:43:49.296917+08
+10	auth	0002_alter_permission_name_max_length	2019-02-06 18:43:49.306917+08
+11	auth	0003_alter_user_email_max_length	2019-02-06 18:43:49.315868+08
+12	auth	0004_alter_user_username_opts	2019-02-06 18:43:49.325868+08
+13	auth	0005_alter_user_last_login_null	2019-02-06 18:43:49.336834+08
+14	auth	0006_require_contenttypes_0002	2019-02-06 18:43:49.339809+08
+15	auth	0007_alter_validators_add_error_messages	2019-02-06 18:43:49.358752+08
+16	auth	0008_alter_user_username_max_length	2019-02-06 18:43:49.434678+08
+17	auth	0009_alter_user_last_name_max_length	2019-02-06 18:43:49.447719+08
+18	sessions	0001_initial	2019-02-06 18:43:49.71036+08
+19	api	0001_initial	2019-03-22 10:28:41.126211+08
+20	api	0002_category	2019-03-31 14:49:02.281856+08
+21	api	0003_subarea	2019-04-01 15:18:29.593732+08
+22	api	0004_inside_clear	2019-04-01 22:20:45.4597+08
+23	api	0005_remove-admin	2019-04-06 14:15:52.61032+08
+24	api	0006_tags	2019-04-06 14:41:14.468331+08
+25	api	0007_cascade	2019-04-06 23:04:33.655396+08
+\.
+
+
+--
+-- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
+\.
+
+
+--
+-- Data for Name: image; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.image (img_url, id) FROM stdin;
+math_parking_1.JPG	45
+math-building-parking-lot-1.jpg	46
+national-institute-of-geological-sciences.jpg	118
+cal-201.JPG	6
+cswcd_parking.JPG	193
+nismed_cafeteria.JPG	256
+upis-123.jpg	339
+ArtCircleCafe.jpg	770
+ah-202-204.jpg	1
+ah-206-208.jpg	2
+ah-annex-222.jpg	3
+ascal-food-kiosks.jpg	4
+arkivickie.jpg	5
+cal-209.JPG	7
+cal-210.JPG	8
+cal-301.JPG	9
+cal-309.JPG	10
+cal-310.JPG	11
+cal-401.JPG	12
+cal-408.JPG	13
+cal-409.JPG	14
+cmc-m107.jpg	888
+cal-parking-lot.jpg	15
+cfa-toilet.JPG	16
+cfa-parking-lot.JPG	17
+che-gusali-2-toilet.jpg	18
+che-room-d.JPG	19
+che-room-e.JPG	20
+college-of-arts-and-letters.jpg	21
+college-of-home-economics-gusali-2.jpg	22
+edsa-st.jpg	23
+encarnacion-toilet.jpg	24
+engineering-theater.jpg	25
+fa-b1-&-b2.JPG	26
+fa-b4-&-b5.JPG	27
+fa-b6.JPG	28
+fa-rgep-1.JPG	29
+fa-rgep-2.JPG	30
+fa-t2.JPG	31
+fa-t3.JPG	32
+glorias-cafe.jpg	33
+gusali-2-parking-lot.jpg	34
+ic-305-306.jpg	35
+ic-307-308.jpg	36
+ic-309-310.jpg	37
+ic-311-312.jpg	38
+ic-313-314.jpg	39
+ic-315-316.jpg	40
+ic-330-331.jpg	41
+ic-chemrez.jpg	42
+ic-chevron.jpg	43
+institute-of-mathematics-annex.jpg	44
+math_parking_2.JPG	47
+law-110-ambion-room.JPG	48
+law-200.JPG	49
+law-221.JPG	50
+law-307.JPG	51
+law-311.JPG	52
+law-complex-parking-lot.JPG	53
+mb-301.jpg	54
+mb-302.jpg	55
+mb-303.jpg	56
+mb-304.jpg	57
+mb-305.jpg	58
+mb-306.jpg	59
+mb-307.jpg	60
+mb-308.jpg	61
+mb-321.jpg	62
+mb-322.jpg	63
+mb-323.jpg	64
+mb-328.jpg	65
+mb-329.jpg	66
+mb-toilet.jpg	67
+mban-305.jpg	68
+mban-306.jpg	69
+mban-313.jpg	70
+mban-314.jpg	71
+mban-401.jpg	72
+mban-402.jpg	73
+mban-403.jpg	74
+mban-avr-1.jpg	75
+mban-avr-2.jpg	76
+mban-toilet.jpg	77
+mh301_303.jpg	78
+mh314_316.jpg	79
+mh318_320.jpg	80
+mh416_418.jpg	81
+mh422_424.jpg	82
+mh501.jpg	83
+melchor-hall-left-toilet.jpg	84
+melchor-hall-right-toilet.jpg	85
+ncpag-301-302.JPG	86
+ncpag-305.JPG	87
+ncpag-306.JPG	88
+ncpag-307a.JPG	89
+ncpag-308.JPG	90
+ncpag-309.JPG	91
+ncpag-avr.JPG	92
+ncpag-cafe.JPG	93
+ncpag-parking-lot.JPG	94
+nigs-125.jpg	95
+nigs-127.jpg	96
+nigs-128.jpg	97
+nigs-211.jpg	98
+nigs-215.jpg	99
+nigs-canteen.jpg	100
+nigs-toilet.jpg	101
+nigs-parking-lot.jpg	102
+nip-toilet.jpg	103
+nip-f201.jpg	104
+nip-f202.jpg	105
+nip-f203.jpg	106
+nip-f204.jpg	107
+nip-f205.jpg	108
+nip-f206.jpg	109
+nip-f207.jpg	110
+nip-f208.jpg	111
+nip-f209.jpg	112
+nip-f210.jpg	113
+nip-lecture-pavilion-101.jpg	114
+nip-lecture-pavilion-102.jpg	115
+nip-lecture-pavilion-103.jpg	116
+nip-lecture-pavilion-104.jpg	117
+pav1-1114.jpg	119
+pav1-1115.jpg	120
+pav1-1206.jpg	121
+college-of-architecture-building-2.jpg	122
+college-of-architecture-building-1.jpg	123
+melchor-hall-parking-lot-1.jpg	124
+abelardo-hall.jpg	125
+pav1-1210.jpg	126
+pav1-1213.jpg	127
+pav1-1214.jpg	128
+pav1-1222.jpg	129
+pav1-1228.jpg	130
+pav1-1230.jpg	131
+pav1-1232.jpg	132
+ph-108-110.jpg	133
+ph-116-118.jpg	134
+ph-120-122.jpg	135
+ph-207abc.JPG	136
+ph-213-215.jpg	137
+ph-216-218.jpg	138
+ph-308-310.jpg	139
+ph-312-314.jpg	140
+ph-324-326.jpg	141
+ph-parking-lot-1.jpg	142
+ph-parking-lot-2.jpg	143
+palma-hall-female-toilet.jpg	144
+palma-hall-male-toilet.jpg	145
+se-103.JPG	146
+se-105.JPG	147
+se-111.JPG	148
+se-114.JPG	149
+se-121.JPG	150
+se-auditorium.JPG	151
+solair-10.JPG	152
+solair-201.JPG	153
+solair-203.JPG	154
+solair-auditorium.JPG	155
+solair-toilet.jpg.JPG	156
+solair-parking-lot.JPG	157
+ss-301.jpg	158
+ss-302.jpg	159
+ss-303.jpg	160
+ss-304.jpg	161
+ss-305.jpg	162
+ss-306.jpg	163
+ss-307.jpg	164
+school-of-labor-and-industrial-relations.JPG	165
+stat-parking-lot.jpg	166
+statistics_parking_1.JPG	167
+statistics_parking_2.JPG	168
+up-school-of-economics.jpg	169
+stat-toilet.jpg	170
+abelardo-toilet.jpg	171
+abelardo-hall-parking-lot	172
+mh-305-307.jpg	173
+mh-306-308.jpg	174
+mh-309-311.jpg	175
+mh-313-315.jpg	176
+malcolm-hall-theater.jpg	177
+national-college-of-public-administration-and-governance.jpg	178
+national-institute-of-physics.jpg	179
+palma-hall.jpg	180
+penthouse-lecture-hall.jpg	181
+pandg2.jpg	182
+pandg.jpg	183
+econ-parking-lot.jpg	184
+across_gender_studies_parking.JPG	185
+across_law_parking.JPG	186
+alumni_bahay_parking_1.JPG	187
+alumni_bahay_parking_2.JPG	188
+behind_shopping_parking_1.JPG	189
+behind_shopping_parking_2.JPG	190
+beside_econ_parking.JPG	191
+cal_parking.JPG	192
+dcs_parking.JPG	194
+film_center_parking_1.JPG	195
+film_center_parking_2.JPG	196
+gusali2_parking.JPG	197
+ieee_parking.JPG	198
+institute_of_biology_parking.JPG	199
+marine_parking.JPG	200
+nimbb_parking.JPG	201
+nimbb_rear_parking_1.JPG	202
+nimbb_rear_parking_2.JPG	203
+nismed_parking.JPG	204
+physics_chem_parking.JPG	205
+quirino_ave_parking.JPG	206
+regidor_st_parking.JPG	207
+univ_theater_parking.JPG	208
+Area 2.jpg	209
+Arki.jpg	210
+Bio.jpg	211
+Centennial.jpg	212
+Dagohoy.jpg	213
+EEE.jpg	214
+MBB.jpg	215
+NIP.jpg	216
+Romulo Hall.jpg	217
+ASCAL.jpg	218
+CS Lib.jpg	219
+Kalay.jpg	220
+Law2.jpg	221
+Molave.jpg	222
+NIGS.jpg	223
+NSRI.jpg	224
+OUR.jpg	225
+solair-11.JPG	226
+malcolm-hall.jpg	227
+melchor-hall.jpg	228
+school-of-statistics.JPG	229
+abelardo-hall-annex.jpg	230
+plaridel_parking.JPG	231
+room-101.jpg	232
+room-102.jpg	233
+room-103.jpg	234
+room-104.jpg	235
+room-105.jpg	236
+room-106.jpg	237
+cslib_parking.JPG	238
+Swimming pool.jpg	239
+Univ Ave 1.jpg	240
+Univ Ave 2.jpg	241
+area_2_1.jpg	242
+area_2_2.jpg	243
+area_2_3.jpg	244
+casaa.jpg	245
+ieee_food_1.jpg	246
+ieee_food_2.jpg	247
+mang_larrys.jpg	248
+vinzons_food_1.jpg	249
+vinzons_food_2.jpg	250
+ieee_parking_right.JPG	251
+cal_parking_2.JPG	252
+inst_of_math_cafeteria.JPG	253
+inst_of_math_food_kiosk.JPG	254
+kiosks_across_cal.JPG	255
+regidor_st_food_kiosk.JPG	257
+vinzons_hall_parking_1.JPG	258
+vinzons_hall_parking_2.JPG	259
+vinzons_univ_food_service.JPG	260
+Law.jpg	261
+bulwagang_rizal_stop.JPG	262
+CRL.jpg	263
+lagmay_stop.JPG	264
+melchor_stop.JPG	265
+quezon_hall_stop.JPG	266
+econ_stop.JPG	267
+Shopping Center.jpg	268
+SURP.jpg	269
+univ_theater_stop.JPG	270
+UPFI.jpg	271
+Vanguard.jpg	272
+vinzons_stop_1.JPG	273
+vinzons_stop_2.JPG	274
+vinzons_stop_3.JPG	275
+SS_Lec_Hall_1.JPG	276
+SS_Lec_Hall_2.JPG	277
+SOLAIR_203.JPG	278
+SOLAIR_Entrance.JPG	279
+ah-226.jpg	280
+CMC_BViewingRoom.JPG	281
+PH_400.jpg	282
+CMC_Auditorium1.JPG	283
+CMC_PhilStarRoom.JPG	284
+CMC_ParkingLot1.JPG	285
+SOLAIR_12.JPG	286
+institute-of-mathematics-main-building.jpg	287
+CAL_211.jpg	288
+CAL_212.jpg	289
+CAL_213.jpg	290
+CAL_501.jpg	291
+CAL_502.jpg	292
+CAL_503.jpg	293
+CAL_510.jpg	294
+CAL_512.jpg	295
+bocobo-hall.JPG	296
+institute-of-chemistry-teaching-building.jpg	297
+CFA_Entrance.jpg	298
+MalcolmHall_3rdFloor_CRMale.JPG	299
+MalcolmHall_1stFloor_CRFemale.JPG	300
+MalcolmHall_1stFloor_CRMale.JPG	301
+MalcolmHall_2ndFloor_CRFemale.JPG	302
+MalcolmHall_2ndFloor_CRMale.JPG	303
+MalcolmHall_3rdFloor_CRFemale.JPG	304
+NCPAG_3rdFloor_CRMale.JPG	305
+NCPAG_1stFloor_CRFemale.JPG	306
+NCPAG_1stFloor_CRMale.JPG	307
+NCPAG_2ndFloor_CRFemale.JPG	308
+NCPAG_2ndFloor_CRMale.JPG	309
+NCPAG_3rdFloor_CRFemale.JPG	310
+CMC_CRAuditorium.JPG	311
+CMC_Lobby_CRFemale.JPG	312
+CMC_Lobby_CRMale.JPG	313
+upis-a.png	314
+upis-road.png	315
+upis-110-a.png	316
+upis-111.png	317
+upis-111-padded.png	318
+upis-110-a.jpg	319
+upis-110-b.jpg	320
+upis-111.jpg	321
+inst_of_civil_engg_cafeteria.JPG	322
+law-1-cr.jpg	323
+law-2-cr.jpg	324
+law-3-cr.jpg	325
+upis-1-cr-d.jpg	326
+upis-1-cr-f.jpg	327
+upis-1-cr-m.jpg	328
+upis-2-cr-f.jpg	329
+upis-2-cr-m-a.jpg	330
+upis-2-cr-m-b.jpg	331
+upis-3-cr-f.jpg	332
+upis-3-cr-m.jpg	333
+upis-113.jpg	334
+upis-120-a.jpg	335
+upis-120-b.jpg	336
+upis-121.jpg	337
+upis-122.jpg	338
+upis-124-a.jpg	340
+upis-124-b.jpg	341
+upis-125-a.jpg	342
+upis-125-b.jpg	343
+upis-126-a.jpg	344
+upis-126-b.jpg	345
+upis-127-a.jpg	346
+upis-127-b.jpg	347
+upis-128-a.jpg	348
+upis-128-b.jpg	349
+upis-129.jpg	350
+upis-130.jpg	351
+upis-131.jpg	352
+upis-132.jpg	353
+upis-133.jpg	354
+upis-134-a.jpg	355
+upis-134-b.jpg	356
+upis-135-a.jpg	357
+upis-135-b.jpg	358
+upis-136.jpg	359
+upis-137.jpg	360
+FonacierHall.JPG	361
+EthnoMusicology.JPG	362
+DMST.jpg	363
+BalayAtleta.jpg	364
+DanceStudio.jpg	365
+Yakal_Residence_Hall.jpg	366
+office-univ-registrar.jpg	367
+DILC2.jpg	368
+DILC.jpg	369
+Acacia.jpg	370
+CAL_FacultyCenter.jpg	371
+Ipil_Back.jpg	372
+Ipil_Residence_Hall.jpg	373
+dlrc_3.jpg	374
+OSH.jpg	375
+Espiritu_Hall.jpg	376
+Sanggumay.jpg	377
+Kalayaan.jpg	378
+DSC_00411.JPG	379
+nismed-a.jpg	380
+nismed-b.jpg	381
+NCTS.jpg	382
+JunioHall.jpg	383
+vidal-a-tan-hall.jpg	384
+pauw-child-study-center.jpg	385
+institute-of-civil-engineering-a.jpg	386
+institute-of-civil-engineering-b.jpg	387
+executive-house-a.jpg	388
+executive-house-b.jpg	389
+GT_Toyota1.jpg	390
+GT_Toyota.jpg	391
+Melchor_Admin.jpg	392
+Melchor_Library.jpg	393
+electrical-and-electronics-engineering-institute-a.jpg	394
+electrical-and-electronics-engineering-institute-b.jpg	395
+dept-mmm-engineering-a.jpg	396
+HealthService.jpg	397
+dlo.jpg	398
+pagasa-observatory-a.jpg	399
+msi-a.jpg	400
+national-institute-of-geological-sciences-a.jpg	401
+Virata.jpg	402
+Virata1.jpg	403
+ni-molecular-biology-biotechnology-a.jpg	404
+college-of-science-library-b.jpg	405
+college-of-science-administration-a.jpg	406
+college-of-science-administration-b.jpg	407
+computational-science-research-center-a.jpg	408
+BellTower.jpg	409
+nsc-amphitheater-a.jpg	410
+nsc-amphitheater-b.jpg	411
+institute-of-environmental-science-and-meteorology-a.jpg	412
+philippine-genome-center-b.jpg	413
+UP_MainTheater.jpg	414
+UP_SYCP_Trees.jpg	415
+benton.jpg	416
+archi_cr.jpg	417
+bulwagan_dangal.jpg	418
+cal_cr_1.jpg	419
+archi_parking_5.jpg	420
+oca_1.jpg	421
+oca_2.jpg	422
+benton_cis.jpg	423
+dlrc_1.jpg	424
+vargas_museum_1.jpg	425
+vargas_museum_2.jpg	426
+kamia_dorm_1.jpg	427
+kamia_dorm_2.jpg	428
+sampaguita_dorm_1.jpg	429
+sampaguita_dorm_2.jpg	430
+albert_hall.jpg	431
+benitez_1.jpg	432
+benitez_2.jpg	433
+upis_k2.jpg	434
+CashOffice.jpg	435
+Romulo_Hall.jpg	436
+palma_parking.jpg	437
+bio_narnia_1.jpg	438
+bio_narnia_2.jpg	439
+engg-library-2-a.jpg	440
+bio_cr.jpg	441
+econ_lib_1.jpg	442
+CSWCD.jpg	443
+CSWCD2.jpg	444
+UP_Film_Center.jpg	445
+Church_of_the_Risen_Lord.jpg	446
+Parish_of_Holy_Sacrifice.jpg	447
+Parish_of_Holy_Sacrifice2.jpg	448
+Parish_of_Holy_Sacrifice3.jpg	449
+German_Yia_Hall.jpg	450
+German_Yia_Hall2.jpg	451
+alonso_hall.jpg	452
+alonso_inner.jpg	453
+Philippine_Center_for_Economic_Development.jpg	454
+econ_lib_2.jpg	455
+econ_diosdado.jpg	456
+benitez_cr_1.jpg	457
+benitez_cr_2.jpg	458
+econ_cr.jpg	459
+benitez_105.jpg	460
+benitez_108.jpg	461
+benitez_109.jpg	462
+benitez_110.jpg	463
+benitez_200.jpg	464
+benitez_201.jpg	465
+benitez_203.jpg	466
+benitez_205_1.jpg	467
+benitez_205_2.jpg	468
+benitez_206.jpg	469
+benitez_212.jpg	470
+benitez_304.jpg	471
+benitez_312.jpg	472
+benitez_lib.jpg	473
+che_daycare.jpg	474
+SURPBldg.jpg	475
+che_cr_2.jpg	476
+che_cr_3.jpg	477
+che_lib_1.jpg	478
+che_lib_2.jpg	479
+eee_vlc.jpg	480
+eee_lc1.jpg	481
+eee_lc2.jpg	482
+eee_meralco.jpg	483
+virata_cr_1.jpg	484
+virata_cr_2.jpg	485
+casaa_interior.jpg	486
+casaa_zoo_2.jpg	487
+mbb_cafe.jpg	488
+mbb_lib.jpg	489
+mbb_cr_1.jpg	490
+mbb_cr_2.jpg	491
+math_cr_1.jpg	492
+math_cr_2.jpg	493
+DZUPTower.jpg	494
+EpsilonChiCenter.jpg	495
+Bahay_Alumni.jpg	496
+Bahay_Alumni_Parking.jpg	497
+Aldaba.jpg	498
+Kamagong.jpg	499
+PostOffice.jpg	500
+SentroNgWikangFilipino.jpg	501
+NewShopping.jpg	502
+NewShopping2.jpg	503
+NewShopping3.jpg	504
+OVCAA.jpg	505
+OfficeOfInternationalLinkagesInDiliman.jpg	506
+GeneralEducationCenter.jpg	507
+NationalServiceTrainingProgram.jpg	508
+OfficeOfFieldActivities.jpg	509
+FoodService.jpg	510
+OfficeChiefSecurityOfficer.jpg	511
+UP_ComputerCenter.jpg	512
+UtilitiesManagementTeam.jpg	513
+DSC_0065.jpg	514
+bahay_kalinaw.jpg	515
+chr_sign.jpg	516
+chk_1.jpg	517
+chk_2.JPG	518
+gym_back.jpg	519
+nigs_lib.jpg	520
+university_hotel.jpg	521
+CSWCDParking.jpg	522
+aech-accenture.jpg	523
+ib-auditorium.jpg	524
+institute-of-biology.jpg	525
+institute-of-biology-a.jpg	526
+up-biology-arboretum.jpg	527
+ib-library.jpg	528
+ib-cafeteria.jpg	529
+dmmme-cr.jpg	530
+icivilengg-cr.jpg	531
+up-vet-hospital.jpg	532
+ichem-cafeteria.jpg	533
+institute-of-chemistry-research.jpg	534
+ic-parking.jpg	535
+pagasa-observatory-b.jpg	536
+vinzons-cr.jpg	537
+virata-sb-parking.jpg	538
+sunken-garden-a.jpg	539
+juinio-hall-b.jpg	540
+dcs_cr.jpg	541
+main-library-parking-a.jpg	542
+uml-ssp-library.jpg	543
+uml-filipiniana-section.jpg	544
+lagmay-cr.jpg	545
+benton-b.jpg	546
+lagmay-library.jpg	547
+our-parking-a.jpg	548
+our-parking-b.jpg	549
+MediaCenter.jpg	550
+cswcd_cr.jpg	551
+virata_facade.jpg	552
+upis-3-10-a.jpg	553
+virata_lec.jpg	554
+che_facade_1.jpg	555
+ib-museum.jpg	556
+LawForum.jpg	557
+centennial-rh-parking-a.jpg	558
+asian-institute-of-tourism-a.jpg	559
+dmmme-parking.jpg	560
+iche-parking.jpg	561
+iche-cr.jpg	562
+institute-of-chemical-engineering-c.jpg	563
+institute-of-chemical-engineering-b.jpg	564
+environmental-energy-engineering-a.jpg	565
+public-art-three-women-a.jpg	566
+public-art-untitled-a-imao-a.jpg	567
+cal-library.jpg	568
+public-art-rajah-sulayman.jpg	569
+landbank-a.jpg	570
+parish-office-a.jpg	571
+kalinga-day-care-b.jpg	572
+area-1-b.jpg	573
+balay-kalinaw-b.jpg	574
+pauw-annex.jpg	575
+ilang-ilang-residence-hall-a.jpg	576
+gt-cafe-via-mare.jpg	577
+public-art-rizal-statue.jpg	578
+public-art-spirit-of-business.jpg	579
+public-art-university-seal.jpg	580
+engg-library-2-cr.jpg	581
+public-art-balintawak.jpg	582
+public-art-sundial.jpg	583
+oec.jpg	584
+phivolcs.jpg	585
+oblation.jpg	586
+ice_311.jpg	587
+ice_312.jpg	588
+ice_313.jpg	589
+ice_314.jpg	590
+ice_315.jpg	591
+ice_316.jpg	592
+ice_317.jpg	593
+ice_318.jpg	594
+ice_319_1.jpg	595
+ice_319_2.jpg	596
+ice_408b.jpg	597
+ampitheatre_1.jpg	598
+ice_410.jpg	599
+ice_411.jpg	600
+ice_412a.jpg	601
+ice_409a.jpg	602
+ice_lec_tan.jpg	603
+archi_107.jpg	604
+dmmme_103.jpg	605
+dmmme_105.jpg	606
+dmmme_108.jpg	607
+dmmme_109.jpg	608
+dmmme_203.jpg	609
+dmmme_ansyd_1.jpg	610
+dmmme_ansyd_2.jpg	611
+dmmme_mts.jpg	612
+dmmme_rpl.jpg	613
+dmmme_lec_dis.jpg	614
+dmmme_lec_gue.jpg	615
+dmmme_lec_ram.jpg	616
+dmmme_lec_vill.jpg	617
+dmmme_corridor.jpg	618
+hrdo.jpg	619
+bocobo_lobby1st.jpg	620
+bocobo_lobby3rd.jpg	621
+math_105.jpg	622
+math_106.jpg	623
+math_107.jpg	624
+math_108.jpg	625
+math_115.jpg	626
+math_116.jpg	627
+math_117.jpg	628
+math_120.jpg	629
+math_121.jpg	630
+math_313.jpg	631
+math_314.jpg	632
+math_319.jpg	633
+math_320.jpg	634
+miranda_1.jpg	635
+miranda_2.jpg	636
+chancellor.jpg	637
+ovca_1.jpg	638
+ovca_2.jpg	639
+ovcsa.jpg	640
+quezon_sign.jpg	641
+econ_123_1.jpg	642
+econ_123_2.jpg	643
+econ_125.jpg	644
+econ_127_1.jpg	645
+spmo_1.jpg	646
+spmo_2.jpg	647
+ampitheatre_2.jpg	648
+ampitheatre_3.jpg	649
+gender_office_1.jpg	650
+gender_office_2.jpg	651
+updp.jpg	652
+dost_core.jpg	653
+beta_theatrum.jpg	654
+lagoon_1.jpg	655
+lagoon_2.jpg	656
+gonzales.jpg	657
+viladolid_hall_1.jpg	658
+viladolid_hall_2.jpg	659
+eee_123.jpg	660
+eee_124.jpg	661
+eee_125.jpg	662
+eee_126.jpg	663
+eee_129.jpg	664
+eee_127.jpg	665
+eee_201.jpg	666
+lagmay_entrance_3.jpg	667
+concordia-albarracin-rh.jpg	668
+centennial-rh-a.jpg	669
+centennial-rh-b.jpg	670
+eee_202.jpg	671
+eee_203.jpg	672
+eee_204.jpg	673
+eee_205.jpg	674
+eee_206.jpg	675
+eee_207.jpg	676
+eee_208.jpg	677
+eee_209.jpg	678
+eee_210.jpg	679
+eee_220.jpg	680
+eee_225.jpg	681
+eee_227.jpg	682
+eee_228.jpg	683
+eee_229.jpg	684
+eee_301.jpg	685
+eee_302.jpg	686
+eee_303.jpg	687
+eee_305.jpg	688
+eee_304.jpg	689
+eee_307.jpg	690
+eee_308.jpg	691
+eee_309.jpg	692
+eee_310.jpg	693
+eee_320.jpg	694
+eee_321.jpg	695
+eee_322.jpg	696
+eee_323.jpg	697
+eee_324.jpg	698
+eee_325.jpg	699
+eee_326.jpg	700
+eee_327.jpg	701
+eee_329.jpg	702
+eee_401.jpg	703
+eee_402.jpg	704
+eee_403.jpg	705
+eee_404.jpg	706
+eee_405.jpg	707
+eee_406.jpg	708
+eee_407.jpg	709
+eee_408.jpg	710
+eee_409.jpg	711
+eee_410.jpg	712
+eee_412.jpg	713
+eee_420.jpg	714
+eee_421.jpg	715
+eee_422.jpg	716
+eee_423.jpg	717
+eee_424.jpg	718
+eee_425.jpg	719
+eee_426.jpg	720
+eee_427.jpg	721
+eee_428.jpg	722
+eee_429.jpg	723
+nimbb_100.jpg	724
+nimbb_101.jpg	725
+nimbb_105.jpg	726
+nimbb_107.jpg	727
+nimbb_110.jpg	728
+nimbb_112.jpg	729
+nimbb_200.jpg	730
+nimbb_202.jpg	731
+nimbb_203.jpg	732
+nimbb_205.jpg	733
+nimbb_206.jpg	734
+nimbb_214.jpg	735
+nimbb_215.jpg	736
+nimbb_bioinformatics.jpg	737
+nimbb_dna_sequencing.jpg	738
+cmc_lib.jpg	739
+cmc_research.jpg	740
+cmc_205.jpg	741
+cmc_207.jpg	742
+cmc_209.jpg	743
+cmc_broadkast.jpg	744
+lagmay_entrance_2.jpg	745
+lagmay_201.jpg	746
+lagmay_203.jpg	747
+lagmay_204.jpg	748
+lagmay_205.jpg	749
+cswcd_207.jpg	750
+lagmay_209.jpg	751
+lagmay_213.jpg	752
+lagmay_215.jpg	753
+lagmay_301.jpg	754
+lagmay_302.jpg	755
+lagmay_303.jpg	756
+lagmay_304.jpg	757
+cswcd_305.jpg	758
+lagmay_307.jpg	759
+lagmay_309.jpg	760
+lagmay_313.jpg	761
+lagmay_315.jpg	762
+BahayAlumni_MaleCR.jpg	763
+BahayAlumni_FemaleCR.jpg	764
+DCS_TL1.jpg	765
+DCS_Classroom3.jpg	766
+DCS_Classroom2.jpg	767
+DCS_ERDT.jpg	768
+engg-library-2-b.jpg	769
+ChocolateKissCafe.jpg	771
+ChocolateKissCafe2.jpg	772
+MediaCenter2.jpg	773
+Centennial_UFS.jpg	774
+YZA.jpg	775
+FoodNook.jpg	776
+B.E_Scientific_Glassware.jpg	777
+Acacia_Stores2.jpg	778
+Acacia_Stores.jpg	779
+Quicklean.jpg	780
+Khaleb.jpg	781
+Unlad.jpg	782
+UPClick.jpg	783
+AcaciaWellness.jpg	784
+Upbeat.jpg	785
+OrangeSegment.jpg	786
+cswcd_101.jpg	787
+cswcd_105.jpg	788
+cswcd_102.jpg	789
+cswcd_106.jpg	790
+cswcd_201.jpg	791
+cswcd_202.jpg	792
+cswcd_203.jpg	793
+cswcd_204.jpg	794
+cswcd_205.jpg	795
+cswcd_206.jpg	796
+cswcd_208.jpg	797
+cswcd_207_1.jpg	798
+cswcd_301.jpg	799
+cswcd_302.jpg	800
+cswcd_303.jpg	801
+cswcd_304.jpg	802
+cswcd_306_1.jpg	803
+cswcd_307.jpg	804
+cswcd_308.jpg	805
+cswcd_lib_2.jpg	806
+CentennialNotary.jpg	807
+CentennialNotary2.jpg	808
+up-film-institute.jpg	809
+upfi-104.jpg	810
+upfi-105.jpg	811
+upfi-107.jpg	812
+upfi-202.jpg	813
+upfi-avr-1.jpg	814
+upfi-avr-2.jpg	815
+aech-serials-a.jpg	816
+aech-213-classroom-1.jpg	817
+aech-210-tl-3.jpg	818
+aech-212-classroom-4.jpg	819
+aech-214-tl-2.jpg	820
+aech-215-seminar-room.jpg	821
+dmmme-lab-am-a.jpg	822
+dmmme-lab-am-b.jpg	823
+dmmme-205-206.jpg	824
+dmmme-lab-comp.jpg	825
+dmmme-214.jpg	826
+dmmme-216.jpg	827
+dmmme-217.jpg	828
+dmmme-admin.jpg	829
+dmmme-301-302.jpg	830
+dmmme-303-304.jpg	831
+dmmme-cr-a.jpg	832
+iche-a101.jpg	833
+iche-a102.jpg	834
+iche-a104.jpg	835
+iche-a103.jpg	836
+iche-a202.jpg	837
+iche-a301.jpg	838
+iche-a401.jpg	839
+iche-a402.jpg	840
+iche-a403.jpg	841
+iche-a404.jpg	842
+iche-a302.jpg	843
+iche-b101.jpg	844
+iche-b102.jpg	845
+iche-b103-104.jpg	846
+iche-b105-106.jpg	847
+iche-b201-202.jpg	848
+iche-b203.jpg	849
+iche-b204-205.jpg	850
+iche-b206.jpg	851
+iche-b301-302.jpg	852
+espiritu-hall-library-b.jpg	853
+ph-pav-1-a.jpg	854
+che-museum-a.jpg	855
+ice-401.jpg	856
+ice-402.jpg	857
+ice-403.jpg	858
+ice-404.jpg	859
+ice-405.jpg	860
+ice-301.jpg	861
+ice-302.jpg	862
+ice-303.jpg	863
+ice-304.jpg	864
+ice-305.jpg	865
+ice-306a.jpg	866
+ice-306b.jpg	867
+ice-307.jpg	868
+ice-308.jpg	869
+ice-309.jpg	870
+ice-310.jpg	871
+ice-201.jpg	872
+ice-202.jpg	873
+ice-203.jpg	874
+ice-204.jpg	875
+ice-205.jpg	876
+ice-103.jpg	877
+ice-104.jpg	878
+ice-101.jpg	879
+ice-102.jpg	880
+ice-105.jpg	881
+ice-106.jpg	882
+ice-108.jpg	883
+ice-107.jpg	884
+arki-library.jpg	885
+surp-construction-a.jpg	886
+center-for-womens-and-gender-studies.jpg	887
+cmc-annex-107.jpg	889
+cmc-annex-a202.jpg	890
+parish-oths-sign.jpg	891
+parish-oths-gomburza-hall.jpg	892
+parish-oths-delaney-hall.jpg	893
+old-swimming-pool.jpg	894
+f-agoncillo-poths-parking.jpg	895
+balay-kalinaw-parking-a.jpg	896
+vsb-library.jpg	897
+vsb-201.jpg	898
+vsb-203.jpg	899
+vsb-205.jpg	900
+vsb-207.jpg	901
+vsb-209.jpg	902
+vsb-211.jpg	903
+vsb-213.jpg	904
+vsb-215.jpg	905
+vsb-202.jpg	906
+vsb-204.jpg	907
+vsb-206.jpg	908
+vsb-208.jpg	909
+vsb-210.jpg	910
+vsb-212.jpg	911
+vsb-214.jpg	912
+vsb-106.jpg	913
+vsb-108.jpg	914
+vsb-110.jpg	915
+vsb-118.jpg	916
+iesm-101.jpg	917
+iesm-102.jpg	918
+iesm-103.jpg	919
+iesm-104.jpg	920
+iesm-admin.jpg	921
+iesm-auditorium.jpg	922
+iesm-202.jpg	923
+cslib-parking-a.jpg	924
+msi-201.jpg	925
+msi-202.jpg	926
+msi-203.jpg	927
+msi-204.jpg	928
+msi-205.jpg	929
+msi-206.jpg	930
+msi-207.jpg	931
+msi-208.jpg	932
+msi-209.jpg	933
+msi-210.jpg	934
+msi-211.jpg	935
+msi-219-library.jpg	936
+msi-cr-a.jpg	937
+asp-library.jpg	938
+asp-103-admin.jpg	939
+asp-109.jpg	940
+asp-113.jpg	941
+asp-115.jpg	942
+asp-117.jpg	943
+cente-up-stop.jpg	944
+cente-the-food-nook.jpg	945
+cente-fluidsurf.jpg	946
+cente-act-rc.jpg	947
+cente-be-scientific-glass.jpg	948
+cente-st-art-101.jpg	949
+cente-yza.jpg	950
+che-101a.jpg	951
+che-102.jpg	952
+che-103.jpg	953
+che-104.jpg	954
+che-106.jpg	955
+che-library-b.jpg	956
+che-202.jpg	957
+che-203b.jpg	958
+che-203a.jpg	959
+che-204.jpg	960
+nigs-seminar-room-b.jpg	961
+nigs-302.jpg	962
+nigs-301.jpg	963
+nigs-230.jpg	964
+nigs-217.jpg	965
+nigs-214.jpg	966
+nigs-213.jpg	967
+nigs-212.jpg	968
+nigs-121.jpg	969
+nigs-111.jpg	970
+nigs-museum.jpg	971
+nigs-inner-a.jpg	972
+ib-306.jpg	973
+ib-307.jpg	974
+ib-308.jpg	975
+ib-309.jpg	976
+ib-318.jpg	977
+ib-319.jpg	978
+ib-321.jpg	979
+ib-330.jpg	980
+ib-345.jpg	981
+ib-260.jpg	982
+ib-250.jpg	983
+ib-234-supply.jpg	984
+ib-117.jpg	985
+ib-118.jpg	986
+ib-119.jpg	987
+ib-167.jpg	988
+ib-168.jpg	989
+vanguard-cr.jpg	990
+vanguard-roof.jpg	991
+vanguard-201.jpg	992
+vanguard-202.jpg	993
+vanguard-203.jpg	994
+vanguard-204.jpg	995
+\.
+
+
+--
+-- Data for Name: image_before; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.image_before (location, img_url) FROM stdin;
+AH 202-204	ah-202-204.jpg
+AH 206-208	ah-206-208.jpg
+AH Annex 222	ah-annex-222.jpg
+ASCAL Food Kiosks	ascal-food-kiosks.jpg
+Arkivickie	arkivickie.jpg
+CAL 201	cal-201.JPG
+CAL 209	cal-209.JPG
+CAL 210	cal-210.JPG
+CAL 301	cal-301.JPG
+CAL 309	cal-309.JPG
+CAL 310	cal-310.JPG
+CAL 401	cal-401.JPG
+CAL 408	cal-408.JPG
+CAL 409	cal-409.JPG
+CAL Parking Lot 1	cal-parking-lot.jpg
+CFA Comfort Rooms	cfa-toilet.JPG
+CFA Parking Lot	cfa-parking-lot.JPG
+CHE Gusali 2 Comfort Rooms	che-gusali-2-toilet.jpg
+CHE Room D	che-room-d.JPG
+CHE Room E	che-room-e.JPG
+College of Arts and Letters (CAL)	college-of-arts-and-letters.jpg
+College of Home Economics Gusali 2 (CHE)	college-of-home-economics-gusali-2.jpg
+E. de Los Santos Street	edsa-st.jpg
+Encarnacion Hall Comfort Rooms	encarnacion-toilet.jpg
+Engineering Theater	engineering-theater.jpg
+FA B1 & B2	fa-b1-&-b2.JPG
+FA B4 & B5	fa-b4-&-b5.JPG
+FA B6	fa-b6.JPG
+FA RGEP 1	fa-rgep-1.JPG
+FA RGEP 2	fa-rgep-2.JPG
+FA T2	fa-t2.JPG
+FA T3	fa-t3.JPG
+Glorias Cafe	glorias-cafe.jpg
+Gusali 2 Parking Lot	gusali-2-parking-lot.jpg
+IC 305-306	ic-305-306.jpg
+IC 307-308	ic-307-308.jpg
+IC 309-310	ic-309-310.jpg
+IC 311-312	ic-311-312.jpg
+IC 313-314	ic-313-314.jpg
+IC 315-316	ic-315-316.jpg
+IC 330-331	ic-330-331.jpg
+IC CHEMREZ	ic-chemrez.jpg
+IC Chevron	ic-chevron.jpg
+Institute of Mathematics Annex (MBAn)	institute-of-mathematics-annex.jpg
+Institute of Mathematics Parking Lot 1	math_parking_1.JPG
+Institute of Mathematics Parking Lot 1	math-building-parking-lot-1.jpg
+Institute of Mathematics Parking Lot 2	math_parking_2.JPG
+LAW 110 (Ambion Room)	law-110-ambion-room.JPG
+LAW 200	law-200.JPG
+LAW 221	law-221.JPG
+LAW 307	law-307.JPG
+LAW 311	law-311.JPG
+Law Complex Parking Lot	law-complex-parking-lot.JPG
+MB 301	mb-301.jpg
+MB 302	mb-302.jpg
+MB 303	mb-303.jpg
+MB 304	mb-304.jpg
+MB 305	mb-305.jpg
+MB 306	mb-306.jpg
+MB 307	mb-307.jpg
+MB 308	mb-308.jpg
+MB 321	mb-321.jpg
+MB 322	mb-322.jpg
+MB 323	mb-323.jpg
+MB 328	mb-328.jpg
+MB 329	mb-329.jpg
+MB Comfort Rooms	mb-toilet.jpg
+MBAn 305	mban-305.jpg
+MBAn 306	mban-306.jpg
+MBAn 313	mban-313.jpg
+MBAn 314	mban-314.jpg
+MBAn 401	mban-401.jpg
+MBAn 402	mban-402.jpg
+MBAn 403	mban-403.jpg
+MBAn AVR 1	mban-avr-1.jpg
+MBAn AVR 2	mban-avr-2.jpg
+MBAn Comfort Rooms	mban-toilet.jpg
+MH 301-303	mh301_303.jpg
+MH 314-316	mh314_316.jpg
+MH 318-320	mh318_320.jpg
+MH 416-418	mh416_418.jpg
+MH 422-424	mh422_424.jpg
+MH 501	mh501.jpg
+Melchor Hall Comfort Rooms (Left Wing)	melchor-hall-left-toilet.jpg
+Melchor Hall Comfort Rooms (Right Wing)	melchor-hall-right-toilet.jpg
+NCPAG 301-302	ncpag-301-302.JPG
+NCPAG 305	ncpag-305.JPG
+NCPAG 306	ncpag-306.JPG
+NCPAG 307A	ncpag-307a.JPG
+NCPAG 308	ncpag-308.JPG
+NCPAG 309	ncpag-309.JPG
+NCPAG AVR	ncpag-avr.JPG
+NCPAG Cafe	ncpag-cafe.JPG
+NCPAG Parking Lot	ncpag-parking-lot.JPG
+NIGS 125	nigs-125.jpg
+NIGS 127	nigs-127.jpg
+NIGS 128	nigs-128.jpg
+NIGS 211	nigs-211.jpg
+NIGS 215	nigs-215.jpg
+NIGS Canteen	nigs-canteen.jpg
+NIGS Comfort Rooms	nigs-toilet.jpg
+NIGS Parking Lot	nigs-parking-lot.jpg
+NIP Comfort Rooms	nip-toilet.jpg
+NIP F201	nip-f201.jpg
+NIP F202	nip-f202.jpg
+NIP F203	nip-f203.jpg
+NIP F204	nip-f204.jpg
+NIP F205	nip-f205.jpg
+NIP F206	nip-f206.jpg
+NIP F207	nip-f207.jpg
+NIP F208	nip-f208.jpg
+NIP F209	nip-f209.jpg
+NIP F210	nip-f210.jpg
+NIP Lecture Pavilion 101	nip-lecture-pavilion-101.jpg
+NIP Lecture Pavilion 102	nip-lecture-pavilion-102.jpg
+NIP Lecture Pavilion 103	nip-lecture-pavilion-103.jpg
+NIP Lecture Pavilion 104	nip-lecture-pavilion-104.jpg
+National Institute of Geological Sciences	national-institute-of-geological-sciences.jpg
+PAV1 1114	pav1-1114.jpg
+PAV1 1115	pav1-1115.jpg
+PAV1 1206	pav1-1206.jpg
+College of Architecture Building 2 (Juguilon Hall) (JH)	college-of-architecture-building-2.jpg
+College of Architecture Building 1 (Archi Lab) (CA)	college-of-architecture-building-1.jpg
+Melchor Hall Parking Lot 1 (Engineering)	melchor-hall-parking-lot-1.jpg
+Abelardo Hall (ABH) (College of Music)	abelardo-hall.jpg
+PAV1 1210	pav1-1210.jpg
+PAV1 1213	pav1-1213.jpg
+PAV1 1214	pav1-1214.jpg
+PAV1 1222	pav1-1222.jpg
+PAV1 1228	pav1-1228.jpg
+PAV1 1230	pav1-1230.jpg
+PAV1 1232	pav1-1232.jpg
+PH 108-110	ph-108-110.jpg
+PH 116-118	ph-116-118.jpg
+PH 120-122	ph-120-122.jpg
+PH 207ABC	ph-207abc.JPG
+PH 213-215	ph-213-215.jpg
+PH 216-218	ph-216-218.jpg
+PH 308-310	ph-308-310.jpg
+PH 312-314	ph-312-314.jpg
+PH 324-326	ph-324-326.jpg
+PH Parking Lot 1	ph-parking-lot-1.jpg
+PH Parking Lot 2	ph-parking-lot-2.jpg
+Palma Hall Toilets (Females)	palma-hall-female-toilet.jpg
+Palma Hall Toilets (Males)	palma-hall-male-toilet.jpg
+SE 103	se-103.JPG
+SE 105	se-105.JPG
+SE 111	se-111.JPG
+SE 114	se-114.JPG
+SE 121	se-121.JPG
+SE Auditorium	se-auditorium.JPG
+SOLAIR 10	solair-10.JPG
+SOLAIR 201	solair-201.JPG
+SOLAIR 203	solair-203.JPG
+SOLAIR Auditorium	solair-auditorium.JPG
+SOLAIR Comfort Rooms	solair-toilet.jpg.JPG
+SOLAIR Parking Lot	solair-parking-lot.JPG
+SS 301	ss-301.jpg
+SS 302	ss-302.jpg
+SS 303	ss-303.jpg
+SS 304	ss-304.jpg
+SS 305	ss-305.jpg
+SS 306	ss-306.jpg
+SS 307	ss-307.jpg
+School of Labor & Industrial Relations (SOLAIR)	school-of-labor-and-industrial-relations.JPG
+School of Statistics Parking Lot	stat-parking-lot.jpg
+School of Statistics Parking Lot	statistics_parking_1.JPG
+School of Statistics Parking Lot	statistics_parking_2.JPG
+UP School of Economics (SE)	up-school-of-economics.jpg
+UP Stat Comfort Rooms	stat-toilet.jpg
+Abelardo Hall Comfort Rooms	abelardo-toilet.jpg
+Abelardo Hall Parking Lot	abelardo-hall-parking-lot
+MH 305-307	mh-305-307.jpg
+MH 306-308	mh-306-308.jpg
+MH 309-311	mh-309-311.jpg
+MH 313-315	mh-313-315.jpg
+Malcolm Hall Theater	malcolm-hall-theater.jpg
+National College of Public Administration & Governance (NCPAG)	national-college-of-public-administration-and-governance.jpg
+National Institute of Physics (NIP)	national-institute-of-physics.jpg
+Palma Hall (PH)	palma-hall.jpg
+Penthouse Lecture Hall	penthouse-lecture-hall.jpg
+Procter & Gamble AVR	pandg2.jpg
+Procter & Gamble AVR	pandg.jpg
+School of Economics Parking Lot	econ-parking-lot.jpg
+Parking Area across Center for Women's Studies	across_gender_studies_parking.JPG
+Law Complex Parking Lot 2	across_law_parking.JPG
+Bahay ng Alumni Parking Lots	alumni_bahay_parking_1.JPG
+Bahay ng Alumni Parking Lots	alumni_bahay_parking_2.JPG
+Shopping Center Parking Lots	behind_shopping_parking_1.JPG
+Shopping Center Parking Lots	behind_shopping_parking_2.JPG
+School of Economics Street Parking	beside_econ_parking.JPG
+College of Arts and Letters Parking Lot 2	cal_parking.JPG
+CSWCD Parking Lot	cswcd_parking.JPG
+UP AECH Parking Lot	dcs_parking.JPG
+UP Film Institute Parking Lot	film_center_parking_1.JPG
+UP Film Institute Parking Lot	film_center_parking_2.JPG
+College of Home Economics Gusali 2 Parking Lot	gusali2_parking.JPG
+Institute of Electrical and Electronics Engineering Parking Lot 1	ieee_parking.JPG
+Institute of Biology Parking Lot	institute_of_biology_parking.JPG
+Marine Science Institute Parking Lot	marine_parking.JPG
+NIMBB Parking Strip	nimbb_parking.JPG
+NIMBB Parking Lot	nimbb_rear_parking_1.JPG
+NIMBB Parking Lot	nimbb_rear_parking_2.JPG
+NISMED Parking Lot	nismed_parking.JPG
+National Institute of Physics Parking Strip	physics_chem_parking.JPG
+Quirino Avenue	quirino_ave_parking.JPG
+Regidor Street	regidor_st_parking.JPG
+University Theater Parking Lot	univ_theater_parking.JPG
+Area 2 Jeepney Stop	Area 2.jpg
+Arki Jeepney Stop	Arki.jpg
+Biology Jeepney Stop	Bio.jpg
+Centennial Residence Hall Jeepney Stop	Centennial.jpg
+Dagohoy Jeepney Stop	Dagohoy.jpg
+EEE Jeepney Stop	EEE.jpg
+MBB Jeepney Stop	MBB.jpg
+NIP Jeepney Stop	NIP.jpg
+Romulo Hall Jeepney Stop	Romulo Hall.jpg
+CAL Jeepney Stop	ASCAL.jpg
+CS Library Jeepney Stop	CS Lib.jpg
+Kalayaan Jeepney Stop	Kalay.jpg
+Malcolm Hall Jeepney Stop	Law2.jpg
+Molave Residence Hall Jeepney Stop	Molave.jpg
+NIGS Jeepney Stop	NIGS.jpg
+NSRI Jeepney Stop	NSRI.jpg
+OUR Jeepney Stop	OUR.jpg
+SOLAIR 11	solair-11.JPG
+Malcolm Hall (LAW) (College of Law)	malcolm-hall.jpg
+Melchor Hall (MH) (College of Engineering)	melchor-hall.jpg
+School of Statistics (SS) (STAT)	school-of-statistics.JPG
+Abelardo Hall Annex (College of Music Annex)	abelardo-hall-annex.jpg
+Plaridel Hall Parking Lot	plaridel_parking.JPG
+JH 101	room-101.jpg
+JH 102	room-102.jpg
+JH 103	room-103.jpg
+JH 104	room-104.jpg
+JH 105	room-105.jpg
+JH 106	room-106.jpg
+College of Science Library Parking Lot	cslib_parking.JPG
+Swimming Pool Jeepney Stop	Swimming pool.jpg
+University Avenue Jeepney Stop 1	Univ Ave 1.jpg
+University Avenue Jeepney Stop 2	Univ Ave 2.jpg
+Area 2	area_2_1.jpg
+Area 2	area_2_2.jpg
+Area 2	area_2_3.jpg
+CASAA Food Court	casaa.jpg
+Kuya Ramon's Food Hub	ieee_food_1.jpg
+Kuya Ramon's Food Hub	ieee_food_2.jpg
+Mang Larry's Isawan	mang_larrys.jpg
+Vinzons Hall Food Kiosks	vinzons_food_1.jpg
+Vinzons Hall Food Kiosks	vinzons_food_2.jpg
+Institute of Electrical and Electronics Engineering Parking Lot 2	ieee_parking_right.JPG
+CAL Parking Lot 2	cal_parking_2.JPG
+Institute of Mathematics Cafeteria	inst_of_math_cafeteria.JPG
+Institute of Mathematics Food Kiosk	inst_of_math_food_kiosk.JPG
+Sari-sari Stores across Bulwagang Rizal	kiosks_across_cal.JPG
+NISMED Cafeteria	nismed_cafeteria.JPG
+Regidor St. Food Kiosk	regidor_st_food_kiosk.JPG
+Vinzons Hall Parking Lots	vinzons_hall_parking_1.JPG
+Vinzons Hall Parking Lots	vinzons_hall_parking_2.JPG
+Vinzons Hall University Food Service	vinzons_univ_food_service.JPG
+Bocobo Hall Jeepney Stop	Law.jpg
+Bulwagang Rizal Jeepney Stop	bulwagang_rizal_stop.JPG
+Church of the Risen Lord Jeepney Stop	CRL.jpg
+Lagmay Hall Jeepney Stop	lagmay_stop.JPG
+Melchor Hall Jeepney Stop	melchor_stop.JPG
+Quezon Hall Jeepney Stop	quezon_hall_stop.JPG
+School of Economics Jeepney Stop	econ_stop.JPG
+Shopping Center Jeepney Stop	Shopping Center.jpg
+SURP Jeepney Stop	SURP.jpg
+University Theater Jeepney Stop	univ_theater_stop.JPG
+UPFI Jeepney Stop	UPFI.jpg
+Vanguard Jeepney Stop	Vanguard.jpg
+Vinzons Hall Jeepney Stops	vinzons_stop_1.JPG
+Vinzons Hall Jeepney Stops	vinzons_stop_2.JPG
+Vinzons Hall Jeepney Stops	vinzons_stop_3.JPG
+SS Lecture Hall 1	SS_Lec_Hall_1.JPG
+SS Lecture Hall 2	SS_Lec_Hall_2.JPG
+SOLAIR 203	SOLAIR_203.JPG
+School of Labor & Industrial Relations (SOLAIR)	SOLAIR_Entrance.JPG
+AH 226	ah-226.jpg
+CMC - B Viewing Room	CMC_BViewingRoom.JPG
+PH Multimedia Room (PH 400)	PH_400.jpg
+CMC - Auditorium	CMC_Auditorium1.JPG
+CMC - PhilStar Room	CMC_PhilStarRoom.JPG
+Plaridel Hall (College of Mass Communication - CMC)	CMC_ParkingLot1.JPG
+SOLAIR 12	SOLAIR_12.JPG
+Institute of Mathematics Main Building (MB)	institute-of-mathematics-main-building.jpg
+CAL 211	CAL_211.jpg
+CAL 212	CAL_212.jpg
+CAL 213	CAL_213.jpg
+CAL 501	CAL_501.jpg
+CAL 502	CAL_502.jpg
+CAL 503	CAL_503.jpg
+CAL 510	CAL_510.jpg
+CAL 512	CAL_512.jpg
+Bocobo Hall (Law Center) (BOC)	bocobo-hall.JPG
+Institute of Chemistry Teaching Building (IC)	institute-of-chemistry-teaching-building.jpg
+College of Fine Arts (CFA)	CFA_Entrance.jpg
+Malcolm Hall Comfort Rooms	MalcolmHall_3rdFloor_CRMale.JPG
+Malcolm Hall Comfort Rooms	MalcolmHall_1stFloor_CRFemale.JPG
+Malcolm Hall Comfort Rooms	MalcolmHall_1stFloor_CRMale.JPG
+Malcolm Hall Comfort Rooms	MalcolmHall_2ndFloor_CRFemale.JPG
+Malcolm Hall Comfort Rooms	MalcolmHall_2ndFloor_CRMale.JPG
+Malcolm Hall Comfort Rooms	MalcolmHall_3rdFloor_CRFemale.JPG
+NCPAG Comfort Rooms	NCPAG_3rdFloor_CRMale.JPG
+NCPAG Comfort Rooms	NCPAG_1stFloor_CRFemale.JPG
+NCPAG Comfort Rooms	NCPAG_1stFloor_CRMale.JPG
+NCPAG Comfort Rooms	NCPAG_2ndFloor_CRFemale.JPG
+NCPAG Comfort Rooms	NCPAG_2ndFloor_CRMale.JPG
+NCPAG Comfort Rooms	NCPAG_3rdFloor_CRFemale.JPG
+Plaridel Hall (CMC) Comfort Rooms	CMC_CRAuditorium.JPG
+Plaridel Hall (CMC) Comfort Rooms	CMC_Lobby_CRFemale.JPG
+Plaridel Hall (CMC) Comfort Rooms	CMC_Lobby_CRMale.JPG
+UP Integrated School – 7-12 Building (UPIS)	upis-a.png
+UP Integrated School – 7-12 Building (UPIS)	upis-road.png
+UPIS 110	upis-110-a.png
+UPIS 111	upis-111.png
+UPIS 111	upis-111-padded.png
+UPIS 110	upis-110-a.jpg
+UPIS 110	upis-110-b.jpg
+UPIS 111	upis-111.jpg
+Institute of Civil Engineering Cafeteria	inst_of_civil_engg_cafeteria.JPG
+Law Center Comfort Rooms	law-1-cr.jpg
+Law Center Comfort Rooms	law-2-cr.jpg
+Law Center Comfort Rooms	law-3-cr.jpg
+UPIS 1st Floor Comfort Rooms	upis-1-cr-d.jpg
+UPIS 1st Floor Comfort Rooms	upis-1-cr-f.jpg
+UPIS 1st Floor Comfort Rooms	upis-1-cr-m.jpg
+UPIS 2nd Floor Comfort Rooms	upis-2-cr-f.jpg
+UPIS 2nd Floor Comfort Rooms	upis-2-cr-m-a.jpg
+UPIS 2nd Floor Comfort Rooms	upis-2-cr-m-b.jpg
+UPIS 3rd Floor Comfort Rooms	upis-3-cr-f.jpg
+UPIS 3rd Floor Comfort Rooms	upis-3-cr-m.jpg
+UPIS 113	upis-113.jpg
+UPIS 120	upis-120-a.jpg
+UPIS 120	upis-120-b.jpg
+UPIS 121	upis-121.jpg
+UPIS 122	upis-122.jpg
+UPIS 123	upis-123.jpg
+UPIS 124	upis-124-a.jpg
+UPIS 124	upis-124-b.jpg
+UPIS 125	upis-125-a.jpg
+UPIS 125	upis-125-b.jpg
+UPIS 126	upis-126-a.jpg
+UPIS 126	upis-126-b.jpg
+UPIS 127	upis-127-a.jpg
+UPIS 127	upis-127-b.jpg
+UPIS 128	upis-128-a.jpg
+UPIS 128	upis-128-b.jpg
+UPIS 129	upis-129.jpg
+UPIS 130	upis-130.jpg
+UPIS 131	upis-131.jpg
+UPIS 132	upis-132.jpg
+UPIS 133	upis-133.jpg
+UPIS 134	upis-134-a.jpg
+UPIS 134	upis-134-b.jpg
+UPIS 135	upis-135-a.jpg
+UPIS 135	upis-135-b.jpg
+UPIS 136	upis-136.jpg
+UPIS 137	upis-137.jpg
+UP Alumni Center (Fonacier Hall)	FonacierHall.JPG
+UP Center for Ethnomusicology	EthnoMusicology.JPG
+Department of Military Science and Tactics Complex (DMST)	DMST.jpg
+Balay Atleta	BalayAtleta.jpg
+College of Music - Dance Studio	DanceStudio.jpg
+Yakal Residence Hall	Yakal_Residence_Hall.jpg
+Office of the University Registrar	office-univ-registrar.jpg
+Diliman Interactive Learning Center (DILC)	DILC2.jpg
+Diliman Interactive Learning Center (DILC)	DILC.jpg
+Acacia Residence Halls	Acacia.jpg
+College of Arts and Letters Faculty Center	CAL_FacultyCenter.jpg
+Ipil Residence Hall	Ipil_Back.jpg
+Ipil Residence Hall	Ipil_Residence_Hall.jpg
+Diliman Learning Resource Center (DLRC)	dlrc_3.jpg
+Office of Student Housing	OSH.jpg
+Espiritu Hall (College of Law Library)	Espiritu_Hall.jpg
+Sanggumay Residence Hall	Sanggumay.jpg
+Kalayaan Residence Halls	Kalayaan.jpg
+Molave Residence Halls	DSC_00411.JPG
+National Institute for Science and Mathematics Education Development (NISMED)	nismed-a.jpg
+National Institute for Science and Mathematics Education Development (NISMED)	nismed-b.jpg
+UP National Center for Transportation Studies (UP NCTS)	NCTS.jpg
+Juinio Hall (National Engineering Center)	JunioHall.jpg
+Vidal A. Tan Hall	vidal-a-tan-hall.jpg
+PAUW Child Study Center	pauw-child-study-center.jpg
+Institute of Civil Engineering (ICE)	institute-of-civil-engineering-a.jpg
+Institute of Civil Engineering (ICE)	institute-of-civil-engineering-b.jpg
+Executive House	executive-house-a.jpg
+Executive House	executive-house-b.jpg
+GT Toyota Asian Center	GT_Toyota1.jpg
+GT Toyota Asian Center Auditorium	GT_Toyota.jpg
+College of Engineering Admin Office	Melchor_Admin.jpg
+College of Engineering Library I	Melchor_Library.jpg
+Electrical and Electronics Engineering Institute (EEEI)	electrical-and-electronics-engineering-institute-a.jpg
+Electrical and Electronics Engineering Institute (EEEI)	electrical-and-electronics-engineering-institute-b.jpg
+Department of Mining, Metallurgical & Materials Engineering (DMMME)	dept-mmm-engineering-a.jpg
+UP Health Service	HealthService.jpg
+Diliman Legal Office (DLO)	dlo.jpg
+PAGASA Observatory	pagasa-observatory-a.jpg
+UP Marine Science Institute (MSI)	msi-a.jpg
+National Institute of Geological Sciences (NIGS)	national-institute-of-geological-sciences-a.jpg
+Virata Hall (ISSI - Institute for Small Scale Industries)	Virata.jpg
+Virata Hall (ISSI - Institute for Small Scale Industries)	Virata1.jpg
+National Institute of Molecular Biology and Biotechnology (NIMBB)	ni-molecular-biology-biotechnology-a.jpg
+College of Science Library (CS Library)	college-of-science-library-b.jpg
+College of Science Administration	college-of-science-administration-a.jpg
+College of Science Administration	college-of-science-administration-b.jpg
+Computational Science Research Center (CSRC)	computational-science-research-center-a.jpg
+Andres Bonifacio Centennial Carilion Tower and Plaza	BellTower.jpg
+National Science Complex Amphitheater	nsc-amphitheater-a.jpg
+National Science Complex Amphitheater	nsc-amphitheater-b.jpg
+Institute of Environmental Science and Meteorology (IESM)	institute-of-environmental-science-and-meteorology-a.jpg
+Philippine Genome Center	philippine-genome-center-b.jpg
+Villamor Hall (University Theater)	UP_MainTheater.jpg
+Washington Sycip Garden of Native Trees 	UP_SYCP_Trees.jpg
+Benton Hall	benton.jpg
+CA Comfort Room	archi_cr.jpg
+Bulwagan ng Dangal	bulwagan_dangal.jpg
+CAL Comfort Rooms 	cal_cr_1.jpg
+CAL Parking Lot 1	archi_parking_5.jpg
+Coral Building (Office of the Campus Architect) (OCA)	oca_1.jpg
+Coral Building (Office of the Campus Architect) (OCA)	oca_2.jpg
+Center for International Studies	benton_cis.jpg
+Diliman Learning Resource Center (DLRC)	dlrc_1.jpg
+Jorge B. Vargas Museum and Filipiniana Research Center	vargas_museum_1.jpg
+Jorge B. Vargas Museum and Filipiniana Research Center	vargas_museum_2.jpg
+Kamia Residence Hall	kamia_dorm_1.jpg
+Kamia Residence Hall	kamia_dorm_2.jpg
+Sampaguita Residence Hall	sampaguita_dorm_1.jpg
+Sampaguita Residence Hall	sampaguita_dorm_2.jpg
+Albert Hall (Archaeological Studies Program) (ASP)	albert_hall.jpg
+Benitez Hall (College of Education)	benitez_1.jpg
+Benitez Hall (College of Education)	benitez_2.jpg
+UP Integrated School — K-2 Building (UPIS)	upis_k2.jpg
+Accounting Budget and Cash Office Building	CashOffice.jpg
+Romulo Hall (Institute for Islamic Studies)	Romulo_Hall.jpg
+Palma Hall Parking Lot	palma_parking.jpg
+UP Biology - EDC BINHI (Threatened Species Arboretum)	bio_narnia_1.jpg
+UP Biology - EDC BINHI (Threatened Species Arboretum)	bio_narnia_2.jpg
+UP Alumni Engineers' Centennial Hall (Engineering Library 2) (Department of Computer Science - DCS)	engg-library-2-a.jpg
+Institute of Biology (IB) Comfort Rooms	bio_cr.jpg
+School of Economics (SE) Library 	econ_lib_1.jpg
+Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)	CSWCD.jpg
+Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)	CSWCD2.jpg
+UPFI Film Center	UP_Film_Center.jpg
+Church of the Risen Lord	Church_of_the_Risen_Lord.jpg
+Parish of The Holy Sacrifice	Parish_of_Holy_Sacrifice.jpg
+Parish of The Holy Sacrifice	Parish_of_Holy_Sacrifice2.jpg
+Parish of The Holy Sacrifice	Parish_of_Holy_Sacrifice3.jpg
+German Yia Hall (IE and ME Building)	German_Yia_Hall.jpg
+German Yia Hall (IE and ME Building)	German_Yia_Hall2.jpg
+Alonso Hall (College of Home Economics) (CHE)	alonso_hall.jpg
+Alonso Hall (College of Home Economics) (CHE)	alonso_inner.jpg
+UP School of Economics - Philippine Center for Economic Development (PCED)	Philippine_Center_for_Economic_Development.jpg
+School of Economics (SE) Library 	econ_lib_2.jpg
+Diosdado P Macapagal Hall	econ_diosdado.jpg
+Benitez Hall Comfort Rooms	benitez_cr_1.jpg
+Benitez Hall Comfort Rooms	benitez_cr_2.jpg
+School of Economics (SE) Comfort Rooms	econ_cr.jpg
+Benitez 105	benitez_105.jpg
+Benitez 108	benitez_108.jpg
+Benitez 109	benitez_109.jpg
+Benitez 110	benitez_110.jpg
+Benitez 200	benitez_200.jpg
+Benitez 201	benitez_201.jpg
+Benitez 203	benitez_203.jpg
+Benitez 205	benitez_205_1.jpg
+Benitez 205	benitez_205_2.jpg
+Benitez 206	benitez_206.jpg
+Benitez 212	benitez_212.jpg
+Benitez 304	benitez_304.jpg
+Benitez 312	benitez_312.jpg
+Benitez Hall Education Library	benitez_lib.jpg
+Child Development Center (CDC)	che_daycare.jpg
+UP School of Urban and Regional Planning (SURP)	SURPBldg.jpg
+College of Home Economics (CHE) Comfort Rooms	che_cr_2.jpg
+College of Home Economics (CHE) Comfort Rooms	che_cr_3.jpg
+College of Home Economics (CHE) Library	che_lib_1.jpg
+College of Home Economics (CHE) Library	che_lib_2.jpg
+EEEI VLC	eee_vlc.jpg
+EEEI LC1	eee_lc1.jpg
+EEEI LC2	eee_lc2.jpg
+UP Meralco Innovation Hall	eee_meralco.jpg
+Virata School of Business Comfort Rooms	virata_cr_1.jpg
+Virata School of Business Comfort Rooms	virata_cr_2.jpg
+CASAA Food Court	casaa_interior.jpg
+CASAA Food Court	casaa_zoo_2.jpg
+NIMBB Cafeteria	mbb_cafe.jpg
+NIMBB Library	mbb_lib.jpg
+NIMBB Comfort Rooms	mbb_cr_1.jpg
+NIMBB Comfort Rooms	mbb_cr_2.jpg
+Math Building Comfort Rooms	math_cr_1.jpg
+Math Building Comfort Rooms	math_cr_2.jpg
+DZUP Tower	DZUPTower.jpg
+Epsilon Chi Center	EpsilonChiCenter.jpg
+Ang Bahay ng Alumni	Bahay_Alumni.jpg
+Ang Bahay ng Alumni Parking Area	Bahay_Alumni_Parking.jpg
+Aldaba Hall	Aldaba.jpg
+Kamagong Residence Hall	Kamagong.jpg
+Post Office (PHLPOST)	PostOffice.jpg
+Sentro ng Wikang Filipino	SentroNgWikangFilipino.jpg
+Temporary Shopping Center	NewShopping.jpg
+Temporary Shopping Center	NewShopping2.jpg
+Temporary Shopping Center	NewShopping3.jpg
+Office of the Vice Chancellor for Academic Affairs	OVCAA.jpg
+Office of International Linkages in Diliman (OIL)	OfficeOfInternationalLinkagesInDiliman.jpg
+General Education Center (GEC)	GeneralEducationCenter.jpg
+National Service Training Program (NSTP)	NationalServiceTrainingProgram.jpg
+Office of Field Activities (OFA)	OfficeOfFieldActivities.jpg
+University Food Service	FoodService.jpg
+Office of the Chief Security Officer	OfficeChiefSecurityOfficer.jpg
+University Computer Center (UCC)	UP_ComputerCenter.jpg
+Utilities Management Team (UMT)	UtilitiesManagementTeam.jpg
+Magdangal	DSC_0065.jpg
+Balay Kalinaw (Ikeda Hall)	bahay_kalinaw.jpg
+Commission on Human Rights (CHR) Office 	chr_sign.jpg
+University Gymnasium (Ylanan Hall) (College of Human Kinetics) (CHK)	chk_1.jpg
+University Gymnasium (Ylanan Hall) (College of Human Kinetics) (CHK)	chk_2.JPG
+Gym Annex Basketball Court	gym_back.jpg
+NIGS Library	nigs_lib.jpg
+University Hotel	university_hotel.jpg
+CSWCD Parking Area	CSWCDParking.jpg
+AECH Accenture Hall	aech-accenture.jpg
+IB Auditorium	ib-auditorium.jpg
+Institute of Biology (IB)	institute-of-biology.jpg
+Institute of Biology (IB)	institute-of-biology-a.jpg
+UP Biology - EDC Binhi Threatened Species Arboretum	up-biology-arboretum.jpg
+IB Library	ib-library.jpg
+IB Cafeteria	ib-cafeteria.jpg
+DMMME Comfort Rooms	dmmme-cr.jpg
+ICE Comfort Rooms	icivilengg-cr.jpg
+UP Veterinary Teaching Hospital	up-vet-hospital.jpg
+IC Cafeteria	ichem-cafeteria.jpg
+Institute of Chemistry Research Building (ICR)	institute-of-chemistry-research.jpg
+IC Parking Strip	ic-parking.jpg
+PAGASA Observatory	pagasa-observatory-b.jpg
+Vinzons Hall Comfort Rooms	vinzons-cr.jpg
+Virata School of Business Parking Lot	virata-sb-parking.jpg
+Sunken Garden	sunken-garden-a.jpg
+Juinio Hall (National Engineering Center)	juinio-hall-b.jpg
+Department of Computer Science Comfort Rooms	dcs_cr.jpg
+Main Library Parking Lots	main-library-parking-a.jpg
+UP Main Library - Social Sciences and Philosophy Library	uml-ssp-library.jpg
+UP Main Library - Filipiniana Books Section	uml-filipiniana-section.jpg
+Lagmay Hall Comfort Rooms	lagmay-cr.jpg
+Benton Hall	benton-b.jpg
+Lagmay Hall Library (Mandala Room)	lagmay-library.jpg
+Office of the University Registrar Parking Lot	our-parking-a.jpg
+Office of the University Registrar Parking Lot	our-parking-b.jpg
+College of Mass Communication - Media Center and DZUP Studio	MediaCenter.jpg
+CSWCD Comfort Room	cswcd_cr.jpg
+Virata School of Business (VSB)	virata_facade.jpg
+UP Integrated School — 3-10 Building (UPIS)	upis-3-10-a.jpg
+VSB 104 Cesar E.A. Virata Lecture Room	virata_lec.jpg
+Alonso Hall (College of Home Economics) (CHE)	che_facade_1.jpg
+IB Museum Public Exhibit Area	ib-museum.jpg
+College of Law - Law Forum	LawForum.jpg
+Centennial Residence Hall Parking Lot	centennial-rh-parking-a.jpg
+Asian Institute of Tourism	asian-institute-of-tourism-a.jpg
+DMMME Parking Lot	dmmme-parking.jpg
+IChE Parking	iche-parking.jpg
+IChE Comfort Rooms	iche-cr.jpg
+Institute of Chemical Engineering (IChE)	institute-of-chemical-engineering-c.jpg
+Institute of Chemical Engineering (IChE)	institute-of-chemical-engineering-b.jpg
+Environmental and Energy Engineering Program Building	environmental-energy-engineering-a.jpg
+Three Women Sewing the First Filipino Flag	public-art-three-women-a.jpg
+Untitled by Abdulmari Imao	public-art-untitled-a-imao-a.jpg
+CAL Library	cal-library.jpg
+Rajah Sulayman	public-art-rajah-sulayman.jpg
+Landbank	landbank-a.jpg
+Catholic Parish Office	parish-office-a.jpg
+Kalinga Day Care Center	kalinga-day-care-b.jpg
+Area 1	area-1-b.jpg
+Balay Kalinaw (Ikeda Hall)	balay-kalinaw-b.jpg
+Philippine Association of University Women (PAUW) Annex	pauw-annex.jpg
+Ilang-ilang Residence Hall	ilang-ilang-residence-hall-a.jpg
+GT Toyota Asian Center - Cafe Via Mare	gt-cafe-via-mare.jpg
+Rizal Statue	public-art-rizal-statue.jpg
+Spirit of Business	public-art-spirit-of-business.jpg
+University Seal	public-art-university-seal.jpg
+AECH Comfort Rooms	engg-library-2-cr.jpg
+Cry of Balintawak by Ramon Martinez	public-art-balintawak.jpg
+Sundial	public-art-sundial.jpg
+Office of Extension Coordination	oec.jpg
+Philippine Institute of Volcanology and Seismology	phivolcs.jpg
+Oblation by Guillermo Tolentino	oblation.jpg
+ICE 311	ice_311.jpg
+ICE 312	ice_312.jpg
+ICE 313	ice_313.jpg
+ICE 314	ice_314.jpg
+ICE 315	ice_315.jpg
+ICE 316	ice_316.jpg
+ICE 317	ice_317.jpg
+ICE 318	ice_318.jpg
+ICE 319	ice_319_1.jpg
+ICE 319	ice_319_2.jpg
+ICE 408-B	ice_408b.jpg
+University Ampitheater	ampitheatre_1.jpg
+ICE 410	ice_410.jpg
+ICE 411	ice_411.jpg
+ICE 412	ice_412a.jpg
+ICE 409	ice_409a.jpg
+ICE David Y Tan Lecture Room	ice_lec_tan.jpg
+JH 107	archi_107.jpg
+DMMME 103	dmmme_103.jpg
+DMMME 105	dmmme_105.jpg
+DMMME 108	dmmme_108.jpg
+DMMME 109	dmmme_109.jpg
+DMMME 203	dmmme_203.jpg
+DMMME ANSyD	dmmme_ansyd_1.jpg
+DMMME ANSyD	dmmme_ansyd_2.jpg
+DMMME Mechanical Testing Section	dmmme_mts.jpg
+DMMME Rubber Processing Laboratory	dmmme_rpl.jpg
+DMMME Disini Lecture Room	dmmme_lec_dis.jpg
+DMMME Dr. Perfecto Guerrero Lecture Room	dmmme_lec_gue.jpg
+DMMME Roman B. Ramos Lecture Room	dmmme_lec_ram.jpg
+DMMME Ernesto A. Villaluna, Sr. Lecture Room	dmmme_lec_vill.jpg
+Department of Mining, Metallurgical & Materials Engineering (DMMME)	dmmme_corridor.jpg
+Human Resources Development Office 	hrdo.jpg
+Law Center 1st Floor Lobby	bocobo_lobby1st.jpg
+Law Center 3rd Floor Lobby	bocobo_lobby3rd.jpg
+MB 105	math_105.jpg
+MB 106	math_106.jpg
+MB 107	math_107.jpg
+MB 108	math_108.jpg
+MB 115	math_115.jpg
+MB 116	math_116.jpg
+MB 117	math_117.jpg
+MB 120	math_120.jpg
+MB 121	math_121.jpg
+MB 313	math_313.jpg
+MB 314	math_314.jpg
+MB 319	math_319.jpg
+MB 320	math_320.jpg
+Natural Sciences Research Institute (NSRI) (Miranda Hall)	miranda_1.jpg
+Natural Sciences Research Institute (NSRI) (Miranda Hall)	miranda_2.jpg
+Office of the Chancellor (OC)	chancellor.jpg
+Office of the Vice Chancellor for Administration (OVCA)	ovca_1.jpg
+Office of the Vice Chancellor for Administration (OVCA)	ovca_2.jpg
+Office of the Vice Chancellor for Student Affairs (OVCSA)	ovcsa.jpg
+Quezon Hall	quezon_sign.jpg
+SE 123	econ_123_1.jpg
+SE 123	econ_123_2.jpg
+SE 125	econ_125.jpg
+SE 127	econ_127_1.jpg
+Supply and Property Managment Office (SPMO)	spmo_1.jpg
+Supply and Property Managment Office (SPMO)	spmo_2.jpg
+University Ampitheater	ampitheatre_2.jpg
+University Ampitheater	ampitheatre_3.jpg
+UP Diliman Gender Office (UPDGO)	gender_office_1.jpg
+UP Diliman Gender Office (UPDGO)	gender_office_2.jpg
+UP Diliman Police (UPDP)	updp.jpg
+UP DOST Core Group	dost_core.jpg
+UP Lagoon Beta Epsilon Theatrum	beta_theatrum.jpg
+UP Lagoon Beta Epsilon Theatrum	lagoon_1.jpg
+UP Lagoon Beta Epsilon Theatrum	lagoon_2.jpg
+UP Main Library (Gonzales Hall)	gonzales.jpg
+Viladolid Hall	viladolid_hall_1.jpg
+Viladolid Hall	viladolid_hall_2.jpg
+EEE 123	eee_123.jpg
+EEE 124	eee_124.jpg
+EEE 125	eee_125.jpg
+EEE 126	eee_126.jpg
+EEE 129	eee_129.jpg
+EEE 127	eee_127.jpg
+EEE 201	eee_201.jpg
+Lagmay Hall (LH) (Palma Hall Annex)	lagmay_entrance_3.jpg
+Concordia Albarracin Residence Hall	concordia-albarracin-rh.jpg
+Centennial Residence Hall	centennial-rh-a.jpg
+Centennial Residence Hall	centennial-rh-b.jpg
+EEE 202	eee_202.jpg
+EEE 203	eee_203.jpg
+EEE 204	eee_204.jpg
+EEE 205	eee_205.jpg
+EEE 206	eee_206.jpg
+EEE 207	eee_207.jpg
+EEE 208	eee_208.jpg
+EEE 209	eee_209.jpg
+EEE 210	eee_210.jpg
+EEE 220	eee_220.jpg
+EEE 225	eee_225.jpg
+EEE 227	eee_227.jpg
+EEE 228	eee_228.jpg
+EEE 229	eee_229.jpg
+EEE 301	eee_301.jpg
+EEE 302	eee_302.jpg
+EEE 303	eee_303.jpg
+EEE 305	eee_305.jpg
+EEE 304	eee_304.jpg
+EEE 307	eee_307.jpg
+EEE 308	eee_308.jpg
+EEE 309	eee_309.jpg
+EEE 310	eee_310.jpg
+EEE 320	eee_320.jpg
+EEE 321	eee_321.jpg
+EEE 322	eee_322.jpg
+EEE 323	eee_323.jpg
+EEE 324	eee_324.jpg
+EEE 325	eee_325.jpg
+EEE 326	eee_326.jpg
+EEE 327	eee_327.jpg
+EEE 329	eee_329.jpg
+EEE 401	eee_401.jpg
+EEE 402	eee_402.jpg
+EEE 403	eee_403.jpg
+EEE 404	eee_404.jpg
+EEE 405	eee_405.jpg
+EEE 406	eee_406.jpg
+EEE 407	eee_407.jpg
+EEE 408	eee_408.jpg
+EEE 409	eee_409.jpg
+EEE 410	eee_410.jpg
+EEE 412	eee_412.jpg
+EEE 420	eee_420.jpg
+EEE 421	eee_421.jpg
+EEE 422	eee_422.jpg
+EEE 423	eee_423.jpg
+EEE 424	eee_424.jpg
+EEE 425	eee_425.jpg
+EEE 426	eee_426.jpg
+EEE 427	eee_427.jpg
+EEE 428	eee_428.jpg
+EEE 429	eee_429.jpg
+NIMBB 100	nimbb_100.jpg
+NIMBB 101	nimbb_101.jpg
+NIMBB 105	nimbb_105.jpg
+NIMBB 107	nimbb_107.jpg
+NIMBB 110	nimbb_110.jpg
+NIMBB 112	nimbb_112.jpg
+NIMBB 200	nimbb_200.jpg
+NIMBB 202	nimbb_202.jpg
+NIMBB 203	nimbb_203.jpg
+NIMBB 205	nimbb_205.jpg
+NIMBB 206	nimbb_206.jpg
+NIMBB 214	nimbb_214.jpg
+NIMBB 215	nimbb_215.jpg
+NIMBB Bioinformatics	nimbb_bioinformatics.jpg
+NIMBB DNA Sequencing	nimbb_dna_sequencing.jpg
+CMC Library	cmc_lib.jpg
+CMC Department of Communication Research	cmc_research.jpg
+CMC 205	cmc_205.jpg
+CMC 207	cmc_207.jpg
+CMC 209	cmc_209.jpg
+CMC Department of Broadcasting	cmc_broadkast.jpg
+Lagmay Hall (LH) (Palma Hall Annex)	lagmay_entrance_2.jpg
+LH 201	lagmay_201.jpg
+LH 203	lagmay_203.jpg
+LH 204	lagmay_204.jpg
+LH 205	lagmay_205.jpg
+LH 207	cswcd_207.jpg
+LH 209	lagmay_209.jpg
+LH 213	lagmay_213.jpg
+LH 215	lagmay_215.jpg
+LH 301	lagmay_301.jpg
+LH 302	lagmay_302.jpg
+LH 303	lagmay_303.jpg
+LH 304	lagmay_304.jpg
+LH 305	cswcd_305.jpg
+LH 307	lagmay_307.jpg
+LH 309	lagmay_309.jpg
+LH 313-315	lagmay_313.jpg
+LH 313-315	lagmay_315.jpg
+Bahay ng Alumni Comfort Rooms	BahayAlumni_MaleCR.jpg
+Bahay ng Alumni Comfort Rooms	BahayAlumni_FemaleCR.jpg
+Department of Computer Science Teaching Lab 1 (TL1)	DCS_TL1.jpg
+Department of Computer Science Classroom 3 (CLR 3)	DCS_Classroom3.jpg
+Department of Computer Science Classroom 2 (CLR 2)	DCS_Classroom2.jpg
+Department of Computer Science Engineering and Research for Technology Development (ERDT)	DCS_ERDT.jpg
+UP Alumni Engineers' Centennial Hall (Engineering Library 2) (Department of Computer Science - DCS)	engg-library-2-b.jpg
+Art Circle Cafe	ArtCircleCafe.jpg
+Chocolate Kiss Cafe	ChocolateKissCafe.jpg
+Chocolate Kiss Cafe	ChocolateKissCafe2.jpg
+College of Mass Communication - Media Center and DZUP Studio	MediaCenter2.jpg
+Centennial Residence Hall - University Food Service	Centennial_UFS.jpg
+YZA Printing Shop	YZA.jpg
+Food Nook	FoodNook.jpg
+B.E. Scientific Glass Instruments	B.E_Scientific_Glassware.jpg
+Acacia Residence Halls Commercial Area	Acacia_Stores2.jpg
+Acacia Residence Halls Commercial Area	Acacia_Stores.jpg
+Quicklean	Quicklean.jpg
+Khaleb	Khaleb.jpg
+Unlad Convenience Store	Unlad.jpg
+UP Click	UPClick.jpg
+Acacia Wellness	AcaciaWellness.jpg
+Upbeat	Upbeat.jpg
+Orange Segment	OrangeSegment.jpg
+CSWCD 101	cswcd_101.jpg
+CSWCD 105	cswcd_105.jpg
+CSWCD 102	cswcd_102.jpg
+CSWCD 106	cswcd_106.jpg
+CSWCD 201	cswcd_201.jpg
+CSWCD 202	cswcd_202.jpg
+CSWCD 203	cswcd_203.jpg
+CSWCD 204	cswcd_204.jpg
+CSWCD 205	cswcd_205.jpg
+CSWCD 206	cswcd_206.jpg
+CSWCD 208	cswcd_208.jpg
+CSWCD 207	cswcd_207_1.jpg
+CSWCD 301	cswcd_301.jpg
+CSWCD 302	cswcd_302.jpg
+CSWCD 303	cswcd_303.jpg
+CSWCD 304	cswcd_304.jpg
+CSWCD 306	cswcd_306_1.jpg
+CSWCD 307	cswcd_307.jpg
+CSWCD 308	cswcd_308.jpg
+CSWCD Library	cswcd_lib_2.jpg
+Law Office	CentennialNotary.jpg
+Law Office	CentennialNotary2.jpg
+UP Film Institute (UPFI)	up-film-institute.jpg
+UPFI 104	upfi-104.jpg
+UPFI 105	upfi-105.jpg
+UPFI 107	upfi-107.jpg
+UPFI 202	upfi-202.jpg
+UPFI AVR 1	upfi-avr-1.jpg
+UPFI AVR 2	upfi-avr-2.jpg
+AECH Serials Section	aech-serials-a.jpg
+AECH 213	aech-213-classroom-1.jpg
+AECH 210 - Teaching Lab 3	aech-210-tl-3.jpg
+AECH 212	aech-212-classroom-4.jpg
+AECH 214 - Teaching Lab 2	aech-214-tl-2.jpg
+AECH 215 - Seminar Room	aech-215-seminar-room.jpg
+DMMME Adaptive Metallurgy Laboratory	dmmme-lab-am-a.jpg
+DMMME Adaptive Metallurgy Laboratory	dmmme-lab-am-b.jpg
+DMMME 205-206	dmmme-205-206.jpg
+DMMME Composites Laboratory	dmmme-lab-comp.jpg
+DMMME 214	dmmme-214.jpg
+DMMME 216	dmmme-216.jpg
+DMMME 217	dmmme-217.jpg
+DMMME Administrative Office	dmmme-admin.jpg
+DMMME 301-302	dmmme-301-302.jpg
+DMMME 303-304	dmmme-303-304.jpg
+DMMME Comfort Rooms	dmmme-cr-a.jpg
+IChE A101	iche-a101.jpg
+IChE A102	iche-a102.jpg
+IChE A104	iche-a104.jpg
+IChE A103	iche-a103.jpg
+IChE A202 - Administration Office	iche-a202.jpg
+IChE A301 - Computer Laboratory I	iche-a301.jpg
+IChE A401	iche-a401.jpg
+IChE A402	iche-a402.jpg
+IChE A403	iche-a403.jpg
+IChE A404	iche-a404.jpg
+IChE A302 - Computer Laboratory II	iche-a302.jpg
+IChE B101 Process Systems Engineering Laboratory	iche-b101.jpg
+IChE B102 Analytical Laboratory	iche-b102.jpg
+IChE B103-B104 Polymers Laboratory	iche-b103-104.jpg
+IChE B105-B106 Catalysts Laboratory	iche-b105-106.jpg
+IChE B201-B202 Separations Engineering Laboratory	iche-b201-202.jpg
+IChE B203 Analytical Laboratory	iche-b203.jpg
+IChE B204-B205 Fuels, Energy, and Thermal Systems Laboratory	iche-b204-205.jpg
+IChE B206 Green Materials Laboratory	iche-b206.jpg
+IChE B301-B302 Chemical Engineering Commons	iche-b301-302.jpg
+Espiritu Hall (College of Law Library)	espiritu-hall-library-b.jpg
+Palma Hall Pavilion I (PAV1)	ph-pav-1-a.jpg
+College of Home Economics (CHE) Museum	che-museum-a.jpg
+ICE 401	ice-401.jpg
+ICE 402	ice-402.jpg
+ICE 403	ice-403.jpg
+ICE 404	ice-404.jpg
+ICE 405	ice-405.jpg
+ICE 301	ice-301.jpg
+ICE 302	ice-302.jpg
+ICE 303	ice-303.jpg
+ICE 304	ice-304.jpg
+ICE 305	ice-305.jpg
+ICE 306A	ice-306a.jpg
+ICE 306B	ice-306b.jpg
+ICE 307	ice-307.jpg
+ICE 308	ice-308.jpg
+ICE 309	ice-309.jpg
+ICE 310	ice-310.jpg
+ICE 201	ice-201.jpg
+ICE 202	ice-202.jpg
+ICE 203	ice-203.jpg
+ICE 204	ice-204.jpg
+ICE 205 - Faculty Room	ice-205.jpg
+ICE 103	ice-103.jpg
+ICE 104	ice-104.jpg
+ICE 101	ice-101.jpg
+ICE 102	ice-102.jpg
+ICE 105	ice-105.jpg
+ICE 106	ice-106.jpg
+ICE 108	ice-108.jpg
+ICE 107	ice-107.jpg
+College of Architecture Library	arki-library.jpg
+UP School of Urban and Regional Planning (SURP)	surp-construction-a.jpg
+Center for Women's and Gender Studies	center-for-womens-and-gender-studies.jpg
+CMC M 107	cmc-m107.jpg
+CMC 107	cmc-annex-107.jpg
+CMC A-202	cmc-annex-a202.jpg
+Parish of The Holy Sacrifice - Gomburza Hall	parish-oths-sign.jpg
+Parish of The Holy Sacrifice - Gomburza Hall	parish-oths-gomburza-hall.jpg
+Parish of The Holy Sacrifice - Delaney Hall	parish-oths-delaney-hall.jpg
+Old UP Swimming Pool Lot	old-swimming-pool.jpg
+F. Agoncillo-Parish of The Holy Sacrifice Area	f-agoncillo-poths-parking.jpg
+Balay Kalinaw Parking Lot	balay-kalinaw-parking-a.jpg
+Virata School of Business Library	vsb-library.jpg
+VSB 201	vsb-201.jpg
+VSB 203	vsb-203.jpg
+VSB 205	vsb-205.jpg
+VSB 207	vsb-207.jpg
+VSB 209	vsb-209.jpg
+VSB 211	vsb-211.jpg
+VSB 213	vsb-213.jpg
+VSB 215	vsb-215.jpg
+VSB 202	vsb-202.jpg
+VSB 204	vsb-204.jpg
+VSB 206	vsb-206.jpg
+VSB 208	vsb-208.jpg
+VSB 210	vsb-210.jpg
+VSB 212	vsb-212.jpg
+VSB 214	vsb-214.jpg
+VSB 106	vsb-106.jpg
+VSB 108	vsb-108.jpg
+VSB 110	vsb-110.jpg
+VSB 118	vsb-118.jpg
+IESM 101	iesm-101.jpg
+IESM 102	iesm-102.jpg
+IESM 103	iesm-103.jpg
+IESM 104	iesm-104.jpg
+IESM Administration Office	iesm-admin.jpg
+IESM Auditorium	iesm-auditorium.jpg
+IESM 202	iesm-202.jpg
+College of Science Library Parking Lot	cslib-parking-a.jpg
+MSI 201	msi-201.jpg
+MSI 202	msi-202.jpg
+MSI 203	msi-203.jpg
+MSI 204	msi-204.jpg
+MSI 205	msi-205.jpg
+MSI 206	msi-206.jpg
+MSI 207	msi-207.jpg
+MSI 208	msi-208.jpg
+MSI 209	msi-209.jpg
+MSI 210	msi-210.jpg
+MSI 211	msi-211.jpg
+MSI 219 - Library	msi-219-library.jpg
+UP Marine Science Institute Comfort Rooms	msi-cr-a.jpg
+Archaeological Studies Program Solheim Library	asp-library.jpg
+ASP 103 - Administration	asp-103-admin.jpg
+ASP 109	asp-109.jpg
+ASP 113	asp-113.jpg
+ASP 115	asp-115.jpg
+ASP 117	asp-117.jpg
+Centennial Residence Hall - UP Stop	cente-up-stop.jpg
+Centennial Residence Hall - The Food Nook	cente-the-food-nook.jpg
+Centennial Residence Hall - FLUIDSURF	cente-fluidsurf.jpg
+Centennial Residence Hall - ACT RC	cente-act-rc.jpg
+Centennial Residence Hall - B E Scientific Glass	cente-be-scientific-glass.jpg
+Centennial Residence Hall - ST-ART 101	cente-st-art-101.jpg
+Centennial Residence Hall - YZA Printing	cente-yza.jpg
+CHE 101A	che-101a.jpg
+CHE 102	che-102.jpg
+CHE 103	che-103.jpg
+CHE 104	che-104.jpg
+CHE 106	che-106.jpg
+College of Home Economics (CHE) Library	che-library-b.jpg
+CHE 202 Computer Room	che-202.jpg
+CHE 203-B	che-203b.jpg
+CHE 203-A	che-203a.jpg
+CHE 204	che-204.jpg
+NIGS Seminar Room	nigs-seminar-room-b.jpg
+NIGS 302	nigs-302.jpg
+NIGS 301	nigs-301.jpg
+NIGS 230	nigs-230.jpg
+NIGS 217	nigs-217.jpg
+NIGS 214 Geophysics Laboratory	nigs-214.jpg
+NIGS 213 Structural Geology Laboratory	nigs-213.jpg
+NIGS 212 Geomorphology Laboratory	nigs-212.jpg
+NIGS 121 Computer Room	nigs-121.jpg
+NIGS 111 Mineralogy Room	nigs-111.jpg
+NIGS Museum	nigs-museum.jpg
+National Institute of Geological Sciences (NIGS)	nigs-inner-a.jpg
+IB 306	ib-306.jpg
+IB 307	ib-307.jpg
+IB 308	ib-308.jpg
+IB 309	ib-309.jpg
+IB 318	ib-318.jpg
+IB 319	ib-319.jpg
+IB 321	ib-321.jpg
+IB 330	ib-330.jpg
+IB 345	ib-345.jpg
+IB 260	ib-260.jpg
+IB 2605	ib-250.jpg
+IB 234 Supply and Property Office	ib-234-supply.jpg
+IB 117	ib-117.jpg
+IB 118	ib-118.jpg
+IB 119	ib-119.jpg
+IB 167 Fish Biology Lab	ib-167.jpg
+IB 168	ib-168.jpg
+DMST - Vanguard Comfort Rooms	vanguard-cr.jpg
+DMST - Vanguard Rooftop	vanguard-roof.jpg
+DMST - Vanguard 201	vanguard-201.jpg
+DMST - Vanguard 202	vanguard-202.jpg
+DMST - Vanguard 203	vanguard-203.jpg
+DMST - Vanguard 204	vanguard-204.jpg
+\.
+
+
+--
+-- Data for Name: image_location; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.image_location (id, image_id, location_id) FROM stdin;
+74	74	101
+75	75	116
+76	76	115
+77	77	246
+78	78	68
+79	79	74
+80	80	75
+81	81	76
+82	82	77
+83	83	80
+84	84	244
+85	85	243
+86	86	124
+87	87	125
+88	88	126
+89	89	127
+90	90	128
+91	91	129
+92	92	130
+93	93	191
+94	94	210
+95	95	131
+96	96	132
+97	97	133
+98	98	134
+99	99	135
+100	100	192
+101	101	248
+102	102	211
+103	103	249
+104	104	172
+105	105	173
+106	106	174
+107	107	167
+108	108	168
+109	109	169
+110	110	171
+111	111	166
+112	112	160
+113	113	161
+114	114	162
+115	115	163
+116	116	164
+117	117	165
+119	119	149
+120	120	150
+121	121	152
+122	122	7
+123	123	8
+124	124	334
+125	125	441
+126	126	153
+127	127	154
+128	128	155
+129	129	156
+130	130	157
+131	131	158
+132	132	159
+133	133	140
+134	134	141
+135	135	142
+136	136	139
+137	137	143
+138	138	144
+139	139	145
+140	140	146
+141	141	147
+142	142	201
+143	143	202
+144	144	239
+145	145	238
+146	146	64
+147	147	58
+148	148	59
+149	149	60
+150	150	61
+151	151	63
+152	152	178
+153	153	176
+154	154	177
+155	155	175
+156	156	250
+157	157	212
+158	158	179
+159	159	180
+160	160	181
+161	161	182
+162	162	183
+163	163	184
+164	164	185
+165	165	18
+166	166	213
+167	167	213
+168	168	213
+169	169	3
+170	170	251
+171	171	241
+172	172	205
+173	173	70
+174	174	71
+175	175	72
+176	176	73
+177	177	187
+178	178	12
+179	179	17
+180	180	15
+181	181	81
+182	182	78
+183	183	78
+184	184	206
+185	185	214
+186	186	215
+187	187	216
+188	188	216
+189	189	217
+190	190	217
+191	191	218
+192	192	219
+194	194	220
+195	195	221
+196	196	221
+197	197	222
+198	198	223
+199	199	224
+200	200	225
+201	201	231
+202	202	232
+203	203	232
+204	204	233
+205	205	234
+206	206	235
+207	207	236
+208	208	237
+209	209	252
+210	210	270
+211	211	269
+212	212	268
+213	213	256
+214	214	267
+215	215	264
+216	216	265
+217	217	253
+218	218	257
+219	219	259
+220	220	280
+221	221	260
+222	222	298
+223	223	283
+224	224	284
+225	225	285
+226	226	308
+227	227	11
+228	228	10
+229	229	23
+230	230	335
+231	231	262
+232	232	24
+233	233	25
+234	234	26
+235	235	27
+236	236	28
+237	237	29
+238	238	818
+239	239	266
+240	240	254
+241	241	255
+242	242	193
+243	243	193
+244	244	193
+245	245	194
+246	246	195
+247	247	195
+248	248	196
+249	249	199
+250	250	199
+251	251	271
+252	252	272
+253	253	273
+254	254	274
+255	255	275
+257	257	277
+258	258	278
+259	259	278
+260	260	296
+261	261	297
+262	262	279
+263	263	258
+264	264	281
+265	265	282
+266	266	286
+267	267	287
+268	268	261
+269	269	288
+270	270	289
+271	271	290
+272	272	291
+273	273	292
+274	274	292
+275	275	292
+276	276	299
+277	277	300
+278	278	177
+279	279	18
+280	280	301
+281	281	302
+282	282	303
+283	283	304
+284	284	305
+285	285	317
+286	286	307
+287	287	310
+288	288	311
+289	289	312
+290	290	313
+291	291	314
+292	292	315
+293	293	316
+294	294	318
+295	295	319
+296	296	6
+297	297	9
+298	298	325
+299	299	339
+300	300	339
+301	301	339
+302	302	339
+303	303	339
+304	304	339
+305	305	340
+306	306	340
+307	307	340
+308	308	340
+309	309	340
+310	310	340
+311	311	341
+312	312	341
+313	313	341
+314	314	342
+315	315	342
+316	316	343
+317	317	344
+318	318	344
+319	319	343
+320	320	343
+321	321	344
+322	322	428
+323	323	351
+324	324	351
+325	325	351
+326	326	352
+327	327	352
+328	328	352
+329	329	353
+330	330	353
+331	331	353
+332	332	354
+333	333	354
+334	334	355
+335	335	356
+336	336	356
+337	337	357
+338	338	358
+339	339	359
+340	340	360
+341	341	360
+342	342	361
+343	343	361
+344	344	362
+345	345	362
+346	346	363
+347	347	363
+348	348	364
+349	349	364
+350	350	365
+351	351	366
+352	352	367
+353	353	368
+354	354	369
+355	355	370
+356	356	370
+357	357	371
+358	358	371
+359	359	372
+360	360	373
+361	361	374
+362	362	375
+363	363	376
+364	364	377
+365	365	380
+366	366	407
+367	367	408
+368	368	379
+369	369	379
+370	370	409
+371	371	410
+372	372	411
+373	373	411
+374	374	403
+375	375	412
+376	376	413
+377	377	414
+378	378	415
+379	379	416
+380	380	423
+381	381	423
+382	382	424
+383	383	425
+384	384	426
+385	385	427
+386	386	429
+387	387	429
+388	388	430
+389	389	430
+390	390	431
+391	391	432
+392	392	433
+393	393	434
+394	394	438
+395	395	438
+396	396	439
+397	397	440
+398	398	384
+399	399	442
+400	400	448
+401	401	14
+402	402	449
+403	403	449
+404	404	450
+405	405	451
+406	406	452
+407	407	452
+408	408	453
+409	409	454
+410	410	455
+411	411	455
+412	412	456
+413	413	457
+414	414	458
+415	415	459
+416	416	395
+417	417	338
+418	418	405
+419	419	336
+420	420	203
+421	421	382
+422	422	382
+423	423	402
+424	424	403
+425	425	392
+426	426	392
+427	427	397
+428	428	397
+429	429	400
+430	430	400
+431	431	460
+432	432	462
+433	433	462
+434	434	463
+435	435	464
+436	436	889
+437	437	465
+438	438	470
+439	439	470
+440	440	671
+441	441	471
+442	442	472
+443	443	687
+444	444	687
+445	445	419
+446	446	420
+447	447	421
+448	448	421
+449	449	421
+450	450	447
+451	451	447
+452	452	865
+453	453	865
+454	454	422
+455	455	472
+456	456	473
+457	457	474
+458	458	474
+459	459	475
+460	460	476
+461	461	477
+462	462	478
+463	463	479
+464	464	480
+465	465	481
+466	466	482
+467	467	483
+468	468	483
+469	469	484
+470	470	485
+471	471	486
+472	472	487
+473	473	488
+474	474	489
+475	475	780
+476	476	490
+477	477	490
+478	478	491
+479	479	491
+480	480	492
+481	481	493
+482	482	494
+483	483	435
+484	484	495
+485	485	495
+486	486	194
+487	487	194
+488	488	496
+489	489	497
+490	490	498
+491	491	498
+492	492	499
+493	493	499
+494	494	500
+495	495	443
+496	496	467
+497	497	468
+498	498	504
+499	499	505
+500	500	506
+501	501	507
+502	502	508
+503	503	508
+504	504	508
+505	505	509
+506	506	510
+507	507	511
+508	508	512
+509	509	513
+510	510	514
+511	511	515
+512	512	516
+513	513	517
+514	514	518
+515	515	519
+516	516	521
+517	517	522
+518	518	522
+519	519	523
+520	520	524
+521	521	525
+522	522	501
+523	523	528
+524	524	529
+525	525	466
+526	526	466
+527	527	530
+528	528	531
+529	529	532
+530	530	533
+531	531	534
+532	532	535
+533	533	536
+534	534	537
+535	535	538
+536	536	442
+537	537	539
+538	538	540
+539	539	417
+540	540	425
+541	541	541
+542	542	542
+543	543	543
+544	544	544
+545	545	545
+546	546	395
+547	547	546
+548	548	547
+549	549	547
+550	550	674
+551	551	556
+552	552	790
+553	553	558
+554	554	503
+555	555	865
+556	556	557
+557	557	527
+558	558	548
+559	559	549
+560	560	550
+561	561	461
+562	562	551
+563	563	552
+564	564	552
+565	565	553
+566	566	554
+567	567	555
+568	568	66
+569	569	102
+570	570	197
+571	571	198
+572	572	227
+573	573	228
+574	574	519
+575	575	229
+576	576	469
+577	577	559
+578	578	560
+579	579	561
+580	580	562
+581	581	563
+582	582	564
+583	583	565
+584	584	566
+585	585	567
+586	586	568
+587	587	569
+588	588	520
+589	589	323
+590	590	385
+591	591	386
+592	592	399
+593	593	436
+594	594	437
+595	595	570
+596	596	570
+597	597	571
+598	598	393
+599	599	573
+600	600	574
+601	601	575
+602	602	526
+603	603	263
+604	604	69
+605	605	137
+606	606	294
+607	607	295
+608	608	170
+609	609	230
+610	610	345
+611	611	345
+612	612	346
+613	613	347
+614	614	572
+615	615	576
+616	616	577
+617	617	578
+618	618	439
+619	619	387
+620	620	309
+621	621	306
+622	622	320
+623	623	322
+624	624	293
+625	625	321
+626	626	324
+627	627	327
+628	628	326
+629	629	328
+630	630	329
+631	631	330
+632	632	331
+633	633	332
+634	634	333
+635	635	406
+636	636	406
+637	637	388
+638	638	389
+639	639	389
+640	640	390
+641	641	381
+642	642	62
+643	643	62
+644	644	65
+645	645	67
+646	646	383
+647	647	383
+648	648	393
+649	649	393
+650	650	396
+651	651	396
+652	652	391
+653	653	404
+654	654	394
+655	655	394
+656	656	394
+657	657	401
+658	658	378
+659	659	378
+660	660	579
+661	661	580
+662	662	581
+663	663	582
+664	664	583
+665	665	584
+666	666	585
+667	667	418
+668	668	838
+669	669	839
+670	670	839
+671	671	586
+672	672	587
+673	673	588
+674	674	589
+675	675	590
+676	676	591
+677	677	592
+678	678	593
+679	679	594
+680	680	595
+681	681	596
+682	682	597
+683	683	598
+684	684	599
+685	685	600
+686	686	601
+687	687	602
+688	688	603
+689	689	604
+690	690	605
+691	691	606
+692	692	607
+693	693	608
+694	694	609
+695	695	610
+696	696	611
+697	697	612
+698	698	613
+699	699	614
+700	700	615
+701	701	616
+702	702	617
+703	703	618
+704	704	619
+705	705	620
+706	706	621
+707	707	622
+708	708	623
+709	709	624
+710	710	625
+711	711	626
+712	712	627
+713	713	628
+714	714	629
+715	715	630
+716	716	631
+717	717	632
+718	718	633
+719	719	444
+720	720	445
+721	721	446
+722	722	348
+723	723	349
+724	724	350
+725	725	634
+726	726	30
+727	727	31
+728	728	32
+729	729	33
+730	730	34
+731	731	635
+732	732	636
+733	733	637
+734	734	638
+735	735	639
+736	736	640
+737	737	641
+738	738	642
+739	739	643
+740	740	644
+741	741	645
+742	742	646
+743	743	647
+744	744	648
+745	745	418
+746	746	649
+747	747	650
+748	748	651
+749	749	652
+750	750	653
+751	751	654
+752	752	655
+753	753	656
+754	754	657
+755	755	658
+756	756	659
+757	757	660
+758	758	661
+759	759	662
+760	760	663
+761	761	664
+762	762	664
+763	763	665
+764	764	665
+765	765	666
+766	766	667
+767	767	669
+768	768	670
+769	769	671
+770	770	672
+771	771	673
+772	772	673
+773	773	674
+774	774	675
+775	775	676
+776	776	677
+777	777	678
+778	778	679
+779	779	679
+780	780	680
+781	781	681
+782	782	682
+783	783	683
+784	784	684
+785	785	685
+786	786	686
+787	787	688
+788	788	689
+789	789	690
+790	790	691
+791	791	692
+792	792	693
+793	793	694
+794	794	695
+795	795	696
+796	796	697
+797	797	698
+1	1	120
+2	2	121
+3	3	122
+4	4	189
+5	5	188
+6	6	19
+7	7	20
+8	8	21
+9	9	22
+10	10	5
+11	11	35
+12	12	36
+13	13	37
+14	14	13
+15	15	203
+16	16	245
+17	17	207
+18	18	240
+19	19	47
+20	20	48
+21	21	1
+22	22	2
+23	23	200
+24	24	242
+25	25	79
+26	26	44
+27	27	45
+28	28	43
+29	29	39
+30	30	40
+31	31	41
+32	32	42
+33	33	190
+34	34	204
+35	35	49
+36	36	50
+37	37	51
+38	38	52
+39	39	53
+40	40	54
+41	41	55
+42	42	56
+43	43	57
+44	44	4
+47	47	226
+48	48	93
+49	49	82
+50	50	96
+51	51	88
+52	52	90
+53	53	208
+54	54	103
+55	55	104
+56	56	105
+57	57	106
+58	58	107
+59	59	108
+60	60	109
+61	61	110
+62	62	111
+63	63	112
+64	64	113
+65	65	117
+66	66	114
+67	67	247
+68	68	118
+69	69	97
+70	70	98
+71	71	119
+72	72	99
+73	73	100
+798	798	699
+799	799	700
+800	800	701
+801	801	702
+802	802	668
+803	803	703
+804	804	704
+805	805	705
+806	806	706
+807	807	707
+808	808	707
+809	809	708
+810	810	709
+811	811	710
+812	812	711
+813	813	712
+814	814	713
+815	815	714
+816	816	715
+817	817	716
+818	818	717
+819	819	718
+820	820	719
+821	821	720
+822	822	721
+823	823	721
+824	824	722
+825	825	723
+826	826	724
+827	827	725
+828	828	726
+829	829	727
+830	830	728
+831	831	729
+832	832	533
+833	833	730
+834	834	731
+835	835	732
+836	836	733
+837	837	734
+838	838	735
+839	839	736
+840	840	737
+841	841	738
+842	842	739
+843	843	740
+844	844	741
+845	845	742
+846	846	743
+847	847	744
+848	848	745
+849	849	746
+850	850	747
+851	851	748
+852	852	749
+853	853	413
+854	854	16
+855	855	502
+856	856	750
+857	857	751
+858	858	752
+859	859	753
+860	860	754
+861	861	755
+862	862	756
+863	863	757
+864	864	758
+865	865	759
+866	866	760
+867	867	761
+868	868	762
+869	869	763
+870	870	764
+871	871	765
+872	872	766
+873	873	767
+874	874	768
+875	875	769
+876	876	770
+877	877	771
+878	878	772
+879	879	773
+880	880	774
+881	881	775
+882	882	776
+883	883	777
+884	884	778
+885	885	779
+886	886	780
+887	887	781
+888	888	782
+889	889	783
+890	890	784
+891	891	785
+892	892	785
+893	893	786
+894	894	787
+895	895	788
+896	896	789
+897	897	791
+898	898	792
+899	899	793
+900	900	794
+901	901	795
+902	902	796
+903	903	797
+904	904	798
+905	905	799
+906	906	800
+907	907	801
+908	908	802
+909	909	803
+910	910	804
+911	911	805
+912	912	806
+913	913	807
+914	914	808
+915	915	809
+916	916	810
+917	917	811
+918	918	812
+919	919	813
+920	920	814
+921	921	815
+922	922	816
+923	923	817
+924	924	818
+925	925	819
+926	926	820
+927	927	821
+928	928	822
+929	929	823
+930	930	824
+931	931	825
+932	932	826
+933	933	827
+934	934	828
+935	935	829
+936	936	830
+937	937	831
+938	938	832
+939	939	833
+940	940	834
+941	941	835
+942	942	836
+943	943	837
+944	944	841
+945	945	840
+946	946	842
+947	947	843
+948	948	844
+949	949	845
+950	950	846
+951	951	847
+952	952	848
+953	953	849
+954	954	850
+955	955	851
+956	956	491
+957	957	852
+958	958	853
+959	959	854
+960	960	855
+961	961	136
+962	962	856
+963	963	138
+964	964	857
+965	965	858
+966	966	859
+967	967	860
+968	968	861
+969	969	862
+970	970	863
+971	971	864
+972	972	14
+973	973	866
+974	974	867
+975	975	868
+976	976	869
+977	977	870
+978	978	871
+979	979	872
+980	980	873
+981	981	874
+982	982	875
+983	983	876
+984	984	877
+985	985	878
+986	986	879
+987	987	880
+988	988	881
+989	989	882
+990	990	883
+991	991	884
+992	992	885
+993	993	886
+994	994	887
+995	995	888
+\.
+
+
+--
+-- Data for Name: inside_before; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.inside_before (room, building) FROM stdin;
+CAL 201	College of Arts and Letters (CAL)
+CAL 209	College of Arts and Letters (CAL)
+CAL 210	College of Arts and Letters (CAL)
+CAL 301	College of Arts and Letters (CAL)
+CAL 309	College of Arts and Letters (CAL)
+CAL 310	College of Arts and Letters (CAL)
+CAL 401	College of Arts and Letters (CAL)
+CAL 408	College of Arts and Letters (CAL)
+CAL 409	College of Arts and Letters (CAL)
+CHE Room ABC	College of Home Economics Gusali 2 (CHE)
+CHE Room D	College of Home Economics Gusali 2 (CHE)
+CHE Room E	College of Home Economics Gusali 2 
+SE 105	UP School of Economics (SE)
+SE 111	UP School of Economics (SE)
+SE 114	UP School of Economics (SE)
+SE 121	UP School of Economics (SE)
+SE 123	UP School of Economics (SE)
+SE Auditorium	UP School of Economics (SE)
+SE 103	UP School of Economics (SE)
+SE 125	UP School of Economics (SE)
+SE 127	UP School of Economics (SE)
+MBAn 306	Institute of Mathematics Annex (MBAn)
+MBAn 313	Institute of Mathematics Annex (MBAn)
+MBAn 401	Institute of Mathematics Annex (MBAn)
+MBAn 402	Institute of Mathematics Annex (MBAn)
+MBAn 403	Institute of Mathematics Annex (MBAn)
+MBAn AVR 2	Institute of Mathematics Annex (MBAn)
+MBAn AVR 1	Institute of Mathematics Annex (MBAn)
+MBAn 305	Institute of Mathematics Annex (MBAn)
+MBAn 314	Institute of Mathematics Annex (MBAn)
+NCPAG 301-302	National College of Public Administration & Governance (NCPAG)
+NCPAG 305	National College of Public Administration & Governance (NCPAG)
+NCPAG 306	National College of Public Administration & Governance (NCPAG)
+NCPAG 307A	National College of Public Administration & Governance (NCPAG)
+NCPAG 308	National College of Public Administration & Governance (NCPAG)
+NCPAG 309	National College of Public Administration & Governance (NCPAG)
+NCPAG AVR	National College of Public Administration & Governance (NCPAG)
+NIGS 125	National Institute of Geological Sciences (NIGS)
+Penthouse Lecture Hall	Bocobo Hall (Law Center) (BOC)
+MB 301	Institute of Mathematics Main Building (MB)
+JH 101	College of Architecture Building 2 (Juguilon Hall) (JH)
+JH 102	College of Architecture Building 2 (Juguilon Hall) (JH)
+LAW 200	Malcolm Hall (LAW) (College of Law)
+LAW 203	Malcolm Hall (LAW) (College of Law)
+JH 103	College of Architecture Building 2 (Juguilon Hall) (JH)
+JH 104	College of Architecture Building 2 (Juguilon Hall) (JH)
+JH 105	College of Architecture Building 2 (Juguilon Hall) (JH)
+JH 106	College of Architecture Building 2 (Juguilon Hall) (JH)
+MH 301-303	Melchor Hall (MH) (College of Engineering)
+MH 305-307	Melchor Hall (MH) (College of Engineering)
+MH 306-308	Melchor Hall (MH) (College of Engineering)
+MH 309-311	Melchor Hall (MH) (College of Engineering)
+MH 313-315	Melchor Hall (MH) (College of Engineering)
+MH 314-316	Melchor Hall (MH) (College of Engineering)
+MH 318-320	Melchor Hall (MH) (College of Engineering)
+MH 416-418	Melchor Hall (MH) (College of Engineering)
+FA Auditorium	College of Fine Arts (CFA)
+FA RGEP 1	College of Fine Arts (CFA)
+FA RGEP 2	College of Fine Arts (CFA)
+FA T2	College of Fine Arts (CFA)
+FA T3	College of Fine Arts (CFA)
+FA B6	College of Fine Arts (CFA)
+FA B1 & B2	College of Fine Arts (CFA)
+FA B4 & B5	College of Fine Arts (CFA)
+MH 422-424	Melchor Hall (MH) (College of Engineering)
+IC 305-306	Institute of Chemistry Teaching Building (IC)
+IC 307-308	Institute of Chemistry Teaching Building (IC)
+IC 309-310	Institute of Chemistry Teaching Building (IC)
+IC 311-312	Institute of Chemistry Teaching Building (IC)
+IC 313-314	Institute of Chemistry Teaching Building (IC)
+IC 315-316	Institute of Chemistry Teaching Building (IC)
+IC 330-331	Institute of Chemistry Teaching Building (IC)
+IC CHEMREZ	Institute of Chemistry Teaching Building (IC)
+IC Chevron	Institute of Chemistry Teaching Building (IC)
+Procter & Gamble AVR	Melchor Hall (MH) (College of Engineering)
+AH 206-208	Abelardo Hall (ABH) (College of Music)
+AH 226	Abelardo Hall (ABH) (College of Music)
+SS 307	School of Statistics (SS) (STAT)
+SS Lecture Hall 1	School of Statistics (SS) (STAT)
+SS Lecture Hall 2	School of Statistics (SS) (STAT)
+MB 319	Institute of Mathematics Main Building (MB)
+MB 320	Institute of Mathematics Main Building (MB)
+AH Annex 222	Abelardo Hall Annex (College of Music Annex)
+AH Annex 232	Abelardo Hall Annex (College of Music Annex)
+LAW 204	Malcolm Hall (LAW) (College of Law)
+LAW 208	Malcolm Hall (LAW) (College of Law)
+LAW 303	Malcolm Hall (LAW) (College of Law)
+LAW 304	Malcolm Hall (LAW) (College of Law)
+NIGS 127	National Institute of Geological Sciences (NIGS)
+NIGS 128	National Institute of Geological Sciences (NIGS)
+NIGS 211	National Institute of Geological Sciences (NIGS)
+NIGS 215	National Institute of Geological Sciences (NIGS)
+NIGS Seminar Room	National Institute of Geological Sciences (NIGS)
+NIGS 301	National Institute of Geological Sciences (NIGS)
+PH 207ABC	Palma Hall (PH)
+PH 108-110	Palma Hall (PH)
+PH 116-118	Palma Hall (PH)
+PH 120-122	Palma Hall (PH)
+PH 213-215	Palma Hall (PH)
+PH 216-218	Palma Hall (PH)
+PH 308-310	Palma Hall (PH)
+PH 312-314	Palma Hall (PH)
+PH 324-326	Palma Hall (PH)
+PH Multimedia Room	Palma Hall (PH)
+PAV1 1114	Palma Hall Pavilion I (PAV1)
+PAV1 1115	Palma Hall Pavilion I (PAV1)
+PAV1 1119	Palma Hall Pavilion I (PAV1)
+PAV1 1206	Palma Hall Pavilion I (PAV1)
+PAV1 1210	Palma Hall Pavilion I (PAV1)
+PAV1 1213	Palma Hall Pavilion I (PAV1)
+PAV1 1214	Palma Hall Pavilion I (PAV1)
+PAV1 1222	Palma Hall Pavilion I (PAV1)
+PAV1 1228	Palma Hall Pavilion I (PAV1)
+PAV1 1230	Palma Hall Pavilion I (PAV1)
+PAV1 1232	Palma Hall Pavilion I (PAV1)
+NIP F209	National Institute of Physics (NIP)
+NIP F210	National Institute of Physics (NIP)
+NIP Lecture Pavilion 101	National Institute of Physics (NIP)
+NIP Lecture Pavilion 102	National Institute of Physics (NIP)
+NIP Lecture Pavilion 103	National Institute of Physics (NIP)
+NIP Lecture Pavilion 104	National Institute of Physics (NIP)
+NIP F208	National Institute of Physics (NIP)
+NIP F204	National Institute of Physics (NIP)
+NIP F205	National Institute of Physics (NIP)
+NIP F206	National Institute of Physics (NIP)
+NIP F207	National Institute of Physics (NIP)
+NIP F201	National Institute of Physics (NIP)
+NIP F202	National Institute of Physics (NIP)
+NIP F203	National Institute of Physics (NIP)
+SOLAIR Auditorium	School of Labor & Industrial Relations (SOLAIR)
+SOLAIR 201	School of Labor & Industrial Relations (SOLAIR)
+SOLAIR 203	School of Labor & Industrial Relations (SOLAIR)
+SOLAIR 10	School of Labor & Industrial Relations (SOLAIR)
+PH Multimedia Room (PH 400)	Palma Hall (PH)
+MB 116	Institute of Mathematics Main Building (MB)
+SOLAIR 12	School of Labor & Industrial Relations (SOLAIR)
+SOLAIR 11	School of Labor & Industrial Relations (SOLAIR)
+MB 302	Institute of Mathematics Main Building (MB)
+MB 303	Institute of Mathematics Main Building (MB)
+MB 304	Institute of Mathematics Main Building (MB)
+MB 305	Institute of Mathematics Main Building (MB)
+MB 306	Institute of Mathematics Main Building (MB)
+MB 307	Institute of Mathematics Main Building (MB)
+MB 308	Institute of Mathematics Main Building (MB)
+MB 321	Institute of Mathematics Main Building (MB)
+MB 322	Institute of Mathematics Main Building (MB)
+MB 323	Institute of Mathematics Main Building (MB)
+MB 329	Institute of Mathematics Main Building (MB)
+MB 328	Institute of Mathematics Main Building (MB)
+CAL 211	College of Arts and Letters (CAL)
+CAL 212	College of Arts and Letters (CAL)
+CAL 213	College of Arts and Letters (CAL)
+CAL 501	College of Arts and Letters (CAL)
+CMC - B Viewing Room	Plaridel Hall (College of Mass Communication - CMC)
+CAL 502	College of Arts and Letters (CAL)
+CAL 503	College of Arts and Letters (CAL)
+CAL 510	College of Arts and Letters (CAL)
+CAL 512	College of Arts and Letters (CAL)
+MB 105	Institute of Mathematics Main Building (MB)
+MB 107	Institute of Mathematics Main Building (MB)
+1F Lobby	Bocobo Hall (Law Center) (BOC)
+Law Center 3rd Floor Lobby	Bocobo Hall (Law Center) (BOC)
+Law Center 1st Floor Lobby	Bocobo Hall (Law Center) (BOC)
+MB 108	Institute of Mathematics Main Building (MB)
+MB 106	Institute of Mathematics Main Building (MB)
+MB 115	Institute of Mathematics Main Building (MB)
+MB 117	Institute of Mathematics Main Building (MB)
+AH 202-204	Abelardo Hall (ABH) (College of Music)
+MB 120	Institute of Mathematics Main Building (MB)
+MB 121	Institute of Mathematics Main Building (MB)
+MB 313	Institute of Mathematics Main Building (MB)
+MB 314	Institute of Mathematics Main Building (MB)
+SS 301	School of Statistics (SS) (STAT)
+SS 302	School of Statistics (SS) (STAT)
+SS 303	School of Statistics (SS) (STAT)
+SS 304	School of Statistics (SS) (STAT)
+SS 305	School of Statistics (SS) (STAT)
+SS 306	School of Statistics (SS) (STAT)
+LAW Soliven Room	Malcolm Hall (LAW) (College of Law)
+LAW Sarmiento Room	Malcolm Hall (LAW) (College of Law)
+LAW 221	Malcolm Hall (LAW) (College of Law)
+Malcolm Hall Theater	Malcolm Hall (LAW) (College of Law)
+CMC - Auditorium	Plaridel Hall (College of Mass Communication - CMC)
+CMC - PhilStar Room	Plaridel Hall (College of Mass Communication - CMC)
+Engineering Theater	Melchor Hall (MH) (College of Engineering)
+MH 501	Melchor Hall (MH) (College of Engineering)
+EEEI LC2	Electrical and Electronics Engineering Institute (EEEI)
+UP Meralco Innovation Hall	Electrical and Electronics Engineering Institute (EEEI)
+LAW 307	Malcolm Hall (LAW) (College of Law)
+LAW 308	Malcolm Hall (LAW) (College of Law)
+LAW 311	Malcolm Hall (LAW) (College of Law)
+LAW 312	Malcolm Hall (LAW) (College of Law)
+LAW 322	Malcolm Hall (LAW) (College of Law)
+LAW 110 (Ambion Room)	Malcolm Hall (LAW) (College of Law)
+UPIS 110	UP Integrated School – 7-12 Building (UPIS)
+UPIS 111	UP Integrated School – 7-12 Building (UPIS)
+Law Center Comfort Rooms	Bocobo Hall (Law Center) (BOC)
+UPIS 1st Floor Comfort Rooms	UP Integrated School – 7-12 Building (UPIS)
+UPIS 2nd Floor Comfort Rooms	UP Integrated School – 7-12 Building (UPIS)
+UPIS 3rd Floor Comfort Rooms	UP Integrated School – 7-12 Building (UPIS)
+UPIS 113	UP Integrated School – 7-12 Building (UPIS)
+UPIS 120	UP Integrated School – 7-12 Building (UPIS)
+UPIS 121	UP Integrated School – 7-12 Building (UPIS)
+UPIS 122	UP Integrated School – 7-12 Building (UPIS)
+UPIS 123	UP Integrated School – 7-12 Building (UPIS)
+UPIS 124	UP Integrated School – 7-12 Building (UPIS)
+UPIS 125	UP Integrated School – 7-12 Building (UPIS)
+UPIS 126	UP Integrated School – 7-12 Building (UPIS)
+UPIS 127	UP Integrated School – 7-12 Building (UPIS)
+UPIS 128	UP Integrated School – 7-12 Building (UPIS)
+UPIS 129	UP Integrated School – 7-12 Building (UPIS)
+UPIS 130	UP Integrated School – 7-12 Building (UPIS)
+UPIS 131	UP Integrated School – 7-12 Building (UPIS)
+UPIS 132	UP Integrated School – 7-12 Building (UPIS)
+UPIS 133	UP Integrated School – 7-12 Building (UPIS)
+UPIS 134	UP Integrated School – 7-12 Building (UPIS)
+UPIS 135	UP Integrated School – 7-12 Building (UPIS)
+UPIS 136	UP Integrated School – 7-12 Building (UPIS)
+UPIS 137	UP Integrated School – 7-12 Building (UPIS)
+Diliman Legal Office (DLO)	Quezon Hall
+Human Resources Development Office 	Quezon Hall
+Office of the Chancellor (OC)	Quezon Hall
+Office of the Vice Chancellor for Administration (OVCA)	Quezon Hall
+Office of the Vice Chancellor for Student Affairs (OVCSA)	Quezon Hall
+UP Diliman Gender Office (UPDGO)	Benton Hall
+Office of Anti-Sexual Harassment (OASH)	Benton Hall
+Center for International Studies	Benton Hall
+Diliman Learning Resource Center (DLRC)	Kamia Residence Hall
+UP DOST Core Group	Kamia Residence Hall
+Office of Student Housing	Acacia Residence Halls
+GT Toyota Asian Center Auditorium	GT Toyota Asian Center
+College of Engineering Admin Office	Melchor Hall (MH) (College of Engineering)
+College of Engineering Library I	Melchor Hall (MH) (College of Engineering)
+UP Center for Ethnomusicology	Abelardo Hall (ABH) (College of Music)
+School of Economics (SE) Library 	UP School of Economics (SE)
+Diosdado P Macapagal Hall	UP School of Economics (SE)
+Benitez 105	Benitez Hall (College of Education)
+Benitez 108	Benitez Hall (College of Education)
+Benitez 109	Benitez Hall (College of Education)
+Benitez 110	Benitez Hall (College of Education)
+Benitez 200	Benitez Hall (College of Education)
+Benitez 201	Benitez Hall (College of Education)
+Benitez 203	Benitez Hall (College of Education)
+Benitez 205	Benitez Hall (College of Education)
+Benitez 206	Benitez Hall (College of Education)
+Benitez 212	Benitez Hall (College of Education)
+Benitez 304	Benitez Hall (College of Education)
+Benitez 312	Benitez Hall (College of Education)
+Benitez Hall Education Library	Benitez Hall (College of Education)
+EEEI VLC	Electrical and Electronics Engineering Institute (EEEI)
+EEEI LC1	Electrical and Electronics Engineering Institute (EEEI)
+Office of the Chief Security Officer	School of Labor & Industrial Relations (SOLAIR)
+Office of the Vice Chancellor for Academic Affairs	Diliman Interactive Learning Center (DILC)
+Office of International Linkages in Diliman (OIL)	Diliman Interactive Learning Center (DILC)
+General Education Center (GEC)	Diliman Interactive Learning Center (DILC)
+National Service Training Program (NSTP)	Diliman Interactive Learning Center (DILC)
+Office of Field Activities (OFA)	Diliman Interactive Learning Center (DILC)
+Utilities Management Team (UMT)	University Computer Center (UCC)
+NIGS Library	National Institute of Geological Sciences (NIGS)
+IB Auditorium	Institute of Biology (IB)
+IB Library	Institute of Biology (IB)
+UP Main Library - Social Sciences and Philosophy Library	UP Main Library (Gonzales Hall)
+UP Main Library - Filipiniana Books Section	UP Main Library (Gonzales Hall)
+CAL Library	College of Arts and Letters (CAL)
+Office of Extension Coordination	Philippine Institute of Volcanology and Seismology
+ICE 311	Institute of Civil Engineering (ICE)
+ICE 312	Institute of Civil Engineering (ICE)
+ICE 313	Institute of Civil Engineering (ICE)
+ICE 314	Institute of Civil Engineering (ICE)
+Catholic Parish Office	Parish of The Holy Sacrifice
+Sentro ng Wikang Filipino	UP School of Urban and Regional Planning (SURP)
+VSB 104 Cesar E.A. Virata Lecture Room	Virata School of Business (VSB)
+IB Museum Public Exhibit Area	Institute of Biology (IB)
+ICE 315	Institute of Civil Engineering (ICE)
+ICE 316	Institute of Civil Engineering (ICE)
+ICE 317	Institute of Civil Engineering (ICE)
+ICE 318	Institute of Civil Engineering (ICE)
+ICE 319	Institute of Civil Engineering (ICE)
+ICE 408-B	Institute of Civil Engineering (ICE)
+ICE 410	Institute of Civil Engineering (ICE)
+ICE 411	Institute of Civil Engineering (ICE)
+ICE 412	Institute of Civil Engineering (ICE)
+ICE 409	Institute of Civil Engineering (ICE)
+ICE David Y Tan Lecture Room	Institute of Civil Engineering (ICE)
+JH 107	College of Architecture Building 2 (Juguilon Hall) (JH)
+DMMME 103	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+DMMME 105	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+DMMME 108	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+DMMME 109	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+DMMME 203	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+DMMME ANSyD	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+DMMME Mechanical Testing Section	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+DMMME Rubber Processing Laboratory	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+DMMME Disini Lecture Room	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+DMMME Dr. Perfecto Guerrero Lecture Room	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+DMMME Roman B. Ramos Lecture Room	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+DMMME Ernesto A. Villaluna, Sr. Lecture Room	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+EEE 123	Electrical and Electronics Engineering Institute (EEEI)
+EEE 124	Electrical and Electronics Engineering Institute (EEEI)
+EEE 125	Electrical and Electronics Engineering Institute (EEEI)
+EEE 126	Electrical and Electronics Engineering Institute (EEEI)
+EEE 129	Electrical and Electronics Engineering Institute (EEEI)
+EEE 127	Electrical and Electronics Engineering Institute (EEEI)
+EEE 201	Electrical and Electronics Engineering Institute (EEEI)
+EEE 202	Electrical and Electronics Engineering Institute (EEEI)
+EEE 203	Electrical and Electronics Engineering Institute (EEEI)
+EEE 204	Electrical and Electronics Engineering Institute (EEEI)
+EEE 205	Electrical and Electronics Engineering Institute (EEEI)
+EEE 206	Electrical and Electronics Engineering Institute (EEEI)
+EEE 207	Electrical and Electronics Engineering Institute (EEEI)
+EEE 208	Electrical and Electronics Engineering Institute (EEEI)
+EEE 209	Electrical and Electronics Engineering Institute (EEEI)
+EEE 210	Electrical and Electronics Engineering Institute (EEEI)
+EEE 220	Electrical and Electronics Engineering Institute (EEEI)
+EEE 225	Electrical and Electronics Engineering Institute (EEEI)
+EEE 227	Electrical and Electronics Engineering Institute (EEEI)
+EEE 228	Electrical and Electronics Engineering Institute (EEEI)
+EEE 229	Electrical and Electronics Engineering Institute (EEEI)
+EEE 301	Electrical and Electronics Engineering Institute (EEEI)
+EEE 302	Electrical and Electronics Engineering Institute (EEEI)
+EEE 303	Electrical and Electronics Engineering Institute (EEEI)
+EEE 305	Electrical and Electronics Engineering Institute (EEEI)
+EEE 304	Electrical and Electronics Engineering Institute (EEEI)
+EEE 307	Electrical and Electronics Engineering Institute (EEEI)
+EEE 308	Electrical and Electronics Engineering Institute (EEEI)
+EEE 309	Electrical and Electronics Engineering Institute (EEEI)
+EEE 310	Electrical and Electronics Engineering Institute (EEEI)
+EEE 320	Electrical and Electronics Engineering Institute (EEEI)
+EEE 321	Electrical and Electronics Engineering Institute (EEEI)
+EEE 322	Electrical and Electronics Engineering Institute (EEEI)
+EEE 323	Electrical and Electronics Engineering Institute (EEEI)
+EEE 324	Electrical and Electronics Engineering Institute (EEEI)
+EEE 325	Electrical and Electronics Engineering Institute (EEEI)
+EEE 326	Electrical and Electronics Engineering Institute (EEEI)
+EEE 327	Electrical and Electronics Engineering Institute (EEEI)
+EEE 329	Electrical and Electronics Engineering Institute (EEEI)
+EEE 401	Electrical and Electronics Engineering Institute (EEEI)
+EEE 402	Electrical and Electronics Engineering Institute (EEEI)
+EEE 403	Electrical and Electronics Engineering Institute (EEEI)
+EEE 404	Electrical and Electronics Engineering Institute (EEEI)
+EEE 405	Electrical and Electronics Engineering Institute (EEEI)
+EEE 406	Electrical and Electronics Engineering Institute (EEEI)
+EEE 407	Electrical and Electronics Engineering Institute (EEEI)
+EEE 408	Electrical and Electronics Engineering Institute (EEEI)
+EEE 409	Electrical and Electronics Engineering Institute (EEEI)
+EEE 410	Electrical and Electronics Engineering Institute (EEEI)
+EEE 412	Electrical and Electronics Engineering Institute (EEEI)
+EEE 420	Electrical and Electronics Engineering Institute (EEEI)
+EEE 421	Electrical and Electronics Engineering Institute (EEEI)
+EEE 422	Electrical and Electronics Engineering Institute (EEEI)
+EEE 423	Electrical and Electronics Engineering Institute (EEEI)
+EEE 424	Electrical and Electronics Engineering Institute (EEEI)
+EEE 425	Electrical and Electronics Engineering Institute (EEEI)
+EEE 426	Electrical and Electronics Engineering Institute (EEEI)
+EEE 427	Electrical and Electronics Engineering Institute (EEEI)
+EEE 428	Electrical and Electronics Engineering Institute (EEEI)
+EEE 429	Electrical and Electronics Engineering Institute (EEEI)
+NIMBB 100	National Institute of Molecular Biology and Biotechnology (NIMBB)
+NIMBB 101	National Institute of Molecular Biology and Biotechnology (NIMBB)
+NIMBB 105	National Institute of Molecular Biology and Biotechnology (NIMBB)
+NIMBB 107	National Institute of Molecular Biology and Biotechnology (NIMBB)
+NIMBB 110	National Institute of Molecular Biology and Biotechnology (NIMBB)
+NIMBB 112	National Institute of Molecular Biology and Biotechnology (NIMBB)
+NIMBB 200	National Institute of Molecular Biology and Biotechnology (NIMBB)
+NIMBB 202	National Institute of Molecular Biology and Biotechnology (NIMBB)
+NIMBB 203	National Institute of Molecular Biology and Biotechnology (NIMBB)
+NIMBB 205	National Institute of Molecular Biology and Biotechnology (NIMBB)
+NIMBB 206	National Institute of Molecular Biology and Biotechnology (NIMBB)
+NIMBB 214	National Institute of Molecular Biology and Biotechnology (NIMBB)
+NIMBB 215	National Institute of Molecular Biology and Biotechnology (NIMBB)
+NIMBB Bioinformatics	National Institute of Molecular Biology and Biotechnology (NIMBB)
+NIMBB DNA Sequencing	National Institute of Molecular Biology and Biotechnology (NIMBB)
+Lagmay Hall Library (Mandala Room)	Lagmay Hall (LH) (Palma Hall Annex)
+LH 201	Lagmay Hall (LH) (Palma Hall Annex)
+LH 203	Lagmay Hall (LH) (Palma Hall Annex)
+LH 204	Lagmay Hall (LH) (Palma Hall Annex)
+LH 205	Lagmay Hall (LH) (Palma Hall Annex)
+LH 207	Lagmay Hall (LH) (Palma Hall Annex)
+LH 209	Lagmay Hall (LH) (Palma Hall Annex)
+LH 213	Lagmay Hall (LH) (Palma Hall Annex)
+LH 215	Lagmay Hall (LH) (Palma Hall Annex)
+LH 301	Lagmay Hall (LH) (Palma Hall Annex)
+LH 302	Lagmay Hall (LH) (Palma Hall Annex)
+LH 303	Lagmay Hall (LH) (Palma Hall Annex)
+LH 304	Lagmay Hall (LH) (Palma Hall Annex)
+LH 305	Lagmay Hall (LH) (Palma Hall Annex)
+LH 307	Lagmay Hall (LH) (Palma Hall Annex)
+LH 309	Lagmay Hall (LH) (Palma Hall Annex)
+LH 313-315	Lagmay Hall (LH) (Palma Hall Annex)
+Bahay ng Alumni Comfort Rooms	Ang Bahay ng Alumni
+AECH Accenture Hall	UP Alumni Engineers' Centennial Hall (Engineering Library 2) (Department of Computer Science - DCS)
+Department of Computer Science Teaching Lab 1 (TL1)	UP Alumni Engineers' Centennial Hall (Engineering Library 2) (Department of Computer Science - DCS)
+Department of Computer Science Classroom 3 (CLR 3)	UP Alumni Engineers' Centennial Hall (Engineering Library 2) (Department of Computer Science - DCS)
+Department of Computer Science Classroom 2 (CLR 2)	UP Alumni Engineers' Centennial Hall (Engineering Library 2) (Department of Computer Science - DCS)
+Department of Computer Science Engineering and Research for Technology Development (ERDT)	UP Alumni Engineers' Centennial Hall (Engineering Library 2) (Department of Computer Science - DCS)
+Art Circle Cafe	Ang Bahay ng Alumni
+Chocolate Kiss Cafe	Ang Bahay ng Alumni
+Quicklean	Acacia Residence Halls Commercial Area
+Khaleb	Acacia Residence Halls Commercial Area
+Unlad Convenience Store	Acacia Residence Halls Commercial Area
+UP Click	Acacia Residence Halls Commercial Area
+Acacia Wellness	Acacia Residence Halls Commercial Area
+Upbeat	Acacia Residence Halls Commercial Area
+Orange Segment	Acacia Residence Halls Commercial Area
+CSWCD 101	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+CSWCD 105	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+CSWCD 102	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+CSWCD 106	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+CSWCD 201	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+CSWCD 202	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+CSWCD 203	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+CSWCD 204	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+CMC Library	Plaridel Hall (College of Mass Communication - CMC)
+CMC Department of Communication Research	Plaridel Hall (College of Mass Communication - CMC)
+CMC 205	Plaridel Hall (College of Mass Communication - CMC)
+CMC 207	Plaridel Hall (College of Mass Communication - CMC)
+CMC 209	Plaridel Hall (College of Mass Communication - CMC)
+CMC Department of Broadcasting	Plaridel Hall (College of Mass Communication - CMC)
+Centennial Residence Hall - University Food Service	Centennial Residence Hall
+YZA Printing Shop	Centennial Residence Hall
+Food Nook	Centennial Residence Hall
+B.E. Scientific Glass Instruments	Centennial Residence Hall
+CSWCD 205	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+CSWCD 206	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+CSWCD 208	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+CSWCD 207	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+CSWCD 301	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+CSWCD 302	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+CSWCD 303	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+CSWCD 304	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+CSWCD 306	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+CSWCD 307	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+CSWCD 308	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+CSWCD Library	Tandang Sora Hall (Center for Social Work and Community Development) (CSWCD)
+UPFI 104	UP Film Institute (UPFI)
+UPFI 105	UP Film Institute (UPFI)
+UPFI 107	UP Film Institute (UPFI)
+UPFI 202	UP Film Institute (UPFI)
+UPFI AVR 1	UP Film Institute (UPFI)
+UPFI AVR 2	UP Film Institute (UPFI)
+AECH Serials Section	UP Alumni Engineers' Centennial Hall (Engineering Library 2) (Department of Computer Science - DCS)
+AECH 213	UP Alumni Engineers' Centennial Hall (Engineering Library 2) (Department of Computer Science - DCS)
+AECH 210 - Teaching Lab 3	UP Alumni Engineers' Centennial Hall (Engineering Library 2) (Department of Computer Science - DCS)
+AECH 212	UP Alumni Engineers' Centennial Hall (Engineering Library 2) (Department of Computer Science - DCS)
+AECH 214 - Teaching Lab 2	UP Alumni Engineers' Centennial Hall (Engineering Library 2) (Department of Computer Science - DCS)
+AECH 215 - Seminar Room	UP Alumni Engineers' Centennial Hall (Engineering Library 2) (Department of Computer Science - DCS)
+DMMME Adaptive Metallurgy Laboratory	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+DMMME 205-206	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+DMMME Composites Laboratory	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+DMMME 214	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+DMMME 216	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+DMMME 217	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+DMMME Administrative Office	Abelardo Hall (ABH) (College of Music)
+DMMME 301-302	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+DMMME 303-304	Department of Mining, Metallurgical & Materials Engineering (DMMME)
+IChE A101	Institute of Chemical Engineering (IChE)
+IChE A102	Institute of Chemical Engineering (IChE)
+IChE A104	Institute of Chemical Engineering (IChE)
+IChE A103	Institute of Chemical Engineering (IChE)
+IChE A202 - Administration Office	Institute of Chemical Engineering (IChE)
+IChE A301 - Computer Laboratory I	Institute of Chemical Engineering (IChE)
+IChE A401	Institute of Chemical Engineering (IChE)
+IChE A402	Institute of Chemical Engineering (IChE)
+IChE A403	Institute of Chemical Engineering (IChE)
+IChE A404	Institute of Chemical Engineering (IChE)
+IChE A302 - Computer Laboratory II	Institute of Chemical Engineering (IChE)
+IChE B101 Process Systems Engineering Laboratory	Institute of Chemical Engineering (IChE)
+IChE B102 Analytical Laboratory	Institute of Chemical Engineering (IChE)
+IChE B103-B104 Polymers Laboratory	Institute of Chemical Engineering (IChE)
+IChE B105-B106 Catalysts Laboratory	Institute of Chemical Engineering (IChE)
+IChE B201-B202 Separations Engineering Laboratory	Institute of Chemical Engineering (IChE)
+IChE B203 Analytical Laboratory	Institute of Chemical Engineering (IChE)
+IChE B204-B205 Fuels, Energy, and Thermal Systems Laboratory	Institute of Chemical Engineering (IChE)
+IChE B206 Green Materials Laboratory	Institute of Chemical Engineering (IChE)
+IChE B301-B302 Chemical Engineering Commons	Institute of Chemical Engineering (IChE)
+ICE 401	Institute of Civil Engineering (ICE)
+ICE 402	Institute of Civil Engineering (ICE)
+ICE 403	Institute of Civil Engineering (ICE)
+ICE 404	Institute of Civil Engineering (ICE)
+ICE 405	Institute of Civil Engineering (ICE)
+ICE 301	Institute of Civil Engineering (ICE)
+ICE 302	Institute of Civil Engineering (ICE)
+ICE 303	Institute of Civil Engineering (ICE)
+ICE 304	Institute of Civil Engineering (ICE)
+ICE 305	Institute of Civil Engineering (ICE)
+ICE 306A	Institute of Civil Engineering (ICE)
+ICE 306B	Institute of Civil Engineering (ICE)
+ICE 307	Institute of Civil Engineering (ICE)
+ICE 308	Institute of Civil Engineering (ICE)
+ICE 309	Institute of Civil Engineering (ICE)
+ICE 310	Institute of Civil Engineering (ICE)
+ICE 201	Institute of Civil Engineering (ICE)
+ICE 202	Institute of Civil Engineering (ICE)
+ICE 203	Institute of Civil Engineering (ICE)
+ICE 204	Institute of Civil Engineering (ICE)
+ICE 205 - Faculty Room	Institute of Civil Engineering (ICE)
+ICE 103	Institute of Civil Engineering (ICE)
+ICE 104	Institute of Civil Engineering (ICE)
+ICE 101	Institute of Civil Engineering (ICE)
+ICE 102	Institute of Civil Engineering (ICE)
+ICE 105	Institute of Civil Engineering (ICE)
+ICE 106	Institute of Civil Engineering (ICE)
+ICE 108	Institute of Civil Engineering (ICE)
+ICE 107	Institute of Civil Engineering (ICE)
+Law Office	Centennial Residence Hall
+College of Architecture Library	College of Architecture Building 2 (Juguilon Hall) (JH)
+CMC M 107	Plaridel Hall (College of Mass Communication - CMC)
+CMC 107	Plaridel Hall (College of Mass Communication - CMC)
+CMC A-202	Plaridel Hall (College of Mass Communication - CMC)
+Parish of The Holy Sacrifice - Gomburza Hall	Parish of The Holy Sacrifice
+Parish of The Holy Sacrifice - Delaney Hall	Parish of The Holy Sacrifice
+Virata School of Business Library	Virata School of Business (VSB)
+VSB 201	Virata School of Business (VSB)
+VSB 203	Virata School of Business (VSB)
+VSB 205	Virata School of Business (VSB)
+VSB 207	Virata School of Business (VSB)
+VSB 209	Virata School of Business (VSB)
+VSB 211	Virata School of Business (VSB)
+VSB 213	Virata School of Business (VSB)
+VSB 215	Virata School of Business (VSB)
+VSB 202	Virata School of Business (VSB)
+VSB 204	Virata School of Business (VSB)
+VSB 206	Virata School of Business (VSB)
+VSB 208	Virata School of Business (VSB)
+VSB 210	Virata School of Business (VSB)
+VSB 212	Virata School of Business (VSB)
+VSB 214	Virata School of Business (VSB)
+VSB 106	Virata School of Business (VSB)
+VSB 108	Virata School of Business (VSB)
+VSB 110	Virata School of Business (VSB)
+VSB 118	Virata School of Business (VSB)
+IESM 101	Institute of Environmental Science and Meteorology (IESM)
+IESM 102	Institute of Environmental Science and Meteorology (IESM)
+IESM 103	Institute of Environmental Science and Meteorology (IESM)
+IESM 104	Institute of Environmental Science and Meteorology (IESM)
+IESM Administration Office	Institute of Environmental Science and Meteorology (IESM)
+IESM Auditorium	Institute of Environmental Science and Meteorology (IESM)
+IESM 202	Institute of Environmental Science and Meteorology (IESM)
+MSI 201	UP Marine Science Institute (MSI)
+MSI 202	UP Marine Science Institute (MSI)
+MSI 203	UP Marine Science Institute (MSI)
+MSI 204	UP Marine Science Institute (MSI)
+MSI 205	UP Marine Science Institute (MSI)
+MSI 206	UP Marine Science Institute (MSI)
+MSI 207	UP Marine Science Institute (MSI)
+MSI 208	UP Marine Science Institute (MSI)
+MSI 209	UP Marine Science Institute (MSI)
+MSI 210	UP Marine Science Institute (MSI)
+MSI 211	UP Marine Science Institute (MSI)
+MSI 219 - Library	UP Marine Science Institute (MSI)
+Archaeological Studies Program Solheim Library	Albert Hall (Archaeological Studies Program) (ASP)
+ASP 103 - Administration	Albert Hall (Archaeological Studies Program) (ASP)
+ASP 109	Albert Hall (Archaeological Studies Program) (ASP)
+ASP 113	Albert Hall (Archaeological Studies Program) (ASP)
+ASP 115	Albert Hall (Archaeological Studies Program) (ASP)
+ASP 117	Albert Hall (Archaeological Studies Program) (ASP)
+NIGS 302	National Institute of Geological Sciences (NIGS)
+NIGS 230	National Institute of Geological Sciences (NIGS)
+NIGS 217	National Institute of Geological Sciences (NIGS)
+NIGS 214 Geophysics Laboratory	National Institute of Geological Sciences (NIGS)
+NIGS 213 Structural Geology Laboratory	National Institute of Geological Sciences (NIGS)
+NIGS 212 Geomorphology Laboratory	National Institute of Geological Sciences (NIGS)
+NIGS 121 Computer Room	National Institute of Geological Sciences (NIGS)
+NIGS 111 Mineralogy Room	National Institute of Geological Sciences (NIGS)
+NIGS Museum	National Institute of Geological Sciences (NIGS)
+CHE 101A	Alonso Hall (College of Home Economics) (CHE)
+CHE 102	Alonso Hall (College of Home Economics) (CHE)
+CHE 103	Alonso Hall (College of Home Economics) (CHE)
+CHE 104	Alonso Hall (College of Home Economics) (CHE)
+CHE 106	Alonso Hall (College of Home Economics) (CHE)
+CHE 202 Computer Room	Alonso Hall (College of Home Economics) (CHE)
+CHE 203-B	Alonso Hall (College of Home Economics) (CHE)
+CHE 203-A	Alonso Hall (College of Home Economics) (CHE)
+CHE 204	Alonso Hall (College of Home Economics) (CHE)
+IB 306	Institute of Biology (IB)
+IB 307	Institute of Biology (IB)
+IB 308	Institute of Biology (IB)
+IB 309	Institute of Biology (IB)
+IB 318	Institute of Biology (IB)
+IB 319	Institute of Biology (IB)
+IB 321	Institute of Biology (IB)
+IB 330	Institute of Biology (IB)
+IB 345	Institute of Biology (IB)
+IB 260	Institute of Biology (IB)
+IB 2605	Institute of Biology (IB)
+IB 234 Supply and Property Office	Institute of Biology (IB)
+IB 117	Institute of Biology (IB)
+IB 118	Institute of Biology (IB)
+IB 119	Institute of Biology (IB)
+IB 167 Fish Biology Lab	Institute of Biology (IB)
+IB 168	Institute of Biology (IB)
+DMST - Vanguard Rooftop	Department of Military Science and Tactics Complex (DMST)
+DMST - Vanguard 201	Department of Military Science and Tactics Complex (DMST)
+DMST - Vanguard 202	Department of Military Science and Tactics Complex (DMST)
+DMST - Vanguard 203	Department of Military Science and Tactics Complex (DMST)
+DMST - Vanguard 204	Department of Military Science and Tactics Complex (DMST)
+Church of the Risen Lord - Function Hall	Church of the Risen Lord
+\.
 
 
 --

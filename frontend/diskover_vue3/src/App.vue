@@ -38,7 +38,6 @@ onMounted(() => {
   axios.get('/categories')
     .then(response => {
       mainStore.setCategories(response.data);
-      console.log("Categories fetched:", response.data);
     })
     .catch(error => {
       console.error('Error fetching categories:', error);
@@ -48,7 +47,6 @@ onMounted(() => {
   axios.get('/tags')
     .then(response => {
       mainStore.setTags(response.data);
-      console.log("Tags fetched:", response.data);
     })
     .catch(error => {
       console.error('Error fetching tags:', error);
