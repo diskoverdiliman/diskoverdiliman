@@ -74,21 +74,13 @@ export const useAuthStore = defineStore('auth', {
       console.log("Successfully deleted token: You are now logged out\n");
     },
     refreshAccessToken() {
-      if (!this.refreshToken) {
-        console.warn("No refresh token available. User is logged out.");
-        return Promise.reject("No refresh token available.");
-      }
-
-      console.log("Refreshing token...");
       return axios.post(`/token/refresh/`, {
         refresh: this.refreshToken,
       }).then(response => {
         this.setToken(response.data.access); // Update the access token
-        console.log("Access token refreshed successfully.");
       }).catch(error => {
-        console.error("Error refreshing token:", error.response?.data || error.message);
+        console.error('Error refreshing token:', error);
         this.logOut(); // Log out if the refresh token is invalid
-        throw error; // Rethrow the error to handle it in the interceptor
       });
     },
   },
@@ -98,42 +90,31 @@ export const useAuthStore = defineStore('auth', {
 });
 
 // Add Axios interceptor to refresh token automatically
-axios.interceptors.request.use((config) => {
+axios.interceptors.request.use(async (config) => {
   const authStore = useAuthStore();
+  const token = authStore.jwt;
 
-  // Skip adding Authorization header for public endpoints
-  const publicEndpoints = ['/categories', '/tags'];
-  if (publicEndpoints.some((endpoint) => config.url.includes(endpoint))) {
-    return config; // Allow the request to proceed without a token
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
 
-  if (!authStore.jwt) {
-    console.warn("No access token available. Request will not be sent.");
-    return Promise.reject("No access token available.");
-  }
-
-  config.headers.Authorization = `Bearer ${authStore.jwt}`;
   return config;
 });
 
 axios.interceptors.response.use(
-  (response) => response, // Pass through successful responses
+  (response) => response,
   async (error) => {
     const authStore = useAuthStore();
 
-    if (error.response?.status === 401 && authStore.refreshToken) {
-      console.warn("401 Unauthorized detected. Attempting to refresh token...");
-      try {
-        await authStore.refreshAccessToken(); // Refresh the token
-        console.log("Retrying original request with new token...");
-        error.config.headers.Authorization = `Bearer ${authStore.jwt}`; // Update the token
-        return axios(error.config); // Retry the original request
-      } catch (refreshError) {
-        console.error("Token refresh failed. Logging out user.");
-        return Promise.reject(refreshError); // Reject if refresh fails
-      }
+    if (error.response.status === 401 && authStore.refreshToken) {
+      // Attempt to refresh the token
+      await authStore.refreshAccessToken();
+
+      // Retry the original request with the new token
+      error.config.headers.Authorization = `Bearer ${authStore.jwt}`;
+      return axios(error.config);
     }
 
-    return Promise.reject(error); // Reject other errors
+    return Promise.reject(error);
   }
 );
