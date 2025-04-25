@@ -57,7 +57,7 @@ const carouselIndex = ref(0);
 // Resolve full URLs for image paths
 const fullImageUrls = computed(() =>
   props.imageUrls.map((url) => {
-    const backendStaticPath = import.meta.env.VITE_BACKEND_STATIC_PATH || 'http://localhost:8000/static/';
+    const backendStaticPath = import.meta.env.VITE_APP_STATIC_URL;
     return `${backendStaticPath}images/locations/${url}`;
   })
 );

@@ -107,17 +107,21 @@
 
     <!-- Admin Buttons -->
     <v-col v-if="isLoggedIn" class="mt-4">
-      <v-row justify="space-around">
+      <v-row class="mb-2">
         <v-btn color="blue" :to="{ name: 'location_crud_form', params: { mode: 'update', id: locationId } }">
           Update Info
         </v-btn>
+      </v-row>
+      <v-row class="mb-2">
         <v-btn color="blue" :to="{ name: 'location_images_form', params: { id: locationId } }">
           Update Images
         </v-btn>
       </v-row>
-      <v-btn class="mt-2" color="error" :to="{ name: 'location_crud_form', params: { mode: 'delete', id: locationId } }">
-        Delete
-      </v-btn>
+      <v-row class="mb-2">
+        <v-btn color="error" :to="{ name: 'location_crud_form', params: { mode: 'delete', id: locationId } }">
+          Delete
+        </v-btn>
+    </v-row>
     </v-col>
   </v-container>
 </template>
@@ -154,7 +158,7 @@ const subareaTabIndex = ref([]);
 
 const thumbnailUrl = computed(() => {
   if (imageUrls.value.length > 0 && imageUrls.value[0]) {
-    const backendStaticPath = import.meta.env.VITE_BACKEND_STATIC_PATH || 'http://localhost:8000/static/';
+    const backendStaticPath = import.meta.env.VITE_APP_STATIC_URL;
     return `${backendStaticPath}images/locations/${imageUrls.value[0]}`;
   }
   return '/assets/no-thumbnail.jpg'; // Adjust the fallback path as needed
@@ -169,7 +173,7 @@ const tabList1 = computed(() => [
   },
   {
     label: 'Images',
-    icon: 'mdi-collections',
+    icon: 'mdi-image',
     component: ImagesTabItem,
     props: { imageUrls: imageUrls.value },
   },
@@ -192,7 +196,6 @@ const fetchLocationData = async () => {
   try {
     const response = await axios.get(`/locations/${locationId.value}`); // Use axios for the GET request
     const data = response.data;
-    console.log('Location data:', data); // Debugging line
     locationName.value = data.name;
     category.value = data.category;
     tags.value = data.tags;
