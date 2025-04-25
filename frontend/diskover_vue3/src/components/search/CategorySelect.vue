@@ -24,7 +24,10 @@ export default {
     const selectedCategory = computed({
       get: () => searchStore.categoryFilter,
       set: (value) => searchStore.setCategoryFilter(value)
+
     });
+
+    console.log("categories: ", categories.value);
 
     const applyCategoryFilter = () => {
       searchStore.fetchResults();

@@ -130,8 +130,15 @@ class LocationViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'retrieve':
             return LocationRetrieveSerializer
-        else:
-            return LocationListSerializer
+        return LocationListSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Handle GET requests for a specific location.
+        """
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
     def filter_queryset(self, queryset):
         search = self.request.query_params.get("search")
@@ -554,31 +561,6 @@ class AdminImageViewSet(viewsets.ModelViewSet):
         return Response({
             'images': 'PATCH requests not allowed'
         })
-
-
-class SearchView(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request):
-        # Extract the search query parameter
-        search = request.query_params.get("search", "")
-
-        # Filter locations based on the search query (name only)
-        queryset = Location.objects.all()
-
-        if search:
-            queryset = queryset.filter(name__icontains=search)
-
-        # Paginate the results
-        paginator = PageNumberPagination()
-        paginator.page_size = 10
-        paginated_queryset = paginator.paginate_queryset(queryset, request)
-
-        # Serialize the results
-        serializer = LocationListSerializer(paginated_queryset, many=True)
-
-        # Return paginated response
-        return paginator.get_paginated_response(serializer.data)
 
 # Non-admin ViewSet for Tags
 class PublicTagViewSet(viewsets.ReadOnlyModelViewSet):

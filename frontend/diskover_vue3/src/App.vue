@@ -44,9 +44,6 @@ onMounted(() => {
       console.error('Error fetching tags:', error);
     });
 
-    console.log("Categories:", mainStore.categories.values());
-    console.log("Tags:", mainStore.tags.values());
-
 });
 
 watch(route, () => {

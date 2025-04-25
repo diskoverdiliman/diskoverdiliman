@@ -52,8 +52,7 @@ export default {
           searchStore.setResults(response.data.results);
           searchStore.setMaxPages(response.data.total_pages);
           searchStore.setTotalResultCount(response.data.count);
-          console.log("successfully received queried results from API: ", response);
-          console.log("Results:", searchStore.results); // Debugging statement
+          searchStore.updateCategoryAndTagNames();
         })
         .catch(error => {
           alert("error receiving queried results from API: ");

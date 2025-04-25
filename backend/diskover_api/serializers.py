@@ -136,8 +136,11 @@ class LocationRetrieveSerializer(serializers.ModelSerializer):
         """
         Get the main building associated with the location.
         """
-        main_building = obj.building.first()
-        return LocationSimpleSerializer(main_building).data if main_building else None
+        try:
+            main_building = obj.building.first()
+            return LocationSimpleSerializer(main_building).data if main_building else None
+        except AttributeError:
+            return None
 
     def get_nearby_locations(self, obj):
         """

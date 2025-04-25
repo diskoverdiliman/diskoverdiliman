@@ -8,7 +8,7 @@
       class="floating-button"
     />
     <div class="search-drawer" v-show="isVisible">
-      <div class="px-2 pt-3">
+      <div class="px-2 pt-3 scrollable-content">
         <div class="search-bar-container">
           <SearchBar/>
         </div>
@@ -88,6 +88,11 @@ export default {
   background-color: #c47273;
   overflow-x: visible !important;
   padding: 0;
+}
+
+.scrollable-content {
+  max-height: calc(100vh - 50px); /* Adjust the height as needed */
+  overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .search-bar-container {

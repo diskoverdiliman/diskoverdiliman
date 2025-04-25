@@ -16,5 +16,4 @@ router.register(r'categories', views.PublicCategoryViewSet, basename='public_cat
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('search/', views.SearchView.as_view(), name='search'),  # Use path() for SearchView
 ]

@@ -25,7 +25,6 @@ import { inject } from 'vue';
 export default {
   mixins: [MapMixin, JeepMixin],
   mounted() {
-    console.log("Mounted: Initializing Map");
     this.initializeMap();
     this.handleMapChange();
     this.listenForInstructionCirlces();

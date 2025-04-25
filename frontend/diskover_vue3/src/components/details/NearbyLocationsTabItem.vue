@@ -1,21 +1,21 @@
 <template>
   <!-- Tab item for displaying nearby locations to the current location -->
   <v-card color="secondary">
-    <!-- only display if nearby locations are found -->
+    <!-- Only display if nearby locations are found -->
     <v-list v-if="nearbyLocations && nearbyLocations.length">
-      <!-- add hyperlinks to nearby locations that navigate to their details page onclick -->
-      <v-list-tile
+      <!-- Add hyperlinks to nearby locations that navigate to their details page -->
+      <v-list-item
         v-for="near in nearbyLocations"
         :key="near.id"
         :to="`/map/details/${near.id}`"
-        @click="{}"
+        link
       >
-        <v-list-tile-content>
-          <v-list-tile-title>{{ near.name }}</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
+        <v-list-item-content>
+          <v-list-item-title>{{ near.name }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
-    <!-- display indicator of no nearby locations are found -->
+    <!-- Display indicator if no nearby locations are found -->
     <v-container v-else>
       <span class="body-2">No nearby locations found</span>
     </v-container>
@@ -23,13 +23,17 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  name: "NearbyLocationsTabItem",
   props: {
     nearbyLocations: {
-      default: []
-    }
+      type: Array,
+      default: () => [],
+    },
   },
-};
+});
 </script>
 
 <style scoped>

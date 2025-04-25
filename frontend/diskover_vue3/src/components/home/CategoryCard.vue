@@ -37,11 +37,11 @@ export default {
   },
   computed: {
     defaultUrl() {
-      return `${this.$backendStaticPath}/images/categories/defaultCategoryImage.jpg`;
+      return `${this.$backendStaticPath}images/categories/defaultCategoryImage.jpg`;
     },
     expectedImgUrl() {
       let imgName = this.category.name || "defaultCategoryImage";
-      return `${this.$backendStaticPath}/images/categories/${imgName}.jpg`;
+      return `${this.$backendStaticPath}images/categories/${imgName}.jpg`;
     },
   },
   watch: {

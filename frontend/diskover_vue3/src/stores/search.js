@@ -11,15 +11,19 @@ export const useSearchStore = defineStore('search', {
     results: [],
     totalResultCount: 0,
     maxPages: 0,
-    categoryNames: []
+    categoryNames: [], // To store unique category names
+    tagNames: [] // To store unique tag names
   }),
   actions: {
     async fetchResults(query) {
       try {
-        const response = await axios.get('/search', { params: query });
+        const response = await axios.get('/locations', { params: query });
         this.setResults(response.data.results);
         this.setMaxPages(response.data.total_pages);
         this.setTotalResultCount(response.data.count);
+        this.updateCategoryAndTagNames(); // Update categoryNames and tagNames
+        console.log('categoryNames:', this.categoryNames);
+        console.log('tagNames:', this.tagNames);
         return response;
       } catch (error) {
         console.error('Error fetching results:', error);
@@ -55,6 +59,25 @@ export const useSearchStore = defineStore('search', {
       this.results = [];
       this.totalResultCount = 0;
       this.maxPages = 0;
+      this.categoryNames = [];
+      this.tagNames = [];
+    },
+    updateCategoryAndTagNames() {
+      // Extract unique category names
+      const categories = new Set();
+      const tags = new Set();
+
+      this.results.forEach(result => {
+        if (result.category) {
+          categories.add(result.category);
+        }
+        if (result.tags && Array.isArray(result.tags)) {
+          result.tags.forEach(tag => tags.add(tag));
+        }
+      });
+
+      this.categoryNames = Array.from(categories).sort(); // Convert to array and sort
+      this.tagNames = Array.from(tags).sort(); // Convert to array and sort
     }
   },
   getters: {

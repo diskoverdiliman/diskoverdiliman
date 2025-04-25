@@ -2,25 +2,28 @@
   <!-- Tab Item for displaying the images of the current location -->
   <div class="mb-3">
     <v-card color="secondary">
-      <v-container grid-list-lg>
-        <v-layout row wrap justify-start align-content-start>
-          <v-flex v-for="(url, i) in fullImageUrls" :key="url" xs4>
+      <v-container>
+        <v-row justify="start" align="start">
+          <v-col v-for="(url, i) in fullImageUrls" :key="url" cols="4">
             <v-hover>
-              <!-- toggle image card to openCarouselModal on click -->
-              <v-card
-                slot-scope="{ hover }"
-                :class="`elevation-${hover ? 12 : 2}`"
-                @click="openCarouselModalAt(i)"
-                tile
-              >
-                <v-img :src="url" :aspect-ratio="1"></v-img>
-              </v-card>
+              <template #default="{ isHovering }">
+                <!-- toggle image card to openCarouselModal on click -->
+                <v-card
+                  :class="`elevation-${isHovering ? 12 : 2}`"
+                  @click="openCarouselModalAt(i)"
+                  tile
+                >
+                  <v-img :src="url" :aspect-ratio="1"></v-img>
+                </v-card>
+              </template>
             </v-hover>
-          </v-flex>
-        </v-layout>
+          </v-col>
+        </v-row>
       </v-container>
       <v-card-text>
-        <div v-if="!fullImageUrls || !fullImageUrls.length" class="body-2">No images found for this location</div> 
+        <div v-if="!fullImageUrls || !fullImageUrls.length" class="body-2">
+          No images found for this location
+        </div>
         <div v-else class="body-2">Click an image for a bigger view</div>
       </v-card-text>
     </v-card>
@@ -38,40 +41,45 @@
 </template>
 
 <script>
-export default {
+import { defineComponent, ref, computed } from "vue";
+
+export default defineComponent({
+  name: "ImagesTabItem",
   props: {
     imageUrls: {
-      default: []
-    }
+      type: Array,
+      default: () => [],
+    },
   },
-  data() {
+  setup(props) {
+    // Reactive state for modal visibility and carousel index
+    const isCarouselVisible = ref(false);
+    const carouselIndex = ref(0);
+
+    // Computed property for full image URLs
+    const fullImageUrls = computed(() =>
+      props.imageUrls.map((url) => `${getVueApp().config.globalProperties.$backendStaticPath}images/locations/${url}`)
+    );
+
+    // Methods
+    const setCarouselModal = (value) => {
+      isCarouselVisible.value = value;
+    };
+
+    const openCarouselModalAt = (index) => {
+      isCarouselVisible.value = true;
+      carouselIndex.value = index;
+    };
+
     return {
-      // controls visibility of carousel modal
-      isCarouselVisible: false,
-      // controls the index of the currently displayed image on the carousel
-      carouselIndex: 0
+      isCarouselVisible,
+      carouselIndex,
+      fullImageUrls,
+      setCarouselModal,
+      openCarouselModalAt,
     };
   },
-  computed: {
-    // references the image urls from the Vuex store
-    fullImageUrls() {
-      return this.imageUrls.map(
-				url => `${this.$backendStaticPath}images/locations/${url}`
-			)
-    }
-  },
-  methods: {
-    // set the carousel modal visibility
-    setCarouselModal(value) {
-      this.isCarouselVisible = value;
-    },
-    // open the carousel modal to picture at index
-    openCarouselModalAt(index) {
-      this.isCarouselVisible = true;
-      this.carouselIndex = index;
-    }
-  }
-};
+});
 </script>
 
 <style scoped>
