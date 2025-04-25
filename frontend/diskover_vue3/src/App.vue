@@ -25,14 +25,6 @@ const mainStore = useMainStore();
 const route = useRoute();
 
 onMounted(() => {
-  // Verify token for logged-in users
-  authStore.verifyToken()
-    .then(() => {
-      console.log("Token verified.");
-    })
-    .catch(() => {
-      console.warn("No token found, proceeding as guest.");
-    });
 
   // Fetch categories (always fetch regardless of login status)
   axios.get('/categories')
@@ -51,6 +43,10 @@ onMounted(() => {
     .catch(error => {
       console.error('Error fetching tags:', error);
     });
+
+    console.log("Categories:", mainStore.categories.values());
+    console.log("Tags:", mainStore.tags.values());
+
 });
 
 watch(route, () => {

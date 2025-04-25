@@ -103,9 +103,6 @@ const categories = computed(() => {
   return mainStore.categories;
 });
 
-// Log the categories to check if the list is not empty
-console.log('Categories:', categories.value);
-
 const homeLayout = computed(() => {
   return {
     column: !mdAndUp.value,

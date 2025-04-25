@@ -89,7 +89,6 @@ export default {
     if (savedGpsLocation) {
       const mapStore = useMapStore(); // Access the Pinia store
       mapStore.setOriginCoords(savedGpsLocation); // Restore the GPS location
-      console.log("GPS location restored from localStorage:", savedGpsLocation);
     }
   },
   methods: {

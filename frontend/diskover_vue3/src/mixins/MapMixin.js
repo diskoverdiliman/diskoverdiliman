@@ -47,14 +47,11 @@ export default {
     // places control buttons in default positions and adds a feature where coordinates are logged to console
     // when clicking anywhere on map
     initMap() {
-      console.log("Initializing map...");
-      console.log("Default coordinates:", this.defaultCoords);
 
       this.map = L.map(this.mapId, {
         zoomControl: false,
       }).setView(this.defaultCoords, 15);
 
-      console.log("Map instance created:", this.map);
 
       // Replace Mapbox tile layer with OpenStreetMap tile layer
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -62,12 +59,6 @@ export default {
         maxZoom: 19
       }).addTo(this.map);
 
-      console.log("Tile layer added to map.");
-
-      // Log coordinates to console on click
-      this.map.on("click", e => {
-        console.log("You clicked on ", e.latlng);
-      });
 
       this.zoomControl = L.control.zoom({
         position: "bottomright"

@@ -24,8 +24,6 @@ const vuetify = createVuetify({
   },
 });
 
-console.log('App component [main.js]:', App); // Add logging to check if App is imported correctly
-
 const app = createApp(App);
 const pinia = createPinia();
 

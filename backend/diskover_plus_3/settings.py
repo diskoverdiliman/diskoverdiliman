@@ -69,6 +69,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Media files (uploaded images, etc.)
+MEDIA_URL = '/media/'  # URL prefix for media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static')  # Directory where media files are stored
+
 # Allow all origins (for development only) - Not recommended for production
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -159,7 +163,11 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(PROJ_DIR, 'static')
+
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # Ensure this points to your static folder
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
