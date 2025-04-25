@@ -5,17 +5,14 @@
       <v-container>
         <v-row justify="start" align="start">
           <v-col v-for="(url, i) in fullImageUrls" :key="url" cols="4">
-            <v-hover>
-              <template #default="{ isHovering }">
-                <!-- toggle image card to openCarouselModal on click -->
-                <v-card
-                  :class="`elevation-${isHovering ? 12 : 2}`"
-                  @click="openCarouselModalAt(i)"
-                  tile
-                >
-                  <v-img :src="url" :aspect-ratio="1"></v-img>
-                </v-card>
-              </template>
+            <v-hover v-slot="{ isHovering }">
+              <v-card
+                :class="`elevation-${isHovering ? 12 : 2}`"
+                @click="openCarouselModalAt(i)"
+                tile
+              >
+                <v-img :src="url" :aspect-ratio="1" />
+              </v-card>
             </v-hover>
           </v-col>
         </v-row>
@@ -27,12 +24,13 @@
         <div v-else class="body-2">Click an image for a bigger view</div>
       </v-card-text>
     </v-card>
+
     <!-- Carousel Modal for showing a bigger view of the images -->
     <CenterModal width="550px" :isVisible="isCarouselVisible" @close="setCarouselModal(false)">
       <v-card>
         <v-carousel :cycle="false" v-model="carouselIndex">
           <v-carousel-item v-for="(url, i) in fullImageUrls" :key="i">
-            <v-img :src="url" height="100%" position="center top"></v-img>
+            <v-img :src="url" height="100%" position="center top" />
           </v-carousel-item>
         </v-carousel>
       </v-card>
@@ -40,46 +38,39 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, ref, computed } from "vue";
+<script setup>
+import { ref, computed, inject } from 'vue';
+import { useAttrs } from 'vue';
 
-export default defineComponent({
-  name: "ImagesTabItem",
-  props: {
-    imageUrls: {
-      type: Array,
-      default: () => [],
-    },
-  },
-  setup(props) {
-    // Reactive state for modal visibility and carousel index
-    const isCarouselVisible = ref(false);
-    const carouselIndex = ref(0);
-
-    // Computed property for full image URLs
-    const fullImageUrls = computed(() =>
-      props.imageUrls.map((url) => `${getVueApp().config.globalProperties.$backendStaticPath}images/locations/${url}`)
-    );
-
-    // Methods
-    const setCarouselModal = (value) => {
-      isCarouselVisible.value = value;
-    };
-
-    const openCarouselModalAt = (index) => {
-      isCarouselVisible.value = true;
-      carouselIndex.value = index;
-    };
-
-    return {
-      isCarouselVisible,
-      carouselIndex,
-      fullImageUrls,
-      setCarouselModal,
-      openCarouselModalAt,
-    };
+// Props
+const props = defineProps({
+  imageUrls: {
+    type: Array,
+    default: () => [],
   },
 });
+
+// Inject global properties (e.g., $backendStaticPath)
+const $backendStaticPath = inject('backendStaticPath');
+
+// Modal visibility and current index in carousel
+const isCarouselVisible = ref(false);
+const carouselIndex = ref(0);
+
+// Resolve full URLs for image paths
+const fullImageUrls = computed(() =>
+  props.imageUrls.map((url) => `${$backendStaticPath}images/locations/${url}`)
+);
+
+// Modal open/close logic
+const setCarouselModal = (value) => {
+  isCarouselVisible.value = value;
+};
+
+const openCarouselModalAt = (index) => {
+  carouselIndex.value = index;
+  setCarouselModal(true);
+};
 </script>
 
 <style scoped>

@@ -16,16 +16,11 @@
   </v-card>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "MainBuildingTabItem",
-  props: {
-    building: {
-      type: Object,
-      default: null,
-    },
+<script setup>
+defineProps({
+  building: {
+    type: Object,
+    default: null,
   },
 });
 </script>

@@ -10,9 +10,7 @@
         :to="`/map/details/${near.id}`"
         link
       >
-        <v-list-item-content>
-          <v-list-item-title>{{ near.name }}</v-list-item-title>
-        </v-list-item-content>
+        <v-list-item-title>{{ near.name }}</v-list-item-title>
       </v-list-item>
     </v-list>
     <!-- Display indicator if no nearby locations are found -->
@@ -22,16 +20,11 @@
   </v-card>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "NearbyLocationsTabItem",
-  props: {
-    nearbyLocations: {
-      type: Array,
-      default: () => [],
-    },
+<script setup>
+defineProps({
+  nearbyLocations: {
+    type: Array,
+    default: () => [],
   },
 });
 </script>

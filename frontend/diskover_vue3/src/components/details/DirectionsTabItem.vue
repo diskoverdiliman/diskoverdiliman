@@ -3,21 +3,17 @@
   <v-card color="secondary">
     <!-- only show the list of directions if directions exist -->
     <v-list v-if="instructions && instructions.length">
-      <!-- add activation of direction in Big Map upon clicking it -->
       <v-list-item
         v-for="(inst, index) in instructions"
-        :class="bgClass(index)"
         :key="index"
+        :class="bgClass(index)"
         @click="toggleActivation(index)"
       >
-        <v-list-item-content>
-          <v-list-item-title>{{ inst.text }}</v-list-item-title>
-        </v-list-item-content>
-        <v-list-item-action>
-          <v-list-item-action-text>{{ inst.distance }} m</v-list-item-action-text>
-        </v-list-item-action>
+        <v-list-item-title>{{ inst.text }}</v-list-item-title>
+        <v-list-item-subtitle>{{ inst.distance }} m</v-list-item-subtitle>
       </v-list-item>
     </v-list>
+
     <!-- In case no directions found, display indicator -->
     <v-container v-else>
       <span class="body-2">Currently no directions available</span>
@@ -25,45 +21,29 @@
   </v-card>
 </template>
 
-<script>
-import { ref, computed } from "vue";
-import { useDetailsStore } from "@/stores/details"; // Use Pinia store
-import { inject } from "vue";
+<script setup>
+import { ref, computed, inject } from 'vue';
+import { useDetailsStore } from '@/stores/details';
 
-export default {
-  name: "DirectionsTabItem",
-  setup() {
-    const detailsStore = useDetailsStore(); // Access the Pinia store
-    const eventBus = inject("eventBus"); // Inject the event bus
-    const activeInst = ref(-1); // Track the active instruction
+const detailsStore = useDetailsStore();
+const eventBus = inject('eventBus');
 
-    // Computed property for instructions from the Pinia store
-    const instructions = computed(() => detailsStore.instructions);
+const activeInst = ref(-1);
+const instructions = computed(() => detailsStore.instructions);
 
-    // Method to determine the background class for each instruction
-    const bgClass = (index) => {
-      return activeInst.value === index ? "accent-bg" : "secondary-bg";
-    };
+const bgClass = (index) => {
+  return activeInst.value === index ? 'accent-bg' : 'secondary-bg';
+};
 
-    // Method to toggle the activation of an instruction
-    const toggleActivation = (index) => {
-      if (activeInst.value === index) {
-        activeInst.value = -1;
-        eventBus.emit("clear-circles"); // Clear all circles in the Big Map
-      } else {
-        activeInst.value = index;
-        eventBus.emit("clear-circles"); // Clear all circles
-        eventBus.emit("add-circle", index); // Add a circle at the routeCoordinate[index]
-      }
-    };
-
-    return {
-      instructions,
-      activeInst,
-      bgClass,
-      toggleActivation,
-    };
-  },
+const toggleActivation = (index) => {
+  if (activeInst.value === index) {
+    activeInst.value = -1;
+    eventBus?.emit('clear-circles');
+  } else {
+    activeInst.value = index;
+    eventBus?.emit('clear-circles');
+    eventBus?.emit('add-circle', index);
+  }
 };
 </script>
 

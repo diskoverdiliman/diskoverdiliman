@@ -21,20 +21,15 @@
   </v-card>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "SubareaTabItem",
-  props: {
-    label: {
-      type: String,
-      default: "subareas",
-    },
-    subareas: {
-      type: Array,
-      required: true,
-    },
+<script setup>
+defineProps({
+  label: {
+    type: String,
+    default: "subareas",
+  },
+  subareas: {
+    type: Array,
+    required: true,
   },
 });
 </script>
