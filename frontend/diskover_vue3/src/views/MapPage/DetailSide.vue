@@ -44,8 +44,17 @@
       </v-tabs>
 
       <v-window v-model="primaryTabIndex">
-        <v-window-item v-for="(tab, i) in tabList1" :key="i" :value="i">
-          <component :is="tab.component" />
+        <v-window-item
+          v-for="(tab, i) in tabList1"
+          :key="i"
+          :value="i"
+        >
+          <component
+            :is="tab.component"
+            v-bind="tab.props"
+            :imageUrls="imageUrls"
+            :description="description"
+          />
         </v-window-item>
       </v-window>
     </v-col>
@@ -56,6 +65,7 @@
         <v-expansion-panel
           v-for="(subs, category, i) in subareas"
           :key="i"
+          color="#7b1113"
         >
           <v-expansion-panel-title>{{ category }}</v-expansion-panel-title>
           <v-expansion-panel-text>
@@ -117,6 +127,7 @@ import { ref, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useDetailsStore } from '@/stores/details';
 import { useAuthStore } from '@/stores/auth';
+import axios from 'axios'; // Import axios
 import DirectionsTabItem from '@/components/details/DirectionsTabItem.vue';
 import ImagesTabItem from '@/components/details/ImagesTabItem.vue';
 import DescriptionTabItem from '@/components/details/DescriptionTabItem.vue';
@@ -141,17 +152,34 @@ const nearbyLocations = ref([]);
 const primaryTabIndex = ref(0);
 const subareaTabIndex = ref([]);
 
-const tabList1 = [
-  { label: 'Directions', icon: 'mdi-directions', component: DirectionsTabItem },
-  { label: 'Images', icon: 'mdi-collections', component: ImagesTabItem },
-  { label: 'Description', icon: 'mdi-file-document', component: DescriptionTabItem },
-];
-
 const thumbnailUrl = computed(() => {
-  return imageUrls.value.length
-    ? `${import.meta.env.VITE_BACKEND_STATIC_PATH}images/locations/${imageUrls.value[0]}`
-    : '/assets/no-thumbnail.jpg';
+  if (imageUrls.value.length > 0 && imageUrls.value[0]) {
+    const backendStaticPath = import.meta.env.VITE_BACKEND_STATIC_PATH || 'http://localhost:8000/static/';
+    return `${backendStaticPath}images/locations/${imageUrls.value[0]}`;
+  }
+  return '/assets/no-thumbnail.jpg'; // Adjust the fallback path as needed
 });
+
+const tabList1 = computed(() => [
+  {
+    label: 'Directions',
+    icon: 'mdi-directions',
+    component: DirectionsTabItem,
+    props: {},
+  },
+  {
+    label: 'Images',
+    icon: 'mdi-collections',
+    component: ImagesTabItem,
+    props: { imageUrls: imageUrls.value },
+  },
+  {
+    label: 'Description',
+    icon: 'mdi-file-document',
+    component: DescriptionTabItem,
+    props: { description: description.value },
+  },
+]);
 
 const hasSubareas = computed(() => {
   return Object.values(subareas.value).some(val => val && val.length);
@@ -162,8 +190,9 @@ const isLoggedIn = computed(() => authStore.isLoggedIn);
 
 const fetchLocationData = async () => {
   try {
-    const res = await fetch(`/api/locations/${locationId.value}`);
-    const data = await res.json();
+    const response = await axios.get(`/locations/${locationId.value}`); // Use axios for the GET request
+    const data = response.data;
+    console.log('Location data:', data); // Debugging line
     locationName.value = data.name;
     category.value = data.category;
     tags.value = data.tags;
@@ -175,7 +204,6 @@ const fetchLocationData = async () => {
     detailsStore.setEndCoords([data.lat, data.lng]);
     detailsStore.setMarkerIcon(data.marker_icon);
   } catch (err) {
-    console.error('Error fetching location:', err);
     detailsStore.setEndCoords([]);
   }
 };

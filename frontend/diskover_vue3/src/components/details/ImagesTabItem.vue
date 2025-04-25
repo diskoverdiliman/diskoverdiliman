@@ -1,7 +1,7 @@
 <template>
   <!-- Tab Item for displaying the images of the current location -->
   <div class="mb-3">
-    <v-card color="secondary">
+    <v-card color="#7b1113">
       <v-container>
         <v-row justify="start" align="start">
           <v-col v-for="(url, i) in fullImageUrls" :key="url" cols="4">
@@ -26,11 +26,11 @@
     </v-card>
 
     <!-- Carousel Modal for showing a bigger view of the images -->
-    <CenterModal width="550px" :isVisible="isCarouselVisible" @close="setCarouselModal(false)">
-      <v-card>
-        <v-carousel :cycle="false" v-model="carouselIndex">
+    <CenterModal :isVisible="isCarouselVisible" @close="setCarouselModal(false)">
+      <v-card class="pa-4" max-width="1200px" max-height="90vh">
+        <v-carousel :cycle="false" v-model="carouselIndex" height="80vh">
           <v-carousel-item v-for="(url, i) in fullImageUrls" :key="i">
-            <v-img :src="url" height="100%" position="center top" />
+            <v-img :src="url" height="100%" contain />
           </v-carousel-item>
         </v-carousel>
       </v-card>
@@ -39,8 +39,8 @@
 </template>
 
 <script setup>
-import { ref, computed, inject } from 'vue';
-import { useAttrs } from 'vue';
+import { ref, computed } from 'vue';
+import CenterModal from '@/components/ui/CenterModal.vue';
 
 // Props
 const props = defineProps({
@@ -50,16 +50,16 @@ const props = defineProps({
   },
 });
 
-// Inject global properties (e.g., $backendStaticPath)
-const $backendStaticPath = inject('backendStaticPath');
-
 // Modal visibility and current index in carousel
 const isCarouselVisible = ref(false);
 const carouselIndex = ref(0);
 
 // Resolve full URLs for image paths
 const fullImageUrls = computed(() =>
-  props.imageUrls.map((url) => `${$backendStaticPath}images/locations/${url}`)
+  props.imageUrls.map((url) => {
+    const backendStaticPath = import.meta.env.VITE_BACKEND_STATIC_PATH || 'http://localhost:8000/static/';
+    return `${backendStaticPath}images/locations/${url}`;
+  })
 );
 
 // Modal open/close logic

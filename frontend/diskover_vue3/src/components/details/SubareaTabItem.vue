@@ -1,6 +1,6 @@
 <template>
   <!-- Tab item for displaying the inside rooms or outer building of the current location -->
-  <v-card color="secondary">
+  <v-card color="#7b1113">
     <!-- Display rooms if current location has inside rooms -->
     <v-list v-if="subareas && subareas.length">
       <v-list-item

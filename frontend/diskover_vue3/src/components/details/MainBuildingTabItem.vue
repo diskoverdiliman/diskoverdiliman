@@ -1,6 +1,6 @@
 <template>
   <!-- Tab item for displaying main building of the current location -->
-  <v-card color="secondary">
+  <v-card color="#7b1113">
     <!-- Display outer building if current location has an outer building -->
     <v-list v-if="building">
       <v-list-item :to="`/map/details/${building.id}`" link>

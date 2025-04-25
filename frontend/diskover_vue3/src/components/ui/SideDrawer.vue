@@ -85,7 +85,7 @@ export default {
 .search-drawer {
   height: 100%;
   width: 100%;
-  background-color: #c47273;
+  background-color: #ed9a9c;
   overflow-x: visible !important;
   padding: 0;
 }

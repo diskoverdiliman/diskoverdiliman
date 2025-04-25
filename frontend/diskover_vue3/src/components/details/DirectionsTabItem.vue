@@ -1,6 +1,6 @@
 <template>
   <!-- Tab item for displaying the current location direction/instructions -->
-  <v-card color="secondary">
+  <v-card color="#7b1113">
     <!-- only show the list of directions if directions exist -->
     <v-list v-if="instructions && instructions.length">
       <v-list-item

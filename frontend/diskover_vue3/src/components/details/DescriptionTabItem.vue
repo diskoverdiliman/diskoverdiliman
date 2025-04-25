@@ -1,6 +1,6 @@
 <template>
   <!-- Tab item for displaying the current location description -->
-  <v-card color="secondary">
+  <v-card color="#7b1113">
     <v-container>
       <span class="body-1">{{ description }}</span>
     </v-container>
