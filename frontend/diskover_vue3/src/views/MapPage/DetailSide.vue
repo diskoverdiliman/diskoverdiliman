@@ -9,6 +9,14 @@
       </v-card>
     </v-col>
 
+    <!-- Transport Mode Buttons -->
+    <v-col class="mt-3">
+      <v-row justify="center">
+        <v-btn small class="mr-1" @click="switchToDriving" :color="transportMode === 'driving' ? '#7b1113' : 'grey'">Drive</v-btn>
+        <v-btn small class="ml-1" @click="switchToWalking" :color="transportMode === 'foot' ? '#7b1113' : 'grey'">Walk</v-btn>
+      </v-row>
+    </v-col>
+
     <!-- Category -->
     <v-col class="mt-2 title text-center">
       Category:
@@ -28,14 +36,6 @@
           <v-chip color="primary" class="ma-1" label dark>{{ tag }}</v-chip>
         </RouterLink>
       </div>
-    </v-col>
-
-    <!-- Transport Mode Buttons -->
-    <v-col class="mt-3">
-      <v-row justify="center">
-        <v-btn small class="mr-1" @click="switchToDriving" :color="transportMode === 'driving' ? '#7b1113' : 'grey'">Drive</v-btn>
-        <v-btn small class="ml-1" @click="switchToWalking" :color="transportMode === 'foot' ? '#7b1113' : 'grey'">Walk</v-btn>
-      </v-row>
     </v-col>
 
     <!-- Primary Tabs -->

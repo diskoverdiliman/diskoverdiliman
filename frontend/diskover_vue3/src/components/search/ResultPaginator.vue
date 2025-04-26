@@ -11,7 +11,7 @@
 
 <script>
 import { useSearchStore } from '@/stores/search';
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 
 export default {
   setup(props, { emit }) {
@@ -23,19 +23,15 @@ export default {
         return searchStore.pageNumber;
       },
       set(value) {
-        searchStore.setPageNumber(value);
-      }
-    });
-
-    watch(pageNumber, () => {
-      emit('change');
+        searchStore.setPageNumber(value); // Update pageNumber in the store
+      },
     });
 
     return {
       maxPages,
-      pageNumber
+      pageNumber,
     };
-  }
+  },
 };
 </script>
 

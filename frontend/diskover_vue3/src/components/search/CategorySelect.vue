@@ -3,6 +3,8 @@
   <div id="category-select">
     <v-select
       :items="categories"
+      item-text="name"
+      item-value="id"
       v-model="selectedCategory"
       label="Category"
       @change="applyCategoryFilter"
@@ -13,21 +15,22 @@
 </template>
 
 <script>
+import { useMainStore } from '@/stores/index'; // Import the main store
 import { useSearchStore } from '@/stores/search';
 import { computed } from 'vue';
 
 export default {
   setup() {
+    const mainStore = useMainStore(); // Access the main store
     const searchStore = useSearchStore();
 
-    const categories = computed(() => searchStore.categoryNames);
+    // Access categoryNames from the main store
+    const categories = computed(() => mainStore.categoryNames);
+
     const selectedCategory = computed({
       get: () => searchStore.categoryFilter,
-      set: (value) => searchStore.setCategoryFilter(value)
-
+      set: (value) => searchStore.setCategoryFilter(value),
     });
-
-    console.log("categories: ", categories.value);
 
     const applyCategoryFilter = () => {
       searchStore.fetchResults();
@@ -36,12 +39,11 @@ export default {
     return {
       categories,
       selectedCategory,
-      applyCategoryFilter
+      applyCategoryFilter,
     };
-  }
+  },
 };
 </script>
 
 <style scoped>
-
 </style>

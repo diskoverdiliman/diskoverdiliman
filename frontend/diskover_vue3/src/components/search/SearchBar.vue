@@ -21,8 +21,8 @@
 <script>
 import { useMapStore } from '@/stores/map';
 import { useSearchStore } from '@/stores/search';
-import { ref, computed, watch } from 'vue';
-import { useRouter } from 'vue-router'; // Import useRouter
+import { ref, computed, watch, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router'; // Import useRoute
 
 export default {
   setup() {
@@ -30,8 +30,16 @@ export default {
     const searchStore = useSearchStore();
     const searchText = ref(""); // Define searchText as a ref
     const router = useRouter(); // Use useRouter to get the router instance
+    const route = useRoute(); // Use useRoute to access the current route
 
     const apiQuery = computed(() => searchStore.apiQuery);
+
+    // Initialize searchText with the query parameter from the URL
+    onMounted(() => {
+      if (route.query.search) {
+        searchText.value = route.query.search; // Set searchText from the query parameter
+      }
+    });
 
     const emitSearch = () => {
       if (!searchText.value.trim()) {
@@ -54,6 +62,14 @@ export default {
         }
       });
     };
+
+    // Watch for changes in the route's query parameter and update searchText
+    watch(
+      () => route.query.search,
+      (newSearch) => {
+        searchText.value = newSearch || ""; // Update searchText when the query changes
+      }
+    );
 
     // Debugging: Log changes to apiQuery
     watch(apiQuery, (newQuery) => {

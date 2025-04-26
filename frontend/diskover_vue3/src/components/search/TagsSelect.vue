@@ -16,37 +16,31 @@
 </template>
 
 <script>
+import { useMainStore } from '@/stores/index'; // Import the main store
 import { useSearchStore } from '@/stores/search';
 import { computed } from 'vue';
-import { useRouter } from 'vue-router';
 
 export default {
   setup() {
+    const mainStore = useMainStore(); // Access the main store
     const searchStore = useSearchStore();
-    const router = useRouter();
 
-    const tags = computed(() => searchStore.tagNames);
-    const apiQuery = computed(() => searchStore.apiQuery);
+    const tags = computed(() => mainStore.tagNames);
 
     const tagsFilter = computed({
       get() {
         return searchStore.tagsFilter;
       },
       set(value) {
-        searchStore.setTagsFilter(value);
-        searchStore.setPageNumber(1);
-        router.push({
-          name: "search",
-          query: apiQuery.value
-        });
-      }
+        searchStore.setTagsFilter(value); // Update tagsFilter in the store
+      },
     });
 
     return {
       tags,
-      tagsFilter
+      tagsFilter,
     };
-  }
+  },
 };
 </script>
 

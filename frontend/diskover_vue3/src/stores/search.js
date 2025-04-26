@@ -6,6 +6,8 @@ export const useSearchStore = defineStore('search', {
   state: () => ({
     searchFilter: '',
     categoryFilter: '',
+    tagsFilter: [], // Add tagsFilter for tag selection
+    orderingFilter: '', // Add orderingFilter for sorting
     pageNumber: 1,
     apiQuery: {},
     results: [],
@@ -21,9 +23,6 @@ export const useSearchStore = defineStore('search', {
         this.setResults(response.data.results);
         this.setMaxPages(response.data.total_pages);
         this.setTotalResultCount(response.data.count);
-        this.updateCategoryAndTagNames(); // Update categoryNames and tagNames
-        console.log('categoryNames:', this.categoryNames);
-        console.log('tagNames:', this.tagNames);
         return response;
       } catch (error) {
         console.error('Error fetching results:', error);
@@ -41,19 +40,59 @@ export const useSearchStore = defineStore('search', {
     },
     setSearchFilter(filter) {
       this.searchFilter = filter;
+      this.updateApiQuery();
     },
     setCategoryFilter(category) {
       this.categoryFilter = category;
+      this.updateApiQuery();
+    },
+    setTagsFilter(tags) {
+      this.tagsFilter = tags;
+      this.updateApiQuery();
+    },
+    setOrderingFilter(ordering) {
+      this.orderingFilter = ordering;
+      this.updateApiQuery();
     },
     setPageNumber(page) {
       this.pageNumber = page;
+      this.updateApiQuery();
     },
     setApiQuery(query) {
-      this.apiQuery = query;
+      // Update the apiQuery state based on the provided query
+      this.apiQuery = {
+        search: query.search || '',
+        category: query.category || '',
+        tags: query.tags ? query.tags.split(',') : [],
+        ordering: query.ordering || '',
+        page: query.page || 1,
+      };
+
+      // Update individual filters based on the query
+      this.searchFilter = this.apiQuery.search;
+      this.categoryFilter = this.apiQuery.category;
+      this.tagsFilter = this.apiQuery.tags;
+      this.orderingFilter = this.apiQuery.ordering;
+      this.pageNumber = parseInt(this.apiQuery.page, 10);
+
+      // Fetch results with the updated query
+      this.fetchResults(this.apiQuery);
+    },
+    updateApiQuery() {
+      this.apiQuery = {
+        search: this.searchFilter,
+        category: this.categoryFilter,
+        tags: this.tagsFilter.join(','), // Convert array to comma-separated string
+        ordering: this.orderingFilter,
+        page: this.pageNumber,
+      };
+      this.fetchResults(this.apiQuery); // Trigger API call with updated query
     },
     resetAll() {
       this.searchFilter = '';
       this.categoryFilter = '';
+      this.tagsFilter = [];
+      this.orderingFilter = '';
       this.pageNumber = 1;
       this.apiQuery = {};
       this.results = [];
@@ -62,23 +101,6 @@ export const useSearchStore = defineStore('search', {
       this.categoryNames = [];
       this.tagNames = [];
     },
-    updateCategoryAndTagNames() {
-      // Extract unique category names
-      const categories = new Set();
-      const tags = new Set();
-
-      this.results.forEach(result => {
-        if (result.category) {
-          categories.add(result.category);
-        }
-        if (result.tags && Array.isArray(result.tags)) {
-          result.tags.forEach(tag => tags.add(tag));
-        }
-      });
-
-      this.categoryNames = Array.from(categories).sort(); // Convert to array and sort
-      this.tagNames = Array.from(tags).sort(); // Convert to array and sort
-    }
   },
   getters: {
     resultIds: (state) => {

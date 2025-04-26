@@ -24,6 +24,7 @@
 
 <script>
 import { useSearchStore } from '@/stores/search';
+import { useMapStore } from '@/stores/map'; // Import mapStore
 import { useRouter, useRoute } from 'vue-router';
 import { onMounted, onBeforeUnmount, computed } from 'vue';
 import CategorySelect from '@/components/search/CategorySelect.vue'; // Ensure the import path is correct
@@ -42,6 +43,7 @@ export default {
   },
   setup() {
     const searchStore = useSearchStore();
+    const mapStore = useMapStore(); // Use mapStore to control the side drawer
     const router = useRouter();
     const route = useRoute();
 
@@ -52,7 +54,6 @@ export default {
           searchStore.setResults(response.data.results);
           searchStore.setMaxPages(response.data.total_pages);
           searchStore.setTotalResultCount(response.data.count);
-          searchStore.updateCategoryAndTagNames();
         })
         .catch(error => {
           alert("error receiving queried results from API: ");
@@ -83,6 +84,7 @@ export default {
     };
 
     onMounted(() => {
+      mapStore.setSideDrawer(true); // Show the side drawer by default
       handleRouteChange();
       handleDefaultPagination();
     });
@@ -135,5 +137,34 @@ export default {
 
 .selector .v-list-item:hover {
   background-color: #f0f0f0 !important;
+}
+
+/* Ensure the container does not overflow horizontally */
+div {
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  box-sizing: border-box; /* Include padding and border in the element's width */
+}
+
+/* Ensure rows and columns fit within the container */
+v-row {
+  margin: 0; /* Remove default margins */
+  padding: 0; /* Remove default padding */
+}
+
+v-col {
+  padding: 0; /* Remove padding from columns */
+}
+
+/* Ensure the selectors and other elements fit properly */
+.selector {
+  width: 100%; /* Ensure the selector spans the full width of its container */
+  max-width: 100%; /* Prevent the selector from exceeding the container width */
+  margin: 0 auto; /* Center the selector */
+}
+
+.title, .subheading {
+  margin: 0; /* Remove unnecessary margins */
+  padding: 0; /* Remove unnecessary padding */
+  text-align: center; /* Optional: Center-align text */
 }
 </style>

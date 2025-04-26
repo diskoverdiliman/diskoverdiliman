@@ -46,7 +46,10 @@ onMounted(() => {
 
 });
 
-watch(route, () => {
+watch(route, (newRoute, oldRoute) => {
+  if (oldRoute) {
+    mainStore.setPreviousPage(oldRoute.fullPath); // Track the previous page
+  }
   authStore.verifyToken()
     .then(() => console.log("Route changed, token verified."))
     .catch(() => console.warn("No token found, continuing as guest."));
