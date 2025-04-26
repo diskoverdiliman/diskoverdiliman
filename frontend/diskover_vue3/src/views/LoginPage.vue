@@ -48,28 +48,29 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router'; // Import Vue Router
+import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import { useMainStore } from '@/stores/index';
 
 const authStore = useAuthStore();
-const router = useRouter(); // Initialize Vue Router
+const mainStore = useMainStore();
+const router = useRouter();
 
 const username = ref('');
 const password = ref('');
-const isProcessing = ref(false); // Add a flag to indicate processing state
+const isProcessing = ref(false);
 
 const attemptLogIn = async () => {
-  isProcessing.value = true; // Set processing state to true
+  isProcessing.value = true;
   try {
     await authStore.logIn({ username: username.value, password: password.value });
-    // Redirect to the home page if not already there
-    if (router.currentRoute.value.path !== '/') {
-      router.push('/'); // Navigate to the home page without refreshing
-    }
+    // Redirect to the previous page or home page if no previous page is set
+    const redirectTo = mainStore.previousPage || '/';
+    router.push(redirectTo);
   } catch (error) {
     console.error('Login failed:', error);
   } finally {
-    isProcessing.value = false; // Reset processing state
+    isProcessing.value = false;
   }
 };
 

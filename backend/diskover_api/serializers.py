@@ -12,7 +12,7 @@ def distance_between(lat1, lng1, lat2, lng2):
     lat1, lng1, lat2, lng2 = [math.radians(latlng) for latlng in (lat1, lng1, lat2, lng2)]
     R = 6371  # Radius of the earth in km
     dLat = abs(lat2 - lat1)
-    dLng = abs(lng2 - lng1)
+    dLng = abs(lat2 - lng1)
     a = math.pow(math.sin(dLat / 2), 2) + math.cos(lat1) * math.cos(lat2) * math.pow(math.sin(dLng / 2), 2)
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     d = R * c  # Distance in km
@@ -26,7 +26,7 @@ class CategorySerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Category
-        fields = ('id', 'name', 'image', 'url', 'marker', 'routeMarker', 'routeColor')
+        fields = ('id', 'name', 'image', 'url', 'marker', 'route_marker', 'route_color')  # Use 'route_marker'
 
 
 # Serializer for Tag model
@@ -64,35 +64,19 @@ class LocationAdminCrudSerializer(serializers.ModelSerializer):
     """
     Serializer for Location model used in admin CRUD operations.
     """
-    subareas = serializers.SerializerMethodField()
     main_building = serializers.SerializerMethodField()
-    tags = serializers.SerializerMethodField()
-
-    def get_subareas(self, obj):
-        """
-        Get subareas associated with the location.
-        """
-        subareas = obj.subareas.all()
-        return [subarea.id for subarea in subareas] if subareas else None
-
-    def get_main_building(self, obj):
-        """
-        Get the main building associated with the location.
-        """
-        main_building = obj.building.first()
-        return main_building.id if main_building else None
-
-    def get_tags(self, obj):
-        """
-        Get tags associated with the location.
-        """
-        tags = obj.tags.all()
-        return [tag.id for tag in tags] if tags else None
 
     class Meta:
         model = Location
-        fields = ('id', 'name', 'category', 'tags', 'description', 'more_info',
-                  'lat', 'lng', 'subareas', 'main_building')
+        fields = ['id', 'name', 'description', 'lat', 'lng', 'category', 'tags', 'subareas', 'main_building']
+
+    def get_main_building(self, obj):
+        # Check if the building relationship exists
+        try:
+            main_building = obj.building.first()
+            return main_building.id if main_building else None
+        except AttributeError:
+            return None
 
 
 # Serializer for Location model (admin image operations)
@@ -152,8 +136,11 @@ class LocationRetrieveSerializer(serializers.ModelSerializer):
         """
         Get the main building associated with the location.
         """
-        main_building = obj.building.first()
-        return LocationSimpleSerializer(main_building).data if main_building else None
+        try:
+            main_building = obj.building.first()
+            return LocationSimpleSerializer(main_building).data if main_building else None
+        except AttributeError:
+            return None
 
     def get_nearby_locations(self, obj):
         """

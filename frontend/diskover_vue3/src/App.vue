@@ -25,32 +25,31 @@ const mainStore = useMainStore();
 const route = useRoute();
 
 onMounted(() => {
-  authStore.verifyToken()
-    .then(() => {
-      if (authStore.isLoggedIn) {
-        axios.get('/categories') // Fetch categories
-          .then(response => {
-            mainStore.setCategories(response.data);
-          })
-          .catch(error => {
-            console.error('Error fetching categories:', error);
-          });
 
-        axios.get('/tags') // Fetch tags
-          .then(response => {
-            mainStore.setTags(response.data);
-          })
-          .catch(error => {
-            console.error('Error fetching tags:', error);
-          });
-      }
+  // Fetch categories (always fetch regardless of login status)
+  axios.get('/categories')
+    .then(response => {
+      mainStore.setCategories(response.data);
     })
     .catch(error => {
-      console.error("Unexpected error:", error);
+      console.error('Error fetching categories:', error);
     });
+
+  // Fetch tags (always fetch regardless of login status)
+  axios.get('/tags')
+    .then(response => {
+      mainStore.setTags(response.data);
+    })
+    .catch(error => {
+      console.error('Error fetching tags:', error);
+    });
+
 });
 
-watch(route, () => {
+watch(route, (newRoute, oldRoute) => {
+  if (oldRoute) {
+    mainStore.setPreviousPage(oldRoute.fullPath); // Track the previous page
+  }
   authStore.verifyToken()
     .then(() => console.log("Route changed, token verified."))
     .catch(() => console.warn("No token found, continuing as guest."));
@@ -72,5 +71,9 @@ const isLoggedIn = computed(() => authStore.isLoggedIn);
 
 .no-padding {
   padding: 0;
+}
+
+.leaflet-control-container .leaflet-routing-container-hide {
+    display: none !important;
 }
 </style>

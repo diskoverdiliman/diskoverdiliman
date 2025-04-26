@@ -11,7 +11,7 @@ import { createPinia } from 'pinia';
 import { setupVuePrototypes } from '@/vuePrototypes.js';
 import { eventBus } from '@/eventBus'; // Use named import
 import axios from './plugins/axios';
-import axiosPlugin from './plugins/axios';
+import '@/plugins/clamp.min.js'; // Import clamp.min.js
 
 const vuetify = createVuetify({
   components,
@@ -24,8 +24,6 @@ const vuetify = createVuetify({
     },
   },
 });
-
-console.log('App component [main.js]:', App); // Add logging to check if App is imported correctly
 
 const app = createApp(App);
 const pinia = createPinia();

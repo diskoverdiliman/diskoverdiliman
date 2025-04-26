@@ -16,19 +16,16 @@
 <script>
 import { useSearchStore } from '@/stores/search';
 import { computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
 
 export default {
   setup() {
     const searchStore = useSearchStore();
-    const route = useRoute();
-    const router = useRouter();
 
     const sortItems = [
       { text: "alphabetically (a-z)", value: "name" },
       { text: "alphabetically (z-a)", value: "-name" },
       { text: "least recently added", value: "id" },
-      { text: "most recently added", value: "-id" }
+      { text: "most recently added", value: "-id" },
     ];
 
     const sortFilter = computed({
@@ -36,20 +33,15 @@ export default {
         return searchStore.orderingFilter;
       },
       set(value) {
-        searchStore.setOrderingFilter(value);
-        searchStore.setPageNumber(1);
-        router.push({
-          name: "search",
-          query: searchStore.apiQuery
-        });
-      }
+        searchStore.setOrderingFilter(value); // Update orderingFilter in the store
+      },
     });
 
     return {
       sortItems,
-      sortFilter
+      sortFilter,
     };
-  }
+  },
 };
 </script>
 

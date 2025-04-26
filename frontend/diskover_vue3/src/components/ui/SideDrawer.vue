@@ -1,6 +1,9 @@
 <template>
   <!-- Side Drawer for showing results and details alongside map anchored left -->
-  <div class="side-drawer-container">
+  <div
+    class="side-drawer-container"
+    v-show="isSideDrawerVisible" 
+  >
     <FloatingButton
       v-if="isVisible"
       attachedTo="drawer"
@@ -8,7 +11,7 @@
       class="floating-button"
     />
     <div class="search-drawer" v-show="isVisible">
-      <div class="px-2 pt-3">
+      <div class="px-2 pt-3 scrollable-content">
         <div class="search-bar-container">
           <SearchBar/>
         </div>
@@ -44,6 +47,8 @@ export default {
       }
     });
 
+    const isSideDrawerVisible = computed(() => mapStore.isSideDrawerVisible);
+
     const toggleVisibility = () => {
       mapStore.setSideDrawer(!isVisible.value);
     };
@@ -68,7 +73,8 @@ export default {
     return {
       mdAndUp,
       isVisible,
-      handleToggleSideDrawer
+      handleToggleSideDrawer,
+      isSideDrawerVisible
     };
   }
 };
@@ -85,9 +91,14 @@ export default {
 .search-drawer {
   height: 100%;
   width: 100%;
-  background-color: #c47273;
+  background-color: #ed9a9c;
   overflow-x: visible !important;
   padding: 0;
+}
+
+.scrollable-content {
+  max-height: calc(100vh - 50px); /* Adjust the height as needed */
+  overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .search-bar-container {

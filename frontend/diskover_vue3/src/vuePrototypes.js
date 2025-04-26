@@ -6,7 +6,6 @@ export function setupVuePrototypes(app) {
   // Ensure window object is available before assigning the app to it
   if (typeof window !== 'undefined') {
     window.app = app;
-    console.log('App instance assigned to window:', window.app); // Add logging to check if app is assigned to window
   }
 
   // querystring parser for get requests

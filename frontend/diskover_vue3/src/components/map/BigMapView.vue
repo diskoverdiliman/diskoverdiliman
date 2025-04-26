@@ -1,10 +1,8 @@
 <template>
-  <!-- the huge map displayed on the right side on the search and details pages -->
   <div id="map" class="map-container">
     <slot></slot>
     <v-row justify="center" align="center">
       <v-col align="center">
-        <!-- loading circle in case map doesnt load in time -->
         <v-progress-circular :indeterminate="true"></v-progress-circular>
       </v-col>
     </v-row>
@@ -20,15 +18,14 @@ import { useSearchStore } from '@/stores/search';
 import L from 'leaflet';
 import 'leaflet-routing-machine';
 import 'leaflet-easybutton';
-import { inject } from 'vue';
+import { inject, watch } from 'vue';
 
 export default {
   mixins: [MapMixin, JeepMixin],
   mounted() {
-    console.log("Mounted: Initializing Map");
     this.initializeMap();
     this.handleMapChange();
-    this.listenForInstructionCirlces();
+    this.listenForInstructionCircles();
   },
   beforeUnmount() {
     if (this.map) {
@@ -51,9 +48,8 @@ export default {
       gpsButton: null,
       routing: null,
       endIcon: null,
-      serviceUrl: "https://diskover.up.edu.ph/osrm/route/v1",
       originIcon: L.icon({
-        iconUrl: 'path/to/origin-icon.png', // Replace with the path to your icon
+        iconUrl: 'null',
         iconSize: [25, 41],
         iconAnchor: [12, 41],
         popupAnchor: [1, -34],
@@ -62,6 +58,10 @@ export default {
     };
   },
   computed: {
+    osrmServiceUrl() {
+      const detailsStore = useDetailsStore();
+      return detailsStore.serviceUrl; // Use the reactive service URL from the store
+    },
     endCoords() {
       const detailsStore = useDetailsStore();
       return detailsStore.endCoords;
@@ -99,7 +99,11 @@ export default {
     detailIconUrl() {
       const detailsStore = useDetailsStore();
       return detailsStore.fullIconUrl;
-    }
+    },
+    transportMode() {
+      const detailsStore = useDetailsStore();
+      return detailsStore.transportMode; // Reactively use the transportMode from the store
+    },
   },
   watch: {
     isOnDetailsPage() {
@@ -113,27 +117,49 @@ export default {
     },
     resultCoords() {
       this.handleMapChange();
-    }
+    },
+    transportMode(newMode) {
+      this.handleMapChange(); // Reinitialize the map when transport mode changes
+    },
+    osrmServiceUrl() {
+      this.handleMapChange(); // Reinitialize the map when service URL changes
+    },
+    // Watch for changes in the side drawer visibility
+    'mapStore.isSideDrawerVisible': {
+      handler() {
+        if (this.map) {
+          this.map.invalidateSize(); // Notify Leaflet of the size change
+        }
+      },
+      immediate: true,
+    },
   },
   methods: {
+    switchToDriving() {
+      this.transportMode = "driving";
+      this.handleMapChange();
+    },
+    switchToWalking() {
+      this.transportMode = "foot";
+      this.handleMapChange();
+    },
     initializeMap() {
       if (this.map) {
         this.map.remove();
       }
-      this.map = L.map('map').setView([51.505, -0.09], 13);
+      this.map = L.map('map').setView([14.5995, 120.9842], 13); // Default to Manila
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        attribution: '&copy; OpenStreetMap contributors'
       }).addTo(this.map);
 
       this.initGpsButton();
       this.initResetButton();
-      this.initJeepRoutes(); // Initialize Jeepney routes
-      this.initJeepRoutesControl(); // Initialize Jeepney routes control
+      this.initJeepRoutes();
+      this.initJeepRoutesControl();
       this.handleMapChange();
-      this.listenForInstructionCirlces();
+      this.listenForInstructionCircles();
 
-      // Handle location found event
       this.map.on('locationfound', this.onLocationFound);
       this.map.on('locationerror', this.onLocationError);
     },
@@ -198,71 +224,66 @@ export default {
       }).addTo(this.map);
     },
     initRouting(start, finish) {
+      if (this.routing) {
+        this.routing.remove();
+      }
+
+      const mode = this.transportMode || "driving"; // Use the computed transportMode
+      const baseUrl = this.osrmServiceUrl.replace(/\/$/, ""); // Remove trailing slash
+
+      console.log("Using OSRM Service URL:", baseUrl, "with profile:", mode); // Debugging log
+
       this.routing = L.Routing.control({
-        serviceUrl: this.serviceUrl,
+        router: new L.Routing.OSRMv1({
+          serviceUrl: `${baseUrl}/route/v1`,
+          profile: mode, // Specify the routing profile
+        }),
         plan: L.Routing.plan([L.latLng(start), L.latLng(finish)], {
           createMarker: (index, waypoint) => {
-            if (index == 0) {
+            if (index === 0) {
               return L.marker(waypoint.latLng, {
                 draggable: true,
-                icon: this.originIcon
-              })
-                .bindPopup("You are here. Drag me all you like")
-                .openPopup();
+                icon: this.originIcon,
+              }).bindPopup("You are here. Drag me all you like").openPopup();
             } else {
               let icon = this.getIcon(this.detailIconUrl);
               return L.marker(waypoint.latLng, {
                 draggable: false,
-                ...(icon && { icon: icon })
-              })
-                .bindPopup("You want to go here")
-                .openPopup();
+                ...(icon && { icon: icon }),
+              }).bindPopup("You want to go here").openPopup();
             }
-          }
+          },
         }),
-        routeWhileDragging: true,
-        show: false,
-        fitSelectedRoutes: true,
-        collapsible: true
-      }).addTo(this.map);
+        routeWhileDragging: true, // Allow dragging the route
+        show: true, // Enable the directions panel initially
+        fitSelectedRoutes: true, // Automatically fit the map to the route
+        collapsible: false, // Disable collapsible UI
+      })
+        .on("routesfound", (e) => {
+          const route = e.routes[0];
+          const instructions = route.instructions.map((inst) => ({
+            text: inst.text,
+            distance: inst.distance,
+          }));
+          const coordinates = route.coordinates.map((coord) => [coord.lat, coord.lng]);
 
-      this.routing.on("routesfound", e => {
-        let insts = e.routes[0].instructions.map(inst => ({
-          text: inst.text,
-          distance: inst.distance,
-          index: inst.index
-        }));
-        this.setInstructions(insts);
-        let instIndex = 0;
-        let coords = e.routes[0].coordinates.filter((coord, index) => {
-          if (insts[instIndex].index == index) {
-            instIndex++;
-            return true;
-          }
-          return false;
-        });
-        this.setRouteCoordinates(coords);
-      });
+          this.setInstructions(instructions); // Store instructions in the detailsStore
+          this.setRouteCoordinates(coordinates); // Store route coordinates in the detailsStore
+        })
+        .addTo(this.map);
 
-      this.routing.on("routingerror", e => {
-        alert("OSRM Routing Error: " + e.error.message);
-        console.log("OSRM Routing Error: ", e.error.message);
-        this.setInstructions([]);
-      });
+      // Hide the directions panel
+      this.routing._container.style.display = "none";
     },
-    listenForInstructionCirlces() {
-      this.eventBus.on("add-circle", index => {
-        let coords = this.routeCoordinates[index];
-        this.addCircle(coords, {
-          radius: 15,
-          color: "#03f",
-          fillColor: "white",
-          opacity: 1,
-          fillOpacity: 0.7
-        });
-        this.map.setView(coords, 16);
+    listenForInstructionCircles() {
+      if (!this.eventBus) {
+        console.error('eventBus is not defined!');
+        return;
+      }
+
+      this.eventBus.on("toggle-side-drawer", () => {
+        this.mapStore.setSideDrawer(!this.mapStore.isSideDrawerVisible);
       });
-      this.eventBus.on("clear-circles", this.removeAllCircles);
     },
     setInstructions(instructions) {
       const detailsStore = useDetailsStore();
@@ -275,13 +296,9 @@ export default {
     onLocationFound(e) {
       const radius = e.accuracy / 2;
       const latlng = e.latlng;
-
-      // Add a marker at the user's location
       L.marker(latlng, { icon: this.originIcon })
         .addTo(this.map)
         .bindPopup(`You are within ${radius} meters from this point`).openPopup();
-
-      // Add a circle around the user's location
       L.circle(latlng, radius).addTo(this.map);
     },
     onLocationError(e) {
@@ -289,10 +306,14 @@ export default {
     }
   },
   setup() {
-    const eventBus = inject('eventBus');
-    return {
-      eventBus
-    };
+    const eventBus = inject('eventBus'); // Ensure eventBus is injected
+    const mapStore = useMapStore();
+
+    if (!eventBus) {
+      console.error('eventBus is not provided!');
+    }
+
+    return { eventBus, mapStore };
   }
 };
 </script>
@@ -310,10 +331,7 @@ export default {
   overflow: hidden;
 }
 
-.btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 1000;
+.leaflet-control-container .leaflet-routing-container-hide {
+    display: none !important;
 }
 </style>

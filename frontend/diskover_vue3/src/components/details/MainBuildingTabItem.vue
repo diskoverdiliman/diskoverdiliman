@@ -1,26 +1,28 @@
 <template>
   <!-- Tab item for displaying main building of the current location -->
-  <v-card color="secondary">
+  <v-card color="#7b1113">
     <!-- Display outer building if current location has an outer building -->
     <v-list v-if="building">
-      <v-list-tile 
-        :to="`/map/details/${building.id}`"
-        @click="{}"
-      >
-        <v-list-tile-content>{{ building.name }}</v-list-tile-content>
-      </v-list-tile>
+      <v-list-item :to="`/map/details/${building.id}`" link>
+        <v-list-item-content>
+          <v-list-item-title>{{ building.name }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
-    <!-- else display indicator that no outer building found -->
+    <!-- Else display indicator that no outer building found -->
     <v-container v-else>
       <span class="body-2">No Building Found</span>
     </v-container>
   </v-card>
 </template>
 
-<script>
-export default {
-  props: ['building'],
-};
+<script setup>
+defineProps({
+  building: {
+    type: Object,
+    default: null,
+  },
+});
 </script>
 
 <style scoped>

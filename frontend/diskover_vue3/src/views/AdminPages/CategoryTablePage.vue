@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import axios from 'axios'; // Import Axios
 import AdminVerifierMixin from "@/mixins/AdminVerifierMixin";
 import CategoryTable from "@/components/admin/CategoryTable.vue"; // Adjust the path as needed
 
@@ -37,17 +38,14 @@ export default {
     this.getCategories();
   },
   methods: {
-    getCategories() {
-      this.$http
-        .get("/categories/")
-        .then((response) => {
-          this.categories = response.data;
-          console.log("Categories successfully retrieved");
-        })
-        .catch((error) => {
-          console.log("Failed to GET categories");
-          console.log(error);
-        });
+    async getCategories() {
+      try {
+        const response = await axios.get("/admin/categories/"); // Use Axios to fetch categories
+        this.categories = response.data;
+        console.log("Categories successfully retrieved");
+      } catch (error) {
+        console.error("Failed to GET categories", error);
+      }
     },
     onClickNewCategory() {
       this.$router.push(`/categoryform/create`);
@@ -55,16 +53,14 @@ export default {
     onEditItem(id) {
       this.$router.push(`/categoryform/update/${id}`);
     },
-    onDeleteItem(id) {
-      this.$http
-        .delete(`categories/${id}`)
-        .then((response) => {
-          console.log("Successfully deleted item", response);
-          this.getCategories();
-        })
-        .catch((error) => {
-          console.log("Failed to delete item", error);
-        });
+    async onDeleteItem(id) {
+      try {
+        const response = await axios.delete(`/admin/categories/${id}/`); // Use Axios to delete a category
+        console.log("Successfully deleted item", response);
+        this.getCategories(); // Refresh the categories list
+      } catch (error) {
+        console.error("Failed to delete item", error);
+      }
     },
   },
 };

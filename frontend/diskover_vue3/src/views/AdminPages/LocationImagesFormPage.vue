@@ -16,14 +16,26 @@
           <v-row>
             <v-col cols="12">
               <div class="title">Images currently binded to location</div>
-              <div v-for="image in bindedImages" :key="image.id">
-                <v-checkbox v-model="selectedBindedImages" :value="image.id" color="primary">
-                  <div slot="label">
-                    <div>{{ image.img_url }}</div>
-                    <v-img :src="getFullImageUrl(image.img_url)" height="150px" contain />
-                  </div>
-                </v-checkbox>
-              </div>
+              <v-row>
+                <v-col
+                  v-for="image in bindedImages"
+                  :key="image.id"
+                  cols="12"
+                  sm="6"
+                  md="4"
+                  lg="3"
+                  class="d-flex align-center justify-center"
+                >
+                  <v-checkbox v-model="selectedBindedImages" :value="image.id" color="primary">
+                    <template #label>
+                      <div class="text-center">
+                        <v-img :src="getFullImageUrl(image.img_url)" height="150px" contain class="mb-2" />
+                        <div>{{ image.img_url }}</div>
+                      </div>
+                    </template>
+                  </v-checkbox>
+                </v-col>
+              </v-row>
             </v-col>
           </v-row>
 
@@ -33,6 +45,8 @@
               <v-autocomplete
                 v-model="locationSearchId"
                 :items="locationSearchItemsWithUnbinded"
+                item-title="text"
+                item-value="value"
                 :search-input.sync="locationSearchQuery"
                 @input="apiGetLocationSearchImages"
                 cache-items
@@ -94,6 +108,7 @@
 
 <script>
 import AdminVerifierMixin from "@/mixins/AdminVerifierMixin";
+import axios from "axios";
 
 export default {
   mixins: [AdminVerifierMixin],
@@ -140,20 +155,20 @@ export default {
       this.apiGetLocationSearchItems("");
     },
     apiGetLocationToUpdateImages(id) {
-      this.$http
+      axios
         .get(`/admin/locations/images/${id}`)
         .then((response) => {
-          console.log("successful retrieved images data from API: ", response.data);
+          console.log("Successfully retrieved images data from API: ", response.data);
           this.locationName = response.data.name;
           this.bindedImages = response.data.images;
           this.selectedBindedImages = response.data.images.map((image) => image.id);
         })
         .catch((error) => {
-          console.log("error retrieving location update/delete data from API: ", error);
+          console.log("Error retrieving location update/delete data from API: ", error);
         });
     },
     apiGetLocationSearchItems(searchValue) {
-      this.$http
+      axios
         .get(`/admin/locations/`, {
           params: {
             search: searchValue,
@@ -164,12 +179,12 @@ export default {
         })
         .then((response) => {
           this.locationSearchItems = response.data.map((loc) => ({
-            text: loc.name,
+            text: loc.name, // Use "text" instead of "tit"
             value: loc.id,
           }));
         })
         .catch((error) => {
-          alert("error receiving queried results from API: ");
+          alert("Error receiving queried results from API: ");
           console.log(error);
         });
     },
@@ -179,7 +194,7 @@ export default {
       if (!this.locationSearchId && this.locationSearchId != 0) {
         this.locationSearchId = -1;
       }
-      this.$http
+      axios
         .get(`/admin/images/`, {
           params: { location_id: this.locationSearchId },
           paramsSerializer: (params) => {
@@ -187,11 +202,11 @@ export default {
           },
         })
         .then((response) => {
-          console.log("successful retrieved location search images data from API: ", response.data);
+          console.log("Successfully retrieved location search images data from API: ", response.data);
           this.locationSearchImages = response.data;
         })
         .catch((error) => {
-          alert("error receiving queried results from API: ");
+          alert("Error receiving queried results from API: ");
           console.log(error);
         });
     },
@@ -216,25 +231,25 @@ export default {
         formData.append("images", imageFile);
       }
       console.log(formData);
-      this.$http
+      axios
         .patch(`/admin/locations/images/${this.locationId}/`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         })
         .then((response) => {
-          console.log("successfully patched updated location to API", response);
+          console.log("Successfully patched updated location to API", response);
           this.$router.push({ name: "details", params: { id: this.locationId } });
         })
         .catch((error) => {
-          alert("error patching updated location to API", error);
+          alert("Error patching updated location to API", error);
         })
         .finally(() => {
           this.isSubmitting = false;
         });
     },
     handleCancelClick() {
-      console.log("cancel");
+      console.log("Cancel");
       this.$router.go(-1);
     },
     triggerFileInput() {

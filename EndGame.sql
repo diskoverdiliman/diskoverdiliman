@@ -261,8 +261,8 @@ CREATE TABLE public.category (
     image character varying(260),
     url character varying(50),
     marker character varying(260),
-    "routeMarker" character varying(260),
-    "routeColor" character varying(7),
+    "route_marker" character varying(260),
+    "route_color" character varying(7),
     id integer NOT NULL
 );
 
@@ -891,7 +891,7 @@ COPY public.auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
 -- Data for Name: category; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.category (name, image, url, marker, "routeMarker", "routeColor", id) FROM stdin;
+COPY public.category (name, image, url, marker, "route_marker", "route_color", id) FROM stdin;
 Rooms	room.jpg	rooms	schoolIcon.png	schoolRouteIcon.png	#1E90FF	2
 Parking Areas	parking.jpg	parking-lots	parkingIcon.png	parkingRouteIcon.png	#800080	4
 Comfort Rooms	toilet.jpg	comfort-rooms	toiletIcon.png	toiletIcon.png	#FF7F50	5

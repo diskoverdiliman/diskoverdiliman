@@ -39,7 +39,6 @@ export const useAuthStore = defineStore('auth', {
     verifyToken() {
       return new Promise((resolve) => {
         if (this.jwt) {
-          console.log('Token is valid:', this.jwt);
           resolve();
         } else {
           console.warn('No token found, proceeding as guest.');
@@ -80,7 +79,9 @@ export const useAuthStore = defineStore('auth', {
         this.setToken(response.data.access); // Update the access token
       }).catch(error => {
         console.error('Error refreshing token:', error);
-        this.logOut(); // Log out if the refresh token is invalid
+        // Log out if the refresh token is invalid or the request fails
+        this.logOut();
+        throw error; // Rethrow the error to stop further retries
       });
     },
   },
@@ -100,21 +101,3 @@ axios.interceptors.request.use(async (config) => {
 
   return config;
 });
-
-axios.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const authStore = useAuthStore();
-
-    if (error.response.status === 401 && authStore.refreshToken) {
-      // Attempt to refresh the token
-      await authStore.refreshAccessToken();
-
-      // Retry the original request with the new token
-      error.config.headers.Authorization = `Bearer ${authStore.jwt}`;
-      return axios(error.config);
-    }
-
-    return Promise.reject(error);
-  }
-);

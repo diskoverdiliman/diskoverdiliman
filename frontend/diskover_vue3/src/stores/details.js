@@ -3,28 +3,38 @@ import { getVueApp } from "@/main.js";
 
 export const useDetailsStore = defineStore('details', {
   state: () => ({
-    routeCoordinates: [],
-    instructions: [],
     endCoords: [],
-    markerIcon: "",
+    routeCoordinates: [],
+    instructions: [], // Store directions instructions
+    markerIcon: null,
+    transportMode: 'driving', // Default to driving
+    serviceUrl: 'http://localhost:5001', // Default to driving service
   }),
   actions: {
-    setRouteCoordinates(newRouteCoordinates) {
-      this.routeCoordinates = newRouteCoordinates;
+    setEndCoords(coords) {
+      this.endCoords = coords;
     },
-    setInstructions(newInstructions) {
-      this.instructions = newInstructions;
+    setRouteCoordinates(coords) {
+      this.routeCoordinates = coords;
     },
-    setEndCoords(newEndCoords) {
-      this.endCoords = newEndCoords;
+    setInstructions(instructions) {
+      this.instructions = instructions;
     },
-    setMarkerIcon(newMarkerIcon) {
-      this.markerIcon = newMarkerIcon;
-    }
+    setMarkerIcon(icon) {
+      this.markerIcon = icon;
+    },
+    setTransportMode(mode) {
+      this.transportMode = mode;
+      this.serviceUrl = mode === 'driving' 
+        ? 'http://localhost:5001' 
+        : 'http://localhost:5002';
+
+      console.log('Service URL set to:', this.serviceUrl);        
+    },
   },
   getters: {
     fullIconUrl: (state) => state.markerIcon
       ? `${getVueApp().config.globalProperties.$backendStaticPath}images/markers/${state.markerIcon}`
-      : null
-  }
+      : null,
+  },
 });

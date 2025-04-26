@@ -18,6 +18,7 @@
     <!-- Center modal for confirming GPS permission despite proximity from UP Diliman -->
     <CenterModal :isVisible="isCenterModalVisible" @close="setCenterModal(false)">
       <v-layout column align-content-space-around class="red lighten-4 text-xs-center">
+        <v-card-title class="headline">Confirmation</v-card-title>
         <v-col class="headline amber lighten-4 py-3">
           Your current location doesn't appear to be in UP Diliman
         </v-col>
@@ -89,7 +90,6 @@ export default {
     if (savedGpsLocation) {
       const mapStore = useMapStore(); // Access the Pinia store
       mapStore.setOriginCoords(savedGpsLocation); // Restore the GPS location
-      console.log("GPS location restored from localStorage:", savedGpsLocation);
     }
   },
   methods: {
