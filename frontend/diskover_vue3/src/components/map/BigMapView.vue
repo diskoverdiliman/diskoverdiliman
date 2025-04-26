@@ -1,10 +1,8 @@
 <template>
-  <!-- the huge map displayed on the right side on the search and details pages -->
   <div id="map" class="map-container">
     <slot></slot>
     <v-row justify="center" align="center">
       <v-col align="center">
-        <!-- loading circle in case map doesnt load in time -->
         <v-progress-circular :indeterminate="true"></v-progress-circular>
       </v-col>
     </v-row>
@@ -50,9 +48,9 @@ export default {
       gpsButton: null,
       routing: null,
       endIcon: null,
-      serviceUrl: "http://localhost:5001/route/v1",
+      transportMode: "driving", // NEW
       originIcon: L.icon({
-        iconUrl: 'null', // Replace with the path to your icon
+        iconUrl: 'null',
         iconSize: [25, 41],
         iconAnchor: [12, 41],
         popupAnchor: [1, -34],
@@ -61,6 +59,10 @@ export default {
     };
   },
   computed: {
+    osrmServiceUrl() {
+      const detailsStore = useDetailsStore();
+      return detailsStore.serviceUrl; // Use the reactive service URL from the store
+    },
     endCoords() {
       const detailsStore = useDetailsStore();
       return detailsStore.endCoords;
@@ -115,24 +117,31 @@ export default {
     }
   },
   methods: {
+    switchToDriving() {
+      this.transportMode = "driving";
+      this.handleMapChange();
+    },
+    switchToWalking() {
+      this.transportMode = "foot";
+      this.handleMapChange();
+    },
     initializeMap() {
       if (this.map) {
         this.map.remove();
       }
-      this.map = L.map('map').setView([51.505, -0.09], 13);
+      this.map = L.map('map').setView([14.5995, 120.9842], 13); // Default to Manila
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        attribution: '&copy; OpenStreetMap contributors'
       }).addTo(this.map);
 
       this.initGpsButton();
       this.initResetButton();
-      this.initJeepRoutes(); // Initialize Jeepney routes
-      this.initJeepRoutesControl(); // Initialize Jeepney routes control
+      this.initJeepRoutes();
+      this.initJeepRoutesControl();
       this.handleMapChange();
       this.listenForInstructionCirlces();
 
-      // Handle location found event
       this.map.on('locationfound', this.onLocationFound);
       this.map.on('locationerror', this.onLocationError);
     },
@@ -198,56 +207,28 @@ export default {
     },
     initRouting(start, finish) {
       this.routing = L.Routing.control({
-        serviceUrl: this.serviceUrl,
+        serviceUrl: this.osrmServiceUrl, // Ensure this includes `/route/v1/`
         plan: L.Routing.plan([L.latLng(start), L.latLng(finish)], {
           createMarker: (index, waypoint) => {
-            if (index == 0) {
+            if (index === 0) {
               return L.marker(waypoint.latLng, {
                 draggable: true,
-                icon: this.originIcon
-              })
-                .bindPopup("You are here. Drag me all you like")
-                .openPopup();
+                icon: this.originIcon,
+              }).bindPopup("You are here. Drag me all you like").openPopup();
             } else {
               let icon = this.getIcon(this.detailIconUrl);
               return L.marker(waypoint.latLng, {
                 draggable: false,
-                ...(icon && { icon: icon })
-              })
-                .bindPopup("You want to go here")
-                .openPopup();
+                ...(icon && { icon: icon }),
+              }).bindPopup("You want to go here").openPopup();
             }
-          }
+          },
         }),
         routeWhileDragging: true,
         show: false,
         fitSelectedRoutes: true,
-        collapsible: true
+        collapsible: true,
       }).addTo(this.map);
-
-      this.routing.on("routesfound", e => {
-        let insts = e.routes[0].instructions.map(inst => ({
-          text: inst.text,
-          distance: inst.distance,
-          index: inst.index
-        }));
-        this.setInstructions(insts);
-        let instIndex = 0;
-        let coords = e.routes[0].coordinates.filter((coord, index) => {
-          if (insts[instIndex].index == index) {
-            instIndex++;
-            return true;
-          }
-          return false;
-        });
-        this.setRouteCoordinates(coords);
-      });
-
-      this.routing.on("routingerror", e => {
-        alert("OSRM Routing Error: " + e.error.message);
-        console.log("OSRM Routing Error: ", e.error.message);
-        this.setInstructions([]);
-      });
     },
     listenForInstructionCirlces() {
       this.eventBus.on("add-circle", index => {
@@ -274,13 +255,9 @@ export default {
     onLocationFound(e) {
       const radius = e.accuracy / 2;
       const latlng = e.latlng;
-
-      // Add a marker at the user's location
       L.marker(latlng, { icon: this.originIcon })
         .addTo(this.map)
         .bindPopup(`You are within ${radius} meters from this point`).openPopup();
-
-      // Add a circle around the user's location
       L.circle(latlng, radius).addTo(this.map);
     },
     onLocationError(e) {
@@ -289,9 +266,7 @@ export default {
   },
   setup() {
     const eventBus = inject('eventBus');
-    return {
-      eventBus
-    };
+    return { eventBus };
   }
 };
 </script>
@@ -307,12 +282,5 @@ export default {
   margin: 0;
   padding: 0;
   overflow: hidden;
-}
-
-.btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 1000;
 }
 </style>

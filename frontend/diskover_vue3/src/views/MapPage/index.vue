@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useDisplay } from 'vuetify';
 import { useRoute } from 'vue-router';
 import { useMapStore } from '@/stores/map';
@@ -39,6 +39,13 @@ const isOnDetailsPage = computed(() => {
 const toggleSideDrawer = () => {
   mapStore.setSideDrawer(!mapStore.isSideDrawerVisible);
 };
+
+// Open the side drawer by default on results or details page
+onMounted(() => {
+  if (route.name === "results" || route.name === "details") {
+    mapStore.setSideDrawer(true);
+  }
+});
 </script>
 
 <style scoped>

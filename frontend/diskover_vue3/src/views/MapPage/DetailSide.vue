@@ -30,6 +30,14 @@
       </div>
     </v-col>
 
+    <!-- Transport Mode Buttons -->
+    <v-col class="mt-3">
+      <v-row justify="center">
+        <v-btn small @click="switchToDriving" :color="transportMode === 'driving' ? 'primary' : 'grey'">Drive</v-btn>
+        <v-btn small @click="switchToWalking" :color="transportMode === 'foot' ? 'primary' : 'grey'">Walk</v-btn>
+      </v-row>
+    </v-col>
+
     <!-- Primary Tabs -->
     <v-col class="mt-3">
       <v-tabs v-model="primaryTabIndex" grow center-active>
@@ -210,6 +218,26 @@ const fetchLocationData = async () => {
     detailsStore.setEndCoords([]);
   }
 };
+
+const transportMode = ref('driving'); // Default to driving
+
+const switchToDriving = () => {
+  transportMode.value = 'driving';
+  updateRouting();
+};
+
+const switchToWalking = () => {
+  transportMode.value = 'foot';
+  updateRouting();
+};
+
+const updateRouting = () => {
+  const detailsStore = useDetailsStore();
+  detailsStore.setTransportMode(transportMode.value);
+};
+
+// Watch for changes in transport mode and update routing
+watch(transportMode, updateRouting);
 
 watch(() => route.params.id, () => {
   fetchLocationData();
