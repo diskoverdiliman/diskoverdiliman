@@ -5,7 +5,7 @@ export const useDetailsStore = defineStore('details', {
   state: () => ({
     endCoords: [],
     routeCoordinates: [],
-    instructions: [],
+    instructions: [], // Store directions instructions
     markerIcon: null,
     transportMode: 'driving', // Default to driving
     serviceUrl: 'http://localhost:5001', // Default to driving service
@@ -29,10 +29,7 @@ export const useDetailsStore = defineStore('details', {
         ? 'http://localhost:5001' 
         : 'http://localhost:5002';
 
-        console.log('Service URL set to:', this.serviceUrl);        
-    },
-    setServiceUrl(url) { // Add this method
-      this.serviceUrl = url;
+      console.log('Service URL set to:', this.serviceUrl);        
     },
   },
   getters: {

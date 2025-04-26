@@ -227,16 +227,16 @@ export default {
       if (this.routing) {
         this.routing.remove();
       }
-    
+
       const mode = this.transportMode || "driving"; // Use the computed transportMode
-      const baseUrl = this.osrmServiceUrl.replace(/\/$/, ""); // no trailing slash
-    
+      const baseUrl = this.osrmServiceUrl.replace(/\/$/, ""); // Remove trailing slash
+
       console.log("Using OSRM Service URL:", baseUrl, "with profile:", mode); // Debugging log
-    
+
       this.routing = L.Routing.control({
         router: new L.Routing.OSRMv1({
           serviceUrl: `${baseUrl}/route/v1`,
-          profile: mode, // Tell Leaflet which profile to use
+          profile: mode, // Specify the routing profile
         }),
         plan: L.Routing.plan([L.latLng(start), L.latLng(finish)], {
           createMarker: (index, waypoint) => {
@@ -254,11 +254,26 @@ export default {
             }
           },
         }),
-        routeWhileDragging: true,
-        show: false,
-        fitSelectedRoutes: true,
-        collapsible: true,
-      }).addTo(this.map);
+        routeWhileDragging: true, // Allow dragging the route
+        show: true, // Enable the directions panel initially
+        fitSelectedRoutes: true, // Automatically fit the map to the route
+        collapsible: false, // Disable collapsible UI
+      })
+        .on("routesfound", (e) => {
+          const route = e.routes[0];
+          const instructions = route.instructions.map((inst) => ({
+            text: inst.text,
+            distance: inst.distance,
+          }));
+          const coordinates = route.coordinates.map((coord) => [coord.lat, coord.lng]);
+
+          this.setInstructions(instructions); // Store instructions in the detailsStore
+          this.setRouteCoordinates(coordinates); // Store route coordinates in the detailsStore
+        })
+        .addTo(this.map);
+
+      // Hide the directions panel
+      this.routing._container.style.display = "none";
     },
     listenForInstructionCircles() {
       if (!this.eventBus) {
@@ -314,5 +329,9 @@ export default {
   margin: 0;
   padding: 0;
   overflow: hidden;
+}
+
+.leaflet-control-container .leaflet-routing-container-hide {
+    display: none !important;
 }
 </style>

@@ -72,4 +72,8 @@ const isLoggedIn = computed(() => authStore.isLoggedIn);
 .no-padding {
   padding: 0;
 }
+
+.leaflet-control-container .leaflet-routing-container-hide {
+    display: none !important;
+}
 </style>
