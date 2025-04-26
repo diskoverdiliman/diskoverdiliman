@@ -1,6 +1,9 @@
 <template>
   <!-- Side Drawer for showing results and details alongside map anchored left -->
-  <div class="side-drawer-container">
+  <div
+    class="side-drawer-container"
+    v-show="isSideDrawerVisible" 
+  >
     <FloatingButton
       v-if="isVisible"
       attachedTo="drawer"
@@ -44,6 +47,8 @@ export default {
       }
     });
 
+    const isSideDrawerVisible = computed(() => mapStore.isSideDrawerVisible);
+
     const toggleVisibility = () => {
       mapStore.setSideDrawer(!isVisible.value);
     };
@@ -68,7 +73,8 @@ export default {
     return {
       mdAndUp,
       isVisible,
-      handleToggleSideDrawer
+      handleToggleSideDrawer,
+      isSideDrawerVisible
     };
   }
 };

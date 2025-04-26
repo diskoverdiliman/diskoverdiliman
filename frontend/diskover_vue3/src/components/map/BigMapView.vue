@@ -18,14 +18,14 @@ import { useSearchStore } from '@/stores/search';
 import L from 'leaflet';
 import 'leaflet-routing-machine';
 import 'leaflet-easybutton';
-import { inject } from 'vue';
+import { inject, watch } from 'vue';
 
 export default {
   mixins: [MapMixin, JeepMixin],
   mounted() {
     this.initializeMap();
     this.handleMapChange();
-    this.listenForInstructionCirlces();
+    this.listenForInstructionCircles();
   },
   beforeUnmount() {
     if (this.map) {
@@ -124,6 +124,15 @@ export default {
     osrmServiceUrl() {
       this.handleMapChange(); // Reinitialize the map when service URL changes
     },
+    // Watch for changes in the side drawer visibility
+    'mapStore.isSideDrawerVisible': {
+      handler() {
+        if (this.map) {
+          this.map.invalidateSize(); // Notify Leaflet of the size change
+        }
+      },
+      immediate: true,
+    },
   },
   methods: {
     switchToDriving() {
@@ -149,7 +158,7 @@ export default {
       this.initJeepRoutes();
       this.initJeepRoutesControl();
       this.handleMapChange();
-      this.listenForInstructionCirlces();
+      this.listenForInstructionCircles();
 
       this.map.on('locationfound', this.onLocationFound);
       this.map.on('locationerror', this.onLocationError);
@@ -251,19 +260,15 @@ export default {
         collapsible: true,
       }).addTo(this.map);
     },
-    listenForInstructionCirlces() {
-      this.eventBus.on("add-circle", index => {
-        let coords = this.routeCoordinates[index];
-        this.addCircle(coords, {
-          radius: 15,
-          color: "#03f",
-          fillColor: "white",
-          opacity: 1,
-          fillOpacity: 0.7
-        });
-        this.map.setView(coords, 16);
+    listenForInstructionCircles() {
+      if (!this.eventBus) {
+        console.error('eventBus is not defined!');
+        return;
+      }
+
+      this.eventBus.on("toggle-side-drawer", () => {
+        this.mapStore.setSideDrawer(!this.mapStore.isSideDrawerVisible);
       });
-      this.eventBus.on("clear-circles", this.removeAllCircles);
     },
     setInstructions(instructions) {
       const detailsStore = useDetailsStore();
@@ -286,8 +291,14 @@ export default {
     }
   },
   setup() {
-    const eventBus = inject('eventBus');
-    return { eventBus };
+    const eventBus = inject('eventBus'); // Ensure eventBus is injected
+    const mapStore = useMapStore();
+
+    if (!eventBus) {
+      console.error('eventBus is not provided!');
+    }
+
+    return { eventBus, mapStore };
   }
 };
 </script>
