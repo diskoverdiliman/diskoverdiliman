@@ -8,7 +8,7 @@ export const useDetailsStore = defineStore('details', {
     instructions: [],
     markerIcon: null,
     transportMode: 'driving', // Default to driving
-    serviceUrl: 'http://localhost:5001/route/v1', // Default to driving service
+    serviceUrl: 'http://localhost:5001', // Default to driving service
   }),
   actions: {
     setEndCoords(coords) {
@@ -26,8 +26,10 @@ export const useDetailsStore = defineStore('details', {
     setTransportMode(mode) {
       this.transportMode = mode;
       this.serviceUrl = mode === 'driving' 
-        ? 'http://localhost:5001/route/v1' 
-        : 'http://localhost:5002/route/v1';
+        ? 'http://localhost:5001' 
+        : 'http://localhost:5002';
+
+        console.log('Service URL set to:', this.serviceUrl);        
     },
     setServiceUrl(url) { // Add this method
       this.serviceUrl = url;

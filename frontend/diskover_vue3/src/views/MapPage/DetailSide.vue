@@ -33,8 +33,8 @@
     <!-- Transport Mode Buttons -->
     <v-col class="mt-3">
       <v-row justify="center">
-        <v-btn small @click="switchToDriving" :color="transportMode === 'driving' ? 'primary' : 'grey'">Drive</v-btn>
-        <v-btn small @click="switchToWalking" :color="transportMode === 'foot' ? 'primary' : 'grey'">Walk</v-btn>
+        <v-btn small class="mr-1" @click="switchToDriving" :color="transportMode === 'driving' ? '#7b1113' : 'grey'">Drive</v-btn>
+        <v-btn small class="ml-1" @click="switchToWalking" :color="transportMode === 'foot' ? '#7b1113' : 'grey'">Walk</v-btn>
       </v-row>
     </v-col>
 

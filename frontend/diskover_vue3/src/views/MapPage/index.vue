@@ -7,7 +7,12 @@
         </SideDrawer>
       </v-col>
       <v-col :cols="mapStore.isSideDrawerVisible ? 9 : 12" class="map-col">
-        <BigMapView :height="mapExactHeight" :isOnDetailsPage="isOnDetailsPage" class="map">
+        <BigMapView 
+          :height="mapExactHeight" 
+          :isOnDetailsPage="isOnDetailsPage" 
+          :transportMode="detailsStore.transportMode" 
+          class="map"
+        >
           <FloatingButton attachedTo="map" @click="toggleSideDrawer" class="btn"/>
         </BigMapView>
       </v-col>
@@ -20,6 +25,7 @@ import { computed, onMounted } from 'vue';
 import { useDisplay } from 'vuetify';
 import { useRoute } from 'vue-router';
 import { useMapStore } from '@/stores/map';
+import { useDetailsStore } from '@/stores/details'; // Import detailsStore
 import SideDrawer from '@/components/ui/SideDrawer.vue';
 import FloatingButton from '@/components/ui/FloatingButton.vue';
 import BigMapView from '@/components/map/BigMapView.vue';
@@ -27,6 +33,7 @@ import BigMapView from '@/components/map/BigMapView.vue';
 const { mdAndUp } = useDisplay();
 const route = useRoute();
 const mapStore = useMapStore();
+const detailsStore = useDetailsStore(); // Initialize detailsStore
 
 const mapExactHeight = computed(() => {
   return mdAndUp.value ? "calc(100vh - 64px)" : "calc(100vh - 48px)";

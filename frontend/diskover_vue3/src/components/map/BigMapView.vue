@@ -48,7 +48,6 @@ export default {
       gpsButton: null,
       routing: null,
       endIcon: null,
-      transportMode: "driving", // NEW
       originIcon: L.icon({
         iconUrl: 'null',
         iconSize: [25, 41],
@@ -100,7 +99,11 @@ export default {
     detailIconUrl() {
       const detailsStore = useDetailsStore();
       return detailsStore.fullIconUrl;
-    }
+    },
+    transportMode() {
+      const detailsStore = useDetailsStore();
+      return detailsStore.transportMode; // Reactively use the transportMode from the store
+    },
   },
   watch: {
     isOnDetailsPage() {
@@ -114,7 +117,13 @@ export default {
     },
     resultCoords() {
       this.handleMapChange();
-    }
+    },
+    transportMode(newMode) {
+      this.handleMapChange(); // Reinitialize the map when transport mode changes
+    },
+    osrmServiceUrl() {
+      this.handleMapChange(); // Reinitialize the map when service URL changes
+    },
   },
   methods: {
     switchToDriving() {
@@ -206,8 +215,20 @@ export default {
       }).addTo(this.map);
     },
     initRouting(start, finish) {
+      if (this.routing) {
+        this.routing.remove();
+      }
+    
+      const mode = this.transportMode || "driving"; // Use the computed transportMode
+      const baseUrl = this.osrmServiceUrl.replace(/\/$/, ""); // no trailing slash
+    
+      console.log("Using OSRM Service URL:", baseUrl, "with profile:", mode); // Debugging log
+    
       this.routing = L.Routing.control({
-        serviceUrl: this.osrmServiceUrl, // Ensure this includes `/route/v1/`
+        router: new L.Routing.OSRMv1({
+          serviceUrl: `${baseUrl}/route/v1`,
+          profile: mode, // Tell Leaflet which profile to use
+        }),
         plan: L.Routing.plan([L.latLng(start), L.latLng(finish)], {
           createMarker: (index, waypoint) => {
             if (index === 0) {
