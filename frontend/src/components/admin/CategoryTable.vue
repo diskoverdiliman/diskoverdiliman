@@ -12,10 +12,7 @@
         <td class="text-black text-center">{{ category.url }}</td>
         <td class="text-center">
           <!-- Rectangle for Route Color -->
-          <div
-            class="route-color-box"
-            :style="{ backgroundColor: category.route_color }"
-          ></div>
+          <v-icon small :style="{ color: category.route_color }">mdi-map-marker</v-icon>
         </td>
         <td class="text-center">
           <v-icon small class="mr-2 text-blue" @click="$emit('edit-item', category.id)">mdi-pencil</v-icon>
