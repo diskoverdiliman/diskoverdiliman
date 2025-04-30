@@ -188,10 +188,6 @@ export default {
   components: {
     FormMapView,
   },
-  mounted() {
-    this.handleRouteChange();
-    this.coords = this.defaultCoords;
-  },
   data() {
     return {
       name: "",
@@ -225,7 +221,7 @@ export default {
       return this.$route.params.id;
     },
     mode() {
-      return this.$route.params.mode;
+      return this.$route.params.mode; // Make mode reactive by directly referencing the route parameter
     },
     coordsDisplay: {
       get() {
@@ -240,7 +236,8 @@ export default {
     },
   },
   watch: {
-    $route() {
+    $route(to, from) {
+      // React to route changes
       this.handleRouteChange();
     },
     subareaSearch(newSearch) {
@@ -249,6 +246,10 @@ export default {
     mainBuildingSearch(newSearch) {
       this.apiGetMainBuildingItems(newSearch);
     },
+  },
+  mounted() {
+    this.handleRouteChange();
+    this.coords = this.defaultCoords;
   },
   methods: {
     resetMapView() {
@@ -260,8 +261,21 @@ export default {
       }
     },
     handleRouteChange() {
-      this.apiGetSubareaItems("");
-      this.apiGetMainBuildingItems("");
+      // Reset form fields when the route changes
+      this.name = "";
+      this.categoryId = "";
+      this.tagIds = [];
+      this.description = "";
+      this.coords = [];
+      this.defaultCoords = this.$defaultStartCoords;
+      this.subareaIds = [];
+      this.subareaSearch = "";
+      this.subareaItems = [];
+      this.mainBuildingId = "";
+      this.mainBuildingSearch = "";
+      this.mainBuildingItems = [];
+
+      // Fetch data if in update or delete mode
       if (this.mode === "update" || this.mode === "delete") {
         this.getUpdateData(this.id);
       }
