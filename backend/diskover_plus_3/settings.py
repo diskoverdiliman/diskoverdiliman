@@ -176,7 +176,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # JWT settings
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # Access token expires after 15 minutes
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),  # Access token expires after 1 hour
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),     # Refresh token expires after 1 day
     'ROTATE_REFRESH_TOKENS': True,                  # Issue a new refresh token on refresh
     'BLACKLIST_AFTER_ROTATION': True,               # Blacklist old refresh tokens

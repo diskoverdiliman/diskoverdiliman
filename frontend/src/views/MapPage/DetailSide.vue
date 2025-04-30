@@ -135,10 +135,11 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useDetailsStore } from '@/stores/details';
 import { useAuthStore } from '@/stores/auth';
+import { useMainStore } from '@/stores/index';
 import axios from 'axios'; // Import axios
 import DirectionsTabItem from '@/components/details/DirectionsTabItem.vue';
 import ImagesTabItem from '@/components/details/ImagesTabItem.vue';
@@ -150,6 +151,7 @@ import NearbyLocationsTabItem from '@/components/details/NearbyLocationsTabItem.
 const route = useRoute();
 const detailsStore = useDetailsStore();
 const authStore = useAuthStore();
+const mainStore = useMainStore();
 
 const locationId = computed(() => Number(route.params.id));
 const locationName = ref('');
@@ -202,8 +204,20 @@ const isLoggedIn = computed(() => authStore.isLoggedIn);
 
 const fetchLocationData = async () => {
   try {
+    const categories = mainStore.categories;
+
     const response = await axios.get(`/locations/${locationId.value}`); // Use axios for the GET request
     const data = response.data;
+
+    let routeColor = '#7b1113'; // Default route color
+
+    for (const category of categories) {
+      if (category.name === data.category) {
+        routeColor = category.route_color;
+        break;
+      }
+    }
+
     locationName.value = data.name;
     category.value = data.category;
     tags.value = data.tags;
@@ -214,10 +228,27 @@ const fetchLocationData = async () => {
     nearbyLocations.value = data.nearby_locations;
     detailsStore.setEndCoords([data.lat, data.lng]);
     detailsStore.setMarkerIcon(data.marker_icon);
+    detailsStore.setRouteColor(routeColor); // Store route_color in the detailsStore
   } catch (err) {
+    console.error('Error fetching location data:', err);
     detailsStore.setEndCoords([]);
   }
 };
+
+// Initialize categories in onMounted
+onMounted(async () => {
+  if (!mainStore.hasCategoriesLoaded) {
+    try {
+      const response = await axios.get('/categories');
+      mainStore.setCategories(response.data); // Set categories in the main store
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  }
+
+  // Fetch location data after categories are loaded
+  fetchLocationData();
+});
 
 const transportMode = ref('driving'); // Default to driving
 
@@ -244,8 +275,6 @@ watch(() => route.params.id, () => {
   primaryTabIndex.value = 0;
   subareaTabIndex.value = [];
 });
-
-fetchLocationData();
 </script>
 
 <style scoped>

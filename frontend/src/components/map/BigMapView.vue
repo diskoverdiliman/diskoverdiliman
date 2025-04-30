@@ -228,15 +228,17 @@ export default {
         this.routing.remove();
       }
 
-      const mode = this.transportMode || "driving"; // Use the computed transportMode
-      const baseUrl = this.osrmServiceUrl.replace(/\/$/, ""); // Remove trailing slash
+      const mode = this.transportMode || "driving";
+      const baseUrl = this.osrmServiceUrl.replace(/\/$/, "");
+      const detailsStore = useDetailsStore();
+      const routeColor = detailsStore.routeColor || '#3388ff'; // Default to blue if no color is set
 
-      console.log("Using OSRM Service URL:", baseUrl, "with profile:", mode); // Debugging log
+      console.log("Using OSRM Service URL:", baseUrl, "with profile:", mode);
 
       this.routing = L.Routing.control({
         router: new L.Routing.OSRMv1({
           serviceUrl: `${baseUrl}/route/v1`,
-          profile: mode, // Specify the routing profile
+          profile: mode,
         }),
         plan: L.Routing.plan([L.latLng(start), L.latLng(finish)], {
           createMarker: (index, waypoint) => {
@@ -254,10 +256,13 @@ export default {
             }
           },
         }),
-        routeWhileDragging: true, // Allow dragging the route
-        show: true, // Enable the directions panel initially
-        fitSelectedRoutes: true, // Automatically fit the map to the route
-        collapsible: false, // Disable collapsible UI
+        routeWhileDragging: true,
+        show: true,
+        fitSelectedRoutes: true,
+        collapsible: false,
+        lineOptions: {
+          styles: [{ color: routeColor, weight: 5 }], // Use the dynamic route color
+        },
       })
         .on("routesfound", (e) => {
           const route = e.routes[0];
@@ -267,12 +272,11 @@ export default {
           }));
           const coordinates = route.coordinates.map((coord) => [coord.lat, coord.lng]);
 
-          this.setInstructions(instructions); // Store instructions in the detailsStore
-          this.setRouteCoordinates(coordinates); // Store route coordinates in the detailsStore
+          this.setInstructions(instructions);
+          this.setRouteCoordinates(coordinates);
         })
         .addTo(this.map);
 
-      // Hide the directions panel
       this.routing._container.style.display = "none";
     },
     listenForInstructionCircles() {
