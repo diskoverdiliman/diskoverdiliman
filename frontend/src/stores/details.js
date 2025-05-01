@@ -9,6 +9,7 @@ export const useDetailsStore = defineStore('details', {
     markerIcon: null,
     transportMode: 'driving', // Default to driving
     serviceUrl: 'http://localhost:5001', // Default to driving service
+    routeColor: '#3388ff', // Default route color
   }),
   actions: {
     setEndCoords(coords) {
@@ -30,6 +31,9 @@ export const useDetailsStore = defineStore('details', {
         : 'http://localhost:5002';
 
       console.log('Service URL set to:', this.serviceUrl);        
+    },
+    setRouteColor(color) {
+      this.routeColor = color;
     },
   },
   getters: {

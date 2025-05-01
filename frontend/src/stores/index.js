@@ -4,17 +4,17 @@ import axios from 'axios';
 
 export const useMainStore = defineStore('main', {
   state: () => ({
-    categories: [], // Array to store category data
-    tags: [],       // Array to store tag data
+    categoriesState: [], // Array to store category data
+    tagsState: [],       // Array to store tag data
     isSideDrawerVisible: true,
     previousPage: null, // Add previousPage to track the last visited page
   }),
   actions: {
     setCategories(categories) {
-      this.categories = categories;
+      this.categoriesState = categories; // Use spread operator to ensure reactivity
     },
     setTags(tags) {
-      this.tags = tags;
+      this.tagsState = tags; // Use spread operator to ensure reactivity
     },
     setSideDrawer(isVisible) {
       this.isSideDrawerVisible = isVisible;
@@ -28,9 +28,11 @@ export const useMainStore = defineStore('main', {
     },
   },
   getters: {
-    categoryNames: (state) => state.categories.map((cat) => cat.name), // Extract the name property
-    tagNames: (state) => state.tags.map((tag) => tag.name), // Extract the name property
-    hasCategoriesLoaded: (state) => state.categories && state.categories.length !== 0,
+    categories: (state) => state.categoriesState,
+    tags: (state) => state.tagsState,
+    categoryNames: (state) => state.categoriesState.map((cat) => cat.name), // Extract the name property
+    tagNames: (state) => state.tagsState.map((tag) => tag.name), // Extract the name property
+    hasCategoriesLoaded: (state) => state.categoriesState && state.categoriesState.length !== 0,
   },
 });
 

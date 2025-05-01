@@ -21,7 +21,11 @@ export default defineConfig({
     }
   },
   define: {
-    'process.env': process.env
+    'process.env': {
+      VITE_APP_API_URL: process.env.VITE_APP_API_URL,
+      VITE_APP_STATIC_URL: process.env.VITE_APP_STATIC_URL,
+      VITE_BASE_URL: process.env.VITE_BASE_URL,
+    }
   },
   server: {
     proxy: {

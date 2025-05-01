@@ -23,28 +23,31 @@
 import axios from 'axios'; // Import Axios
 import AdminVerifierMixin from "@/mixins/AdminVerifierMixin";
 import CategoryTable from "@/components/admin/CategoryTable.vue"; // Adjust the path as needed
+import { useMainStore } from "@/stores/index";
 
 export default {
   mixins: [AdminVerifierMixin],
   components: {
     CategoryTable, // Register CategoryTable
   },
-  data() {
-    return {
-      categories: null,
-    };
+  computed: {
+    // Use the Pinia store's state directly
+    categories() {
+      const mainStore = useMainStore();
+      return mainStore.categories; // Reactive state from the store
+    },
   },
   mounted() {
-    this.getCategories();
+    const mainStore = useMainStore();
+    this.getCategories(mainStore); // Fetch categories when the component is mounted
   },
   methods: {
-    async getCategories() {
+    async getCategories(mainStore) {
       try {
-        const response = await axios.get("/admin/categories/"); // Use Axios to fetch categories
-        this.categories = response.data;
-        console.log("Categories successfully retrieved");
+        const response = await axios.get('/admin/categories/'); // Replace with your API endpoint
+        mainStore.setCategories(response.data); // Update the store with the fetched categories
       } catch (error) {
-        console.error("Failed to GET categories", error);
+        console.error("Error fetching categories:", error);
       }
     },
     onClickNewCategory() {
@@ -57,7 +60,8 @@ export default {
       try {
         const response = await axios.delete(`/admin/categories/${id}/`); // Use Axios to delete a category
         console.log("Successfully deleted item", response);
-        this.getCategories(); // Refresh the categories list
+        const mainStore = useMainStore();
+        this.getCategories(mainStore); // Refresh the categories list
       } catch (error) {
         console.error("Failed to delete item", error);
       }
