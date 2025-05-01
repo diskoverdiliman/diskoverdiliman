@@ -189,7 +189,7 @@ export default {
     FormMapView,
   },
   mounted() {
-    this.handleRouteChange();
+    this.handleRouteChange(); // Initialize the component state
     this.coords = this.defaultCoords;
   },
   data() {
@@ -241,7 +241,7 @@ export default {
   },
   watch: {
     $route() {
-      this.handleRouteChange();
+      this.handleRouteChange(); // React to route changes
     },
     subareaSearch(newSearch) {
       this.apiGetSubareaItems(newSearch);
@@ -260,8 +260,25 @@ export default {
       }
     },
     handleRouteChange() {
-      this.apiGetSubareaItems("");
-      this.apiGetMainBuildingItems("");
+      // Reset form fields when the route changes
+      this.name = "";
+      this.categoryId = "";
+      this.tagIds = [];
+      this.description = "";
+      this.coords = [];
+      this.defaultCoords = this.$defaultStartCoords;
+      this.subareaIds = [];
+      this.subareaSearch = "";
+      this.subareaItems = [];
+      this.mainBuildingId = "";
+      this.mainBuildingSearch = "";
+      this.mainBuildingItems = [];
+
+      // Re-fetch subareas and main buildings
+      this.apiGetSubareaItems(""); // Fetch all subareas
+      this.apiGetMainBuildingItems(""); // Fetch all main buildings
+
+      // Fetch data if in update or delete mode
       if (this.mode === "update" || this.mode === "delete") {
         this.getUpdateData(this.id);
       }
@@ -285,8 +302,10 @@ export default {
         this.description = description;
         this.defaultCoords = [lat, lng];
         this.coords = [lat, lng];
-        this.subareaIds = subareas;
-        this.mainBuildingId = main_building;
+        this.subareaIds = subareas.map((subarea) => subarea.id);
+        console.log("Subareas:", subareas);
+        this.mainBuildingId = main_building.id;
+        console.log("Main Building:", main_building);
       } catch (error) {
         console.error("Error retrieving location data:", error);
       }
