@@ -71,11 +71,14 @@ class LocationAdminCrudSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'lat', 'lng', 'category', 'tags', 'subareas', 'main_building']
 
     def get_main_building(self, obj):
-        # Check if the building relationship exists
+        """
+        Get the main building associated with the location for admin CRUD operations.
+        """
         try:
-            main_building = obj.building.first()
-            return main_building.id if main_building else None
-        except AttributeError:
+            queryset = Location.objects.get(subareas__sub=obj)  # Fetch the main building using the subareas relationship
+            serializer = LocationSimpleSerializer(instance=queryset)
+            return serializer.data
+        except Location.DoesNotExist:
             return None
 
 
@@ -124,22 +127,23 @@ class LocationRetrieveSerializer(serializers.ModelSerializer):
         """
         Get subareas grouped by category.
         """
-        subarea_dict = {}
-        categories = Category.objects.exclude(name="Buildings").prefetch_related(
-            Prefetch('locations', queryset=Location.objects.filter(building__building=obj))
-        )
-        for category in categories:
-            subarea_dict[category.name] = LocationSimpleSerializer(category.locations.all(), many=True).data or None
-        return subarea_dict
+        subareaDict = {}
+        for category in Category.objects.exclude(name="Buildings"):
+            # Fetch subareas related to the current location and category
+            queryset = Location.objects.filter(building__building=obj, category=category)
+            serializer = LocationSimpleSerializer(instance=queryset, many=True)
+            subareaDict[category.name] = serializer.data or None
+        return subareaDict
 
     def get_main_building(self, obj):
         """
         Get the main building associated with the location.
         """
         try:
-            main_building = obj.building.first()
-            return LocationSimpleSerializer(main_building).data if main_building else None
-        except AttributeError:
+            queryset = Location.objects.get(subareas__sub=obj)  # Fetch the main building using the subareas relationship
+            serializer = LocationSimpleSerializer(instance=queryset)
+            return serializer.data
+        except Location.DoesNotExist:
             return None
 
     def get_nearby_locations(self, obj):
