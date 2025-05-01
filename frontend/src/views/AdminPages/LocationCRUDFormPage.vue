@@ -93,7 +93,7 @@
                 <v-autocomplete
                   v-model="subareaIds"
                   :items="subareaItems"
-                  item-title="text"
+                  item-title="name"
                   item-value="value"
                   :search-input.sync="subareaSearch"
                   multiple
@@ -131,7 +131,7 @@
                   :menu-props="{ zIndex: '1001' }"
                   :readonly="isReadOnly"
                   :error="isReadOnly"
-                  item-title="text"
+                  item-title="name"
                   item-value="value"
                 />
               </div>
@@ -302,9 +302,11 @@ export default {
         this.description = description;
         this.defaultCoords = [lat, lng];
         this.coords = [lat, lng];
-        this.subareaIds = subareas.map((subarea) => subarea.id);
+        this.subareaIds = subareas
         console.log("Subareas:", subareas);
-        this.mainBuildingId = main_building.id;
+        if (main_building) {
+          this.mainBuildingId = main_building.id;
+        }
         console.log("Main Building:", main_building);
       } catch (error) {
         console.error("Error retrieving location data:", error);
@@ -315,7 +317,7 @@ export default {
         const params = searchValue ? { search: searchValue } : {};
         const response = await axios.get(`/admin/locations`, { params });
         this.subareaItems = response.data.map((sub) => ({
-          text: sub.name,
+          name: sub.name,
           value: sub.id,
         }));
       } catch (error) {
@@ -327,7 +329,7 @@ export default {
         const params = searchValue ? { search: searchValue } : {};
         const response = await axios.get(`/admin/locations`, { params });
         this.mainBuildingItems = response.data.map((building) => ({
-          text: building.name,
+          name: building.name,
           value: building.id,
         }));
       } catch (error) {
