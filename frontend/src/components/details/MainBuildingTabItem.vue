@@ -4,9 +4,7 @@
     <!-- Display outer building if current location has an outer building -->
     <v-list v-if="building">
       <v-list-item :to="`/map/details/${building.id}`" link>
-        <v-list-item-content>
           <v-list-item-title>{{ building.name }}</v-list-item-title>
-        </v-list-item-content>
       </v-list-item>
     </v-list>
     <!-- Else display indicator that no outer building found -->

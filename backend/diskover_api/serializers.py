@@ -59,27 +59,26 @@ class LocationSimpleSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
-# Serializer for Location model (admin CRUD operations)
 class LocationAdminCrudSerializer(serializers.ModelSerializer):
-    """
-    Serializer for Location model used in admin CRUD operations.
-    """
     main_building = serializers.SerializerMethodField()
+    subareas = serializers.SerializerMethodField()  # <-- Add this
 
     class Meta:
         model = Location
         fields = ['id', 'name', 'description', 'lat', 'lng', 'category', 'tags', 'subareas', 'main_building']
 
     def get_main_building(self, obj):
-        """
-        Get the main building associated with the location for admin CRUD operations.
-        """
         try:
-            queryset = Location.objects.get(subareas__sub=obj)  # Fetch the main building using the subareas relationship
+            queryset = Location.objects.get(subareas__sub=obj)
             serializer = LocationSimpleSerializer(instance=queryset)
             return serializer.data
         except Location.DoesNotExist:
             return None
+
+    def get_subareas(self, obj):
+        queryset = Location.objects.filter(building__building=obj)
+        serializer = LocationSimpleSerializer(queryset, many=True)
+        return serializer.data
 
 
 # Serializer for Location model (admin image operations)
