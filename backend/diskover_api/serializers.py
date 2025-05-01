@@ -12,7 +12,7 @@ def distance_between(lat1, lng1, lat2, lng2):
     lat1, lng1, lat2, lng2 = [math.radians(latlng) for latlng in (lat1, lng1, lat2, lng2)]
     R = 6371  # Radius of the earth in km
     dLat = abs(lat2 - lat1)
-    dLng = abs(lat2 - lng1)
+    dLng = abs(lng2 - lng1)
     a = math.pow(math.sin(dLat / 2), 2) + math.cos(lat1) * math.cos(lat2) * math.pow(math.sin(dLng / 2), 2)
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     d = R * c  # Distance in km
