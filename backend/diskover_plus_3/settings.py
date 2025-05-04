@@ -32,7 +32,7 @@ DEBUG = config('DEBUG')
 ALLOWED_HOSTS = [
     'diskover.up.edu.ph',
     'localhost',
-    '127.0.0.1'
+    '127.0.0.1',
     'www.diskover.up.edu.ph',
     ]
 
