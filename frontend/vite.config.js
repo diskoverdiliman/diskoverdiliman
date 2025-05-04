@@ -36,6 +36,5 @@ export default defineConfig({
       },
     },
   },
-  // add this in production
-  // base: '/static/',
+  base: process.env.BASE,
 })
