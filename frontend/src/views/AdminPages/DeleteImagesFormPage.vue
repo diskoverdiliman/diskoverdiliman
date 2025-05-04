@@ -154,7 +154,7 @@ export default {
         });
     },
     getFullImageUrl(imgUrl) {
-      return `${this.$backendStaticPath}images/locations/${imgUrl}`;
+      return `${this.$backendStaticPath}/images/locations/${imgUrl}`;
     },
     handleDeleteClick() {
       this.isDeleteConfirmVisible = true;

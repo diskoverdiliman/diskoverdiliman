@@ -65,7 +65,7 @@ export default {
         });
     },
     getFullImageUrl(imgUrl) {
-      return `${this.$backendStaticPath}images/locations/${imgUrl}`;
+      return `${this.$backendStaticPath}/images/locations/${imgUrl}`;
     },
     handleImageUploads() {
       const imageFiles = this.$refs.imageFiles.files;

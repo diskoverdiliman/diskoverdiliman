@@ -169,7 +169,7 @@ const subareaTabIndex = ref([]);
 const thumbnailUrl = computed(() => {
   if (imageUrls.value.length > 0 && imageUrls.value[0]) {
     const backendStaticPath = import.meta.env.VITE_APP_STATIC_URL;
-    return `${backendStaticPath}images/locations/${imageUrls.value[0]}`;
+    return `${backendStaticPath}/images/locations/${imageUrls.value[0]}`;
   }
   return '/assets/no-thumbnail.jpg'; // Adjust the fallback path as needed
 });

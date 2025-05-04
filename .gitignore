@@ -30,12 +30,18 @@ ENV/
 env.bak/
 venv.bak/
 
+.env
+.env.*
+
+!.env.example
+
 # Django
 *.log
 instance/
 media/
 staticfiles/
 static/
+template/
 *.pot
 *.mo
 *.py[cod]

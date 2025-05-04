@@ -38,7 +38,7 @@ export const useDetailsStore = defineStore('details', {
   },
   getters: {
     fullIconUrl: (state) => state.markerIcon
-      ? `${getVueApp().config.globalProperties.$backendStaticPath}images/markers/${state.markerIcon}`
+      ? `${getVueApp().config.globalProperties.$backendStaticPath}/images/markers/${state.markerIcon}`
       : null,
   },
 });

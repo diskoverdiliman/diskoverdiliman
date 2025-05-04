@@ -116,7 +116,7 @@ export const useSearchStore = defineStore('search', {
     },
     fullIconUrls: (state) => {
       return state.results ? state.results.map(
-        result => result.marker_icon ? `${getVueApp().config.globalProperties.$backendStaticPath}images/markers/${result.marker_icon}` : null
+        result => result.marker_icon ? `${getVueApp().config.globalProperties.$backendStaticPath}/images/markers/${result.marker_icon}` : null
       ) : [];
     }
   }
