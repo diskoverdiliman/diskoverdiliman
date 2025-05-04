@@ -8,7 +8,8 @@ export const useDetailsStore = defineStore('details', {
     instructions: [], // Store directions instructions
     markerIcon: null,
     transportMode: 'driving', // Default to driving
-    serviceUrl: 'http://localhost:5001', // Default to driving service
+    // serviceUrl: 'https://localhost:5001', // Default to driving service for development
+    serviceUrl: process.env.VITE_BASE_URL, // Use environment variable for service URL
     routeColor: '#3388ff', // Default route color
   }),
   actions: {
@@ -26,9 +27,10 @@ export const useDetailsStore = defineStore('details', {
     },
     setTransportMode(mode) {
       this.transportMode = mode;
-      this.serviceUrl = mode === 'driving' 
-        ? 'http://localhost:5001' 
-        : 'http://localhost:5002';
+      // for development
+      // this.serviceUrl = mode === 'driving' 
+      //   ? 'https://localhost:5001' 
+      //   : 'https://localhost:5002';
 
       console.log('Service URL set to:', this.serviceUrl);        
     },
