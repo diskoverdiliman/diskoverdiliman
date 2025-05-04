@@ -7,9 +7,9 @@
         <div class="display-1 pt-3">{{ gpsQuestionText }}</div>
         <v-layout>
           <!-- call for geolocation when Yes is clicked -->
-          <v-btn color="blue" dark @click="callGeolocation">Yes</v-btn>
+          <v-btn color="blue ml-4" dark @click="callGeolocation">Yes</v-btn>
           <!-- forefeit geolocation permissions when No is clicked -->
-          <v-btn color="red" dark @click="forfeitPermissionToMark">No</v-btn>
+          <v-btn color="red ml-2" dark @click="forfeitPermissionToMark">No</v-btn>
         </v-layout>
       </v-layout>
     </BottomModal>
@@ -17,19 +17,19 @@
     <div id="hidden-map" :style="{ display: 'none' }"></div>
     <!-- Center modal for confirming GPS permission despite proximity from UP Diliman -->
     <CenterModal :isVisible="isCenterModalVisible" @close="setCenterModal(false)">
-      <v-layout column align-content-space-around class="red lighten-4 text-xs-center">
+      <v-container class="red lighten-4 text-center d-flex flex-column align-center justify-center">
         <v-card-title class="headline">Confirmation</v-card-title>
         <v-col class="headline amber lighten-4 py-3">
           Your current location doesn't appear to be in UP Diliman
         </v-col>
         <v-col class="title pt-2">Continue GPS anyway?</v-col>
-        <v-layout justify-center>
+        <v-row class="justify-center mt-4">
           <!-- confirm geolocation marking permissions when Yes is clicked -->
-          <v-btn color="blue" dark @click="grantPermissionToMark">Yes</v-btn>
+          <v-btn color="blue mr-1" dark @click="grantPermissionToMark">Yes</v-btn>
           <!-- abstain from granting geolocation marking permissions if No is clicked -->
-          <v-btn color="red" dark @click="setCenterModal(false)">No</v-btn>
-        </v-layout>
-      </v-layout>
+          <v-btn color="red ml-1" dark @click="setCenterModal(false)">No</v-btn>
+        </v-row>
+      </v-container>
     </CenterModal>
   </div>
 </template>
