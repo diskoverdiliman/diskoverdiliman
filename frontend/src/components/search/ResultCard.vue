@@ -48,7 +48,7 @@ export default {
     // complete the full thumbnail url using the backend static path and the thumbnail url
     thumbnailUrl() {
       return this.result.thumbnail_url
-        ? `${this.$backendStaticPath}images/locations/${this.result.thumbnail_url}`
+        ? `${this.$backendStaticPath}/images/locations/${this.result.thumbnail_url}`
         : '/assets/no-thumbnail.jpg'; // Adjust the path as needed
     }
   }

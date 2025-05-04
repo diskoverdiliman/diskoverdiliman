@@ -58,7 +58,7 @@ const carouselIndex = ref(0);
 const fullImageUrls = computed(() =>
   props.imageUrls.map((url) => {
     const backendStaticPath = import.meta.env.VITE_APP_STATIC_URL;
-    return `${backendStaticPath}images/locations/${url}`;
+    return `${backendStaticPath}/images/locations/${url}`;
   })
 );
 

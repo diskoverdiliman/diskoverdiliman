@@ -49,7 +49,7 @@ export default {
   computed: {
     // complete the full thumbnail url using the backend static path and the thumbnail url
     thumbnailUrl() {
-      return `${this.$backendStaticPath}images/locations/${
+      return `${this.$backendStaticPath}/images/locations/${
         this.result.thumbnail_url
       }`;
     }
