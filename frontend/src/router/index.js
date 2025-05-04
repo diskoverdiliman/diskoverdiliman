@@ -27,7 +27,7 @@ import UploadImagesFormPage from "@/views/AdminPages/UploadImagesFormPage.vue"
 import UnauthenticatedPage from "@/views/AdminPages/UnauthenticatedPage.vue"
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(),
   routes: [
     // home page
     {
