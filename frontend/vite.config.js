@@ -36,4 +36,6 @@ export default defineConfig({
       },
     },
   },
+  // add this in production
+  // base: '/static/',
 })
