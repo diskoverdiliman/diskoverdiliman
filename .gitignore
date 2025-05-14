@@ -41,7 +41,7 @@ instance/
 media/
 staticfiles/
 static/
-template/
+templates/
 *.pot
 *.mo
 *.py[cod]
