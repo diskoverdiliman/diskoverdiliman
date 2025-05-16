@@ -64,9 +64,17 @@ const attemptLogIn = async () => {
   isProcessing.value = true;
   try {
     await authStore.logIn({ username: username.value, password: password.value });
-    // Redirect to the previous page or home page if no previous page is set
-    const redirectTo = mainStore.previousPage || '/';
-    router.push(redirectTo);
+    // Determine redirect target
+    const prev = mainStore.previousPage;
+    if (
+      prev === '/admin/unauthenticated' ||
+      prev === '/404' ||
+      !prev
+    ) {
+      router.push('/'); // or router.push('/admin') if you want to go to admin dashboard
+    } else {
+      router.push(prev);
+    }
   } catch (error) {
     console.error('Login failed:', error);
   } finally {
