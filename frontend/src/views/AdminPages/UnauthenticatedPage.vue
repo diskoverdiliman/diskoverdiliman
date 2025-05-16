@@ -1,17 +1,22 @@
 <template>
-  <v-container>
-    <v-layout class="display-1 pt-4" column>
-      <v-flex>Sorry, the page you are trying to access is for admin users only.</v-flex>
-      <v-flex>
-        <div class="my-5">
-          Log in as an admin to be granted access to this page
-          <v-btn color="primary" to="/login">Login Page</v-btn>
-        </div>
-        <div>
-          Or just go back to our home page
-          <v-btn color="primary" to="/">Home Page</v-btn>
-        </div>
-      </v-flex>
-    </v-layout>
+  <v-container class="fill-height d-flex flex-column align-center justify-center text-center">
+    <v-icon size="100" class="mb-4" color="primary">mdi-lock-alert</v-icon>
+    <h1 class="text-h4 font-weight-bold">Admin Access Required</h1>
+    <p class="text-body-1 mt-2 mb-6">
+      Sorry, the page you are trying to access is for admin users only.
+    </p>
+    <div class="d-flex gap-4">
+      <v-btn color="primary" to="/login" variant="flat">Login Page</v-btn>
+      <v-btn color="secondary" to="/" variant="flat">Home Page</v-btn>
+    </div>
   </v-container>
 </template>
+
+<style scoped>
+.fill-height {
+  height: 100vh;
+}
+.gap-4 {
+  gap: 16px;
+}
+</style>

@@ -26,6 +26,8 @@ import LocationCRUDFormPage from "@/views/AdminPages/LocationCRUDFormPage.vue"
 import UploadImagesFormPage from "@/views/AdminPages/UploadImagesFormPage.vue"
 import UnauthenticatedPage from "@/views/AdminPages/UnauthenticatedPage.vue"
 
+import { useAuthStore } from "@/stores/auth";
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -128,5 +130,20 @@ const router = createRouter({
 
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  // Check if the route is under /admin but NOT /admin/unauthenticated
+  if (
+    to.path.startsWith('/admin') &&
+    to.name !== 'unauthenticated'
+  ) {
+    const authStore = useAuthStore();
+    if (!authStore.isLoggedIn) {
+      // Redirect to the unauthenticated page inside admin
+      return next({ name: 'unauthenticated' });
+    }
+  }
+  next();
+});
 
 export default router
